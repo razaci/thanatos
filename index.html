@@ -69,18 +69,13 @@
 
     .bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
     .pip { padding: 6px 8px; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; }
-    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    @media (min-width: 720px) { .grid { grid-template-columns: repeat(4, 1fr); } }
-    .bed { padding: 8px; text-align: left; border-radius: 6px; }
-    .bed.sealed { filter: grayscale(.8); opacity: .6; border-color: #ff3b4e55; }
-    .bed.flash { border-color: var(--trauma); box-shadow: 0 0 14px #ff3b4e66; }
-    .bed-top { display: flex; gap: 8px; align-items: center; }
-    .av { width: 36px; height: 48px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; flex-shrink: 0; }
-    .av svg { width: 100%; height: 100%; display: block; }
-    .nm { font-size: 10px; letter-spacing: .08em; }
-    .nm p { font-family: "Share Tech Mono", monospace; font-size: 10px; color: var(--muted); margin-top: 2px; }
-    .crit { color: var(--trauma); }
-    .acts { display: flex; gap: 4px; margin-top: 8px; }
+    .channels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+    .ch { padding: 12px 8px; min-height: 88px; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; }
+    .ch.hot { border-color: #ff3b4e88; box-shadow: 0 0 12px #ff3b4e44; }
+    .ch.dead { opacity: .35; filter: grayscale(1); }
+    .ch .n { font-size: 8px; letter-spacing: .2em; color: var(--muted); }
+    .floor { display: flex; gap: 8px; margin-top: 12px; }
+    .floor .mini { flex: 1; padding: 14px 8px; font-size: 10px; }
     .mini { flex: 1; padding: 6px 2px; font-size: 8px; letter-spacing: .1em; text-transform: uppercase; border: 1px solid #5ab4ff44; color: var(--muted); border-radius: 4px; }
     .mini:hover { color: #fff; border-color: var(--hot); }
     .mini.danger { border-color: #ff3b4e66; color: #ff8a96; }
@@ -160,12 +155,16 @@
   <section class="screen" id="screen-ward">
     <div class="inner">
       <div class="bar">
-        <span class="pip panel" id="onl">0 ONLINE</span>
+        <span class="pip panel" id="onl">0 LIVE</span>
         <span class="pip panel" id="sel">0 SEALED</span>
-        <span class="pip panel" id="att">—</span>
-        <button class="pip panel mini" id="nshift" style="display:none">New shift</button>
+        <span class="pip panel" id="att">FIELD OFF</span>
       </div>
-      <div class="grid" id="beds"></div>
+      <div class="channels" id="channels"></div>
+      <div class="floor">
+        <button class="mini panel" id="hold-all">Hold field</button>
+        <button class="mini panel" id="feed-sit">Feed sit</button>
+        <button class="mini panel" id="nshift" style="display:none">New shift</button>
+      </div>
     </div>
   </section>
 
@@ -274,7 +273,7 @@ function roster() {
 }
 
 const S = {
-  screen:"boot", P: roster(), sel:null, attend:null,
+  screen:"boot", P: roster(), sel:null, attend:null, field:false,
   trauma:0, stab:100, incoming:[], hand:[], tick:null, ward:null, mx:null
 };
 
@@ -312,54 +311,42 @@ function paintRadar(){
   });
 }
 
+function liveList(){ return S.P.filter(p=>!p.sealed && !p.archived && p.life>0); }
+
+function feed(){
+  const live=liveList();
+  if(!live.length){ toast("Floor empty"); go("ward"); return false; }
+  let p=live[Math.floor(Math.random()*live.length)];
+  if(S.sel && !S.sel.sealed && live.includes(S.sel)) p=S.sel;
+  else if(S.sel && S.sel.sealed) p=live[Math.floor(Math.random()*live.length)];
+  S.sel=p; S.incoming=[];
+  $("bd").disabled=false; $("bs").disabled=false;
+  return true;
+}
+
 function paintWard(){
-  const live=S.P.filter(p=>!p.sealed && !p.archived && p.life>0);
+  const live=liveList();
   const sealed=S.P.filter(p=>p.sealed && !p.archived);
-  $("onl").textContent=live.length+" ONLINE";
+  $("onl").textContent=live.length+" LIVE";
   $("sel").textContent=sealed.length+" SEALED";
-  $("att").textContent=S.attend && !S.attend.sealed ? S.attend.name.split(" ")[0] : "—";
+  $("att").textContent=S.field?"FIELD ON":"FIELD OFF";
   $("nshift").style.display=live.length===0?"inline-block":"none";
   paintRadar();
-  $("beds").innerHTML=S.P.filter(p=>!p.archived).map(p=>{
+  const chans=S.P.filter(p=>!p.archived);
+  $("channels").innerHTML=chans.map((p,i)=>{
     const dead=p.sealed||p.life<=0;
-    return `<div class="panel bed ${dead?"sealed":""} ${p.alert?"flash":""}" data-id="${p.id}">
-      <div class="bed-top"><div class="av">${av(p)}</div>
-        <div class="nm"><h3>${p.name}</h3><p>${p.unit} · ${p.type}</p>
-        <p class="${!dead && p.life<30?"crit":""}">${dead?"SEALED":Math.round(p.life)+"%"}</p></div></div>
-      <div class="track" style="margin-top:6px"><div class="fill l" style="width:${dead?0:p.life}%"></div></div>
-      <div class="acts">${dead
-        ? `<button class="mini danger" data-a="archive">Archive</button>`
-        : `<button class="mini" data-a="attend">Hold</button>
-           <button class="mini" data-a="psyche">Psyche</button>
-           <button class="mini" data-a="sit">Sit</button>`}</div>
+    return `<div class="panel ch ${dead?"dead":""} ${p.alert?"hot":""}">
+      <div class="n">CH ${String(i+1).padStart(2,"0")}</div>
+      <div class="track"><div class="fill l" style="width:${dead?0:p.life}%"></div></div>
     </div>`;
   }).join("");
-  $("beds").querySelectorAll("[data-a]").forEach(btn=>{
-    btn.onclick=()=>act(btn.closest(".bed").dataset.id, btn.dataset.a);
-  });
 }
 
-function act(id, a){
-  const p=S.P.find(x=>x.id===id); if(!p) return;
-  if(a==="archive"){
-    if(!p.sealed) return;
-    p.archived=true;
-    S.trauma=Math.max(0,S.trauma-10);
-    if(S.sel && S.sel.id===p.id){ S.sel=null; $("bd").disabled=true; $("bs").disabled=true; }
-    if(S.attend && S.attend.id===p.id) S.attend=null;
-    hud(); toast("Archived"); paintWard(); return;
-  }
-  if(p.sealed || p.life<=0){ toast("Sealed"); return; }
-  if(a==="attend"){
-    S.attend=p; p.alert=false; S.stab=Math.max(0,S.stab-6); p.life=Math.min(100,p.life+5);
-    hud(); toast("Hold "+p.name.split(" ")[0]); paintWard(); return;
-  }
-  pick(p, a==="sit"?"session":"dossier");
-}
-
-function pick(p, dest){
-  if(p.sealed || p.life<=0){ toast("Sealed"); return; }
-  S.sel=p; $("bd").disabled=false; $("bs").disabled=false; go(dest);
+function holdField(){
+  S.field=!S.field;
+  S.stab=Math.max(0,S.stab-(S.field?10:0));
+  S.P.forEach(p=>{ if(!p.sealed) p.alert=false; });
+  hud(); toast(S.field?"Field on":"Field off"); paintWard();
 }
 
 function stopMx(){ if(S.mx){ cancelAnimationFrame(S.mx); S.mx=null; } }
@@ -384,8 +371,9 @@ function startMx(c){
 }
 
 function paintPsyche(){
+  if(!S.sel || S.sel.sealed){ if(!feed()) return; }
   const p=S.sel;
-  if(!p || p.sealed){ $("psy").innerHTML=""; go("ward"); return; }
+  if(!p || p.sealed){ go("ward"); return; }
   const j=JUNG.find(x=>x.id===p.type);
   const L={
     type: j.name+" · "+p.persona,
@@ -483,14 +471,16 @@ function play(id){
 function seal(p){
   p.life=0; p.sealed=true; p.alert=false;
   S.trauma=Math.min(100,S.trauma+18);
-  if(S.attend && S.attend.id===p.id) S.attend=null;
-  hud(); toast("Sealed · no return");
-  $("bs").disabled=true;
-  setTimeout(()=>go("ward"),600);
+  if(S.sel && S.sel.id===p.id) S.sel=null;
+  hud(); toast("Sealed");
+  if(liveList().length){ feed(); paintSession(); }
+  else go("ward");
 }
 
 function paintSession(){
-  if(!S.sel || S.sel.sealed || S.sel.life<=0){ go("ward"); return; }
+  if(!S.sel || S.sel.sealed || S.sel.life<=0){
+    if(!feed()) return;
+  }
   if(S.tick) clearInterval(S.tick);
   S.incoming=[]; $("log").innerHTML="";
   deal(); paintIn(); paintLife();
@@ -513,8 +503,8 @@ function pulse(){
       if(p.life<=0){ p.sealed=true; return; }
       if(p.sealed) return;
       if(S.sel && S.sel.id===p.id && S.screen==="session") return;
-      const hold=S.attend && S.attend.id===p.id;
-      p.life=Math.max(0,p.life-(hold?0.06:0.24));
+      const hold=S.field;
+      p.life=Math.max(0,p.life-(hold?0.08:0.24));
       if(Math.random()<0.16){ p.alert=true; p.life=Math.max(0,p.life-2); S.trauma=Math.min(100,S.trauma+3); }
       if(p.life<=0) p.sealed=true;
     });
@@ -524,15 +514,22 @@ function pulse(){
 }
 
 function newShift(){
-  S.P=roster(); S.sel=null; S.attend=null; S.incoming=[]; S.trauma=0; S.stab=100;
-  $("bd").disabled=true; $("bs").disabled=true; hud(); toast("New shift"); paintWard();
+  S.P=roster(); S.sel=null; S.attend=null; S.field=false; S.incoming=[]; S.trauma=0; S.stab=100;
+  hud(); toast("New shift"); feed(); go("session");
 }
 
 $("atlas").innerHTML=JUNG.map(j=>`<article class="panel tc"><h3>${j.name}</h3><p>${j.blurb}<br>Shadow ${j.shadow}</p></article>`).join("");
 hud();
-$("enter").onclick=()=>{ pulse(); go("ward"); };
+$("enter").onclick=()=>{ pulse(); feed(); go("session"); };
 $("nshift").onclick=newShift;
-document.querySelectorAll(".dock .slot").forEach(b=>b.onclick=()=>{ if(!b.disabled) go(b.dataset.go); });
+$("hold-all").onclick=holdField;
+$("feed-sit").onclick=()=>{ S.sel=null; if(feed()) go("session"); };
+document.querySelectorAll(".dock .slot").forEach(b=>b.onclick=()=>{
+  if(b.disabled) return;
+  if(b.dataset.go==="session"){ feed(); go("session"); return; }
+  if(b.dataset.go==="dossier"){ feed(); go("dossier"); return; }
+  go(b.dataset.go);
+});
 </script>
 </body>
 </html>
