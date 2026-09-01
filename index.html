@@ -60,7 +60,8 @@
 
     .screen { position: fixed; inset: 0; z-index: 10; display: none; padding: 88px 16px 104px; overflow: auto; }
     .screen.on { display: block; }
-    .inner { max-width: 640px; margin: 0 auto; }
+    .inner { max-width: 720px; margin: 0 auto; }
+    #screen-session .inner { max-width: 640px; }
 
     #screen-boot { text-align: center; padding-top: 22vh; }
     .logo { font-size: clamp(22px, 6vw, 36px); letter-spacing: .24em; }
@@ -114,10 +115,19 @@
     .toast { position: fixed; top: 78px; left: 50%; transform: translateX(-50%); z-index: 50; padding: 8px 12px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; opacity: 0; transition: .2s; pointer-events: none; }
     .toast.show { opacity: 1; }
 
-    .types { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .tc { padding: 10px; }
-    .tc h3 { font-size: 11px; margin-bottom: 4px; }
-    .tc p { font-family: "Share Tech Mono", monospace; font-size: 11px; color: var(--muted); line-height: 1.4; }
+    .atlas-shell { display: grid; grid-template-columns: 160px 1fr; gap: 10px; min-height: 420px; }
+    @media (max-width: 640px) { .atlas-shell { grid-template-columns: 1fr; } }
+    .atlas-nav .tc { width: 100%; text-align: left; padding: 8px; margin-bottom: 6px; }
+    .atlas-nav .tc.on { border-color: var(--hot); color: #fff; }
+    .atlas-nav .tc h3 { font-size: 11px; margin-bottom: 2px; }
+    .atlas-nav .tc p { font-family: "Share Tech Mono", monospace; font-size: 10px; color: var(--muted); }
+    .depth { padding: 12px; min-height: 380px; }
+    .depth h2 { font-size: 14px; letter-spacing: .16em; margin-bottom: 8px; }
+    .subs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .prose { font-family: "Share Tech Mono", monospace; font-size: 12px; line-height: 1.55; color: #c5d6ec; }
+    .aid { display: block; margin-top: 8px; padding: 8px; border: 1px solid #5ab4ff44; color: #9cf; font-size: 10px; letter-spacing: .08em; text-decoration: none; }
+    .aid:hover { border-color: var(--hot); color: #fff; }
+    .note { margin-top: 10px; font-size: 10px; color: #8a9bb0; font-family: "Share Tech Mono", monospace; line-height: 1.4; }
   </style>
 </head>
 <body>
@@ -141,9 +151,9 @@
 
   <nav class="dock">
     <button class="slot" data-go="ward"><span class="g">▣</span>Ward</button>
-    <button class="slot" data-go="dossier" id="bd" disabled><span class="g">◎</span>Psyche</button>
+    <button class="slot" data-go="dossier" id="bd"><span class="g">◎</span>Psyche</button>
     <button class="slot" data-go="atlas"><span class="g">▦</span>Atlas</button>
-    <button class="slot" data-go="session" id="bs" disabled><span class="g">⌬</span>Sit</button>
+    <button class="slot" data-go="session" id="bs"><span class="g">⌬</span>Sit</button>
   </nav>
 
   <div class="toast panel" id="toast"></div>
@@ -200,7 +210,10 @@
 
   <section class="screen" id="screen-atlas">
     <div class="inner">
-      <div class="types" id="atlas"></div>
+      <div class="atlas-shell">
+        <nav class="atlas-nav" id="atlas-nav"></nav>
+        <article class="panel depth" id="atlas-depth"></article>
+      </div>
     </div>
   </section>
 
@@ -216,14 +229,54 @@
 
 <script>
 const JUNG = [
-  { id:"Te", name:"Extraverted Thinking", shadow:"Fi grief", blurb:"Orders the outer measure." },
-  { id:"Ti", name:"Introverted Thinking", shadow:"Fe weather", blurb:"Private architectures." },
-  { id:"Fe", name:"Extraverted Feeling", shadow:"Ti equation", blurb:"Tunes the chorus." },
-  { id:"Fi", name:"Introverted Feeling", shadow:"Te tally", blurb:"Sealed chapel of values." },
-  { id:"Se", name:"Extraverted Sensation", shadow:"Ni omen", blurb:"Lives in the fact of now." },
-  { id:"Si", name:"Introverted Sensation", shadow:"Ne futures", blurb:"Archives exact texture." },
-  { id:"Ne", name:"Extraverted Intuition", shadow:"Si body-memory", blurb:"Forks in public air." },
-  { id:"Ni", name:"Introverted Intuition", shadow:"Se raw now", blurb:"One inner image to the end." }
+  { id:"Te", name:"Extraverted Thinking", shadow:"Fi — unofficial grief",
+    blurb:"Orders the outer measure. Trauma lands when a system will not add up.",
+    depth:"The Ego uses tallies, clocks, and clean edges. Integration is letting a private value exist without a ticket number.",
+    problem:{ title:"Metric Lock", rare:"Seizure-pattern freeze (ward file)",
+      body:"In-game: the type seizes on a number and cannot leave the courtroom. Real epilepsy and seizures are medical events — this file is lore only." },
+    herb:{ name:"Lemon balm", lore:"+4 coherence in Sit if applied. Calms the tally-voice in fiction.", q:"lemon+balm+tea" } },
+  { id:"Ti", name:"Introverted Thinking", shadow:"Fe — weather of the room",
+    blurb:"Builds private architectures. Trauma is a contradiction that will not house.",
+    depth:"Thought is a closed circuit. The Shadow is the room’s mood. Decrypt Fe or the circuit starves.",
+    problem:{ title:"Closed Circuit Fever", rare:"Neural inflammation analog (ward file)",
+      body:"In-game: logic overheats and will not vent. Not a diagnosis of encephalitis or cancer — a psyche file." },
+    herb:{ name:"Lion’s mane", lore:"Fictional mycelial splice. Shop prop for the archive shelf.", q:"lions+mane+mushroom" } },
+  { id:"Fe", name:"Extraverted Feeling", shadow:"Ti — the cold equation",
+    blurb:"Tunes the chorus. Trauma is a break in the room’s weather.",
+    depth:"Care is the Persona. A true thought that would empty the party is the Shadow.",
+    problem:{ title:"Chorus Collapse", rare:"Vasovagal / faint analog (ward file)",
+      body:"In-game: the field drops when no role remains. Fainting and cardiac events in life need a clinician." },
+    herb:{ name:"Hawthorn", lore:"Lore heart-field. Does not treat heart disease.", q:"hawthorn+berry" } },
+  { id:"Fi", name:"Introverted Feeling", shadow:"Te — the world’s crude tally",
+    blurb:"Sealed chapel of values. Trauma is a vow put up for auction.",
+    depth:"The inner court never adjourns. Being measured cuts deeper than being hurt.",
+    problem:{ title:"Silent Chapel", rare:"Autoimmune analog (ward file)",
+      body:"In-game: the chapel attacks its own pews. Real autoimmune disease and cancer are not herbal files." },
+    herb:{ name:"Turmeric", lore:"Gold dust in the chapel lamp. Culinary / shop only.", q:"turmeric+capsules" } },
+  { id:"Se", name:"Extraverted Sensation", shadow:"Ni — unread omen",
+    blurb:"Lives in the fact of now. Trauma is an image with no fists.",
+    depth:"Impact is food. Stillness is the threat. The omen cannot be punched.",
+    problem:{ title:"Impact Blackout", rare:"Post-ictal analog (ward file)",
+      body:"In-game: too much now, then nothing. Real head injury and seizures need emergency care, not tea." },
+    herb:{ name:"Peppermint", lore:"Wakes the now-channel in fiction.", q:"peppermint+tea" } },
+  { id:"Si", name:"Introverted Sensation", shadow:"Ne — futures that refuse the archive",
+    blurb:"Archives exact texture. Trauma is a page going blank.",
+    depth:"The known wound is safer than an unknown hallway. Possibility contaminates the record.",
+    problem:{ title:"Spreading Blank", rare:"Memory-fade analog (ward file)",
+      body:"In-game: the archive whites out. This is not Alzheimer’s or a tumor protocol." },
+    herb:{ name:"Ginkgo", lore:"Shelf leaf for the file room. Not a dementia treatment.", q:"ginkgo+biloba" } },
+  { id:"Ne", name:"Extraverted Intuition", shadow:"Si — unedited body-memory",
+    blurb:"Forks in public air. Trauma is one plate that will not branch.",
+    depth:"Every door opens. The Shadow is the scar that stays a smell.",
+    problem:{ title:"Fork Storm", rare:"Absence-spell analog (ward file)",
+      body:"In-game: too many tomorrows, then a skip. Real absence seizures are a physician’s file." },
+    herb:{ name:"Chamomile", lore:"Slows the fork-count in fiction.", q:"chamomile+tea" } },
+  { id:"Ni", name:"Introverted Intuition", shadow:"Se — raw fact without myth",
+    blurb:"One inner image to its end. Trauma is metal-smell with no symbol.",
+    depth:"The corridor lengthens. The present is treated as rumor until the body arrives.",
+    problem:{ title:"Corridor Fit", rare:"Temporal-lobe analog (ward file)",
+      body:"In-game: the image eats the minute. Epilepsy in life is not solved in this atlas." },
+    herb:{ name:"Valerian", lore:"Night-lock for the corridor. Sedative herb as shop prop only.", q:"valerian+root" } }
 ];
 
 const TREAT = [
@@ -323,6 +376,7 @@ function go(name){
   if(name==="ward") paintWard();
   if(name==="dossier") paintPsyche();
   if(name==="session") paintSession();
+  if(name==="atlas") paintAtlas(S.atlasId||"Ni", S.atlasTab||"type");
 }
 
 function paintRadar(){
@@ -361,11 +415,12 @@ function paintWard(){
   $("typelist").innerHTML=JUNG.map(j=>{
     const n=S.P.filter(p=>p.type===j.id && !p.archived);
     const live=n.filter(p=>!p.sealed && p.life>0).length;
-    return `<div class="panel tp">
+    return `<button class="panel tp" data-type="${j.id}">
       <div class="id">${j.id} · ${j.name}</div>
       <div class="nm">Shadow ${j.shadow}</div>
-    </div>`;
+    </button>`;
   }).join("");
+  $("typelist").querySelectorAll("[data-type]").forEach(b=>b.onclick=()=>{ go("atlas"); paintAtlas(b.dataset.type,"type"); });
 }
 
 function holdField(){
@@ -544,7 +599,36 @@ function newShift(){
   hud(); toast("New shift"); feed(); go("session");
 }
 
-$("atlas").innerHTML=JUNG.map(j=>`<article class="panel tc"><h3>${j.name}</h3><p>${j.blurb}<br>Shadow ${j.shadow}</p></article>`).join("");
+function paintAtlas(id, tab){
+  S.atlasId=id||"Ni"; S.atlasTab=tab||"type";
+  const j=JUNG.find(x=>x.id===S.atlasId)||JUNG[7];
+  $("atlas-nav").innerHTML=JUNG.map(t=>`<button class="panel tc ${t.id===j.id?"on":""}" data-id="${t.id}">
+    <h3>${t.id}</h3><p>${t.name}</p></button>`).join("");
+  $("atlas-nav").querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>paintAtlas(b.dataset.id, S.atlasTab));
+  const shop="https://www.amazon.com/s?k="+encodeURIComponent(j.herb.q.replace(/\+/g," "));
+  const panes={
+    type:`<p class="prose">${j.blurb}</p><p class="prose" style="margin-top:8px">${j.depth}</p>`,
+    shadow:`<p class="prose"><strong>Shadow.</strong> ${j.shadow}</p><p class="prose" style="margin-top:8px">Treatment cards tagged shadow speak here. Persona cards do not.</p>`,
+    problem:`<p class="prose"><strong>${j.problem.title}</strong> — ${j.problem.rare}</p><p class="prose" style="margin-top:8px">${j.problem.body}</p>
+      <p class="note">Rare-problem files in this atlas are fictional ward lore. Seizures, epilepsy, and cancer are real medical conditions. They are not treated by this game or by herbs.</p>`,
+    materia:`<p class="prose"><strong>${j.herb.name}</strong> — ${j.herb.lore}</p>
+      <a class="aid" href="${shop}" target="_blank" rel="noopener">Amazon search · ${j.herb.name}</a>
+      <button class="aid" id="apply-aid" type="button">Apply lore aid in Sit (+4 life)</button>
+      <p class="note">Shop link is a search, not a prescription. Lore aid is a game buff only.</p>`
+  };
+  $("atlas-depth").innerHTML=`<h2>${j.id} · ${j.name}</h2>
+    <div class="subs">
+      ${["type","shadow","problem","materia"].map(k=>`<button class="chip ${k===S.atlasTab?"on":""}" data-tab="${k}">${k}</button>`).join("")}
+    </div>
+    <div id="apane">${panes[S.atlasTab]||panes.type}</div>`;
+  $("atlas-depth").querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>paintAtlas(j.id, b.dataset.tab));
+  const apply=$("apply-aid");
+  if(apply) apply.onclick=()=>{
+    if(S.sel && !S.sel.sealed){ S.sel.life=Math.min(100,S.sel.life+4); toast("Lore aid"); }
+    else toast("No one in Sit");
+  };
+}
+
 hud();
 $("enter").onclick=()=>{ pulse(); feed(); go("session"); };
 $("nshift").onclick=newShift;
