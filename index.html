@@ -131,6 +131,9 @@
     .recipes { display: grid; gap: 8px; }
     .rec { padding: 10px; text-align: left; }
     .rec.on { border-color: #e8c36a; }
+    .dungeon { position: relative; background: #07090e; border: 1px solid var(--border); }
+    #dmap { width: 100%; height: auto; display: block; image-rendering: pixelated; cursor: pointer; }
+    .dinfo { margin-top: 8px; padding: 10px; font-family: "Share Tech Mono", monospace; font-size: 12px; line-height: 1.45; }
   </style>
 </head>
 <body>
@@ -148,6 +151,7 @@
 
   <nav class="dock">
     <button class="slot" data-go="ward"><span class="g">▣</span>Ward</button>
+    <button class="slot" data-go="dungeon"><span class="g">▤</span>Floor</button>
     <button class="slot" data-go="dossier"><span class="g">◎</span>Psyche</button>
     <button class="slot" data-go="sanctum"><span class="g">✦</span>Sanctum</button>
     <button class="slot" data-go="session"><span class="g">⌬</span>Sit</button>
@@ -209,6 +213,17 @@
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-dungeon">
+    <div class="inner">
+      <div class="bar">
+        <span class="pip panel" id="dseed">SEED —</span>
+        <button class="mini panel" id="dgen">Carve floor</button>
+      </div>
+      <div class="panel dungeon"><canvas id="dmap" width="480" height="320"></canvas></div>
+      <div class="panel dinfo" id="dinfo">Tap a room. Foyer sits at gold. Sealed rooms stay dark.</div>
     </div>
   </section>
 
@@ -327,7 +342,8 @@ function roster(){
 const S = {
   screen:"boot", P:roster(), sel:null, field:false, advanced:false, hearth:false, veil:false,
   trauma:0, stab:100, incoming:[], tick:null, ward:null, mx:null,
-  inv: Array(20).fill(null), pick:-1, qi:0, qs:{P:0,L:0,S:0,R:0}, mapped:false
+  inv: Array(20).fill(null), pick:-1, qi:0, qs:{P:0,L:0,S:0,R:0}, mapped:false,
+  floor:null, seed:1, at:null
 };
 
 const $ = id => document.getElementById(id);
@@ -347,6 +363,7 @@ function go(name){
   if(name==="dossier") paintPsyche();
   if(name==="session") paintSession();
   if(name==="sanctum") paintSanctum();
+  if(name==="dungeon"){ if(!S.floor) carveFloor(); paintDungeon(); }
 }
 
 function liveList(){ return S.P.filter(p=>!p.sealed && !p.archived && p.life>0); }
@@ -588,8 +605,119 @@ function pulse(){
   },4500);
 }
 
+function rng(s){ return ()=>{ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
+
+function carveFloor(seed){
+  seed = seed || ((Date.now()&0xfffff)^((S.qs.P+S.qs.L+S.qs.S+S.qs.R)*997));
+  S.seed=seed;
+  const R=rng(seed);
+  const W=48, H=32;
+  const grid=Array.from({length:H},()=>Array(W).fill(0));
+  const rooms=[];
+  function split(x,y,w,h,d){
+    const min=8;
+    if(d<=0 || w<min*2 && h<min*2){
+      const rw=4+Math.floor(R()*Math.max(1,w-6));
+      const rh=4+Math.floor(R()*Math.max(1,h-6));
+      const rx=x+1+Math.floor(R()*Math.max(1,w-rw-2));
+      const ry=y+1+Math.floor(R()*Math.max(1,h-rh-2));
+      rooms.push({x:rx,y:ry,w:rw,h:rh,cx:rx+(rw>>1),cy:ry+(rh>>1),who:null,kind:"cell"});
+      return;
+    }
+    if(w>=h){
+      const cut=Math.floor(w*0.35+R()*w*0.3);
+      split(x,y,cut,h,d-1); split(x+cut,y,w-cut,h,d-1);
+    } else {
+      const cut=Math.floor(h*0.35+R()*h*0.3);
+      split(x,y,w,cut,d-1); split(x,y+cut,w,h-cut,d-1);
+    }
+  }
+  split(1,1,W-2,H-2,4);
+  rooms.forEach(rm=>{
+    for(let yy=rm.y;yy<rm.y+rm.h;yy++)
+      for(let xx=rm.x;xx<rm.x+rm.w;xx++)
+        if(yy>=0&&yy<H&&xx>=0&&xx<W) grid[yy][xx]=1;
+  });
+  function hall(a,b){
+    let x=a.cx,y=a.cy;
+    const x2=b.cx,y2=b.cy;
+    while(x!==x2){ grid[y][x]=1; x+=x<x2?1:-1; }
+    while(y!==y2){ grid[y][x]=1; y+=y<y2?1:-1; }
+    grid[y][x]=1;
+  }
+  for(let i=0;i<rooms.length-1;i++) hall(rooms[i], rooms[i+1]);
+  const extra=S.hearth?Math.min(4,rooms.length-1):1;
+  for(let i=0;i<extra;i++){
+    const a=rooms[Math.floor(R()*rooms.length)];
+    const b=rooms[Math.floor(R()*rooms.length)];
+    if(a!==b) hall(a,b);
+  }
+  rooms[0].kind="foyer"; rooms[0].who=null;
+  const live=S.P.slice();
+  for(let i=1;i<rooms.length;i++){
+    rooms[i].who=live[(i-1)%live.length]||null;
+    rooms[i].kind=rooms[i].who?"cell":"empty";
+  }
+  S.floor={W,H,grid,rooms};
+  S.at=rooms[0];
+  $("dseed").textContent="SEED "+seed.toString(16).toUpperCase();
+}
+
+function paintDungeon(){
+  if(!S.floor) carveFloor();
+  const {W,H,grid,rooms}=S.floor;
+  const c=$("dmap"), ctx=c.getContext("2d");
+  const tw=c.width/W, th=c.height/H;
+  ctx.fillStyle="#05070c"; ctx.fillRect(0,0,c.width,c.height);
+  for(let y=0;y<H;y++) for(let x=0;x<W;x++){
+    if(!grid[y][x]) continue;
+    ctx.fillStyle="#1a2838";
+    ctx.fillRect(x*tw,y*th,tw,th);
+  }
+  rooms.forEach(rm=>{
+    const p=rm.who;
+    const dead=p&&p.sealed;
+    ctx.fillStyle=rm.kind==="foyer"?"#3a2a10": dead?"#2a1014":"#163044";
+    ctx.fillRect(rm.x*tw, rm.y*th, rm.w*tw, rm.h*th);
+    ctx.strokeStyle=rm===S.at?"#e8c36a": dead?"#ff3b4e88":"#5ab4ff66";
+    ctx.strokeRect(rm.x*tw+0.5, rm.y*th+0.5, rm.w*tw-1, rm.h*th-1);
+    ctx.fillStyle=dead?"#ff8a96":"#d7e8ff";
+    ctx.font=Math.max(7,th*1.1)+"px monospace";
+    const lab=rm.kind==="foyer"?"FOYER":(p?(dead?"X":p.type):"");
+    ctx.fillText(lab, rm.x*tw+3, rm.y*th+th*1.6);
+  });
+  if(S.at){
+    ctx.fillStyle="#fff";
+    ctx.fillRect(S.at.cx*tw+tw*0.25, S.at.cy*th+th*0.25, tw*0.5, th*0.5);
+  }
+  const p=S.at&&S.at.who;
+  $("dinfo").textContent=S.at.kind==="foyer"
+    ? "Foyer. Halls run to every cell. Tap a type-tag to walk."
+    : p
+      ? (p.sealed? p.name+" · SEALED. No return."
+        : p.name+" · "+p.unit+" · "+p.type+" · "+p.persona+" · life "+Math.round(p.life)+"%")
+      : "Empty cell.";
+}
+
+$("dmap").onclick=e=>{
+  if(!S.floor) return;
+  const r=e.target.getBoundingClientRect();
+  const x=Math.floor((e.clientX-r.left)/r.width*S.floor.W);
+  const y=Math.floor((e.clientY-r.top)/r.height*S.floor.H);
+  const hit=S.floor.rooms.find(rm=>x>=rm.x&&x<rm.x+rm.w&&y>=rm.y&&y<rm.y+rm.h);
+  if(!hit) return;
+  S.at=hit;
+  paintDungeon();
+  if(hit.who && !hit.who.sealed){
+    S.sel=hit.who; S.incoming=[];
+    toast("Entered "+hit.who.name.split(" ")[0]);
+  } else if(hit.who && hit.who.sealed) toast("Sealed");
+};
+
+$("dgen").onclick=()=>{ carveFloor(); paintDungeon(); toast("New floor"); };
+
 hud();
-$("enter").onclick=()=>{ pulse(); feed(); go("session"); };
+$("enter").onclick=()=>{ pulse(); feed(); carveFloor(); go("dungeon"); };
 $("nshift").onclick=()=>{ S.P=roster(); S.sel=null; S.trauma=0; S.stab=100; feed(); go("session"); };
 $("feed-sit").onclick=()=>{ S.sel=null; if(feed()) go("session"); };
 $("bio-form").onsubmit=e=>{ e.preventDefault(); if($("bdate").value) mapBio($("bdate").value); };
