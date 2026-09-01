@@ -3,982 +3,536 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD — Aether Protocol</title>
+  <title>THANATOS WARD</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <style>
-    /* =====================================================================
-       THANATOS WARD — PSYCHE TRIAGE RPG
-       Layout spec
-       ---------------------------------------------------------------------
-       Persistent HUD
-         TOP-LEFT   Trauma Influx (RED = incoming psychic trauma)
-                    Stabilizers   (CYAN = clinician capacity)
-         TOP-RIGHT  Ward radar / incoming-card ping
-         BOTTOM     Context rack: screen jump + session tools
-
-       Screens
-         BOOT     title
-         WARD     four patients, life draining
-         DOSSIER  Jung type + Shadow + Freudian structure
-         ATLAS    all eight Jung types + Freud map
-         SESSION  incoming TRAUMA CARDS (red text) vs TREATMENT CARDS
-
-       Red is never “HP.” Red is trauma arriving.
-       Life is a separate pale meter — fictional will-to-live.
-       Goal: do not let the patient collapse.
-       ===================================================================== */
-
     :root {
-      --bg-panel: rgba(14, 16, 22, 0.78);
-      --bg-panel-hot: rgba(18, 24, 36, 0.92);
-      --border: rgba(90, 180, 255, 0.38);
-      --border-hot: rgba(140, 210, 255, 0.85);
-      --glow: 0 0 14px rgba(70, 160, 255, 0.28), inset 0 0 18px rgba(40, 120, 220, 0.08);
-      --glow-hot: 0 0 22px rgba(90, 190, 255, 0.55), inset 0 0 22px rgba(60, 160, 255, 0.16);
+      --panel: rgba(14,16,22,.82);
+      --border: rgba(90,180,255,.38);
+      --hot: rgba(140,210,255,.85);
       --trauma: #ff3b4e;
-      --trauma-dim: #4a1018;
       --stab: #2ee6ff;
       --life: #e8d5a3;
       --text: #d7e8ff;
       --muted: #7a93b0;
-      --accent: #5ab4ff;
-      --shadow-c: #9b7dff;
+      --mx: #2ee67a;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: #05070c; color: var(--text); font-family: "Orbitron", sans-serif; user-select: none; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #05070c; color: var(--text); font-family: Orbitron, sans-serif; user-select: none; }
     button { font-family: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-    button:disabled { opacity: 0.35; cursor: default; }
+    button:disabled { opacity: .35; cursor: default; }
 
-    .world { position: fixed; inset: 0; z-index: 0; background:
-      radial-gradient(ellipse at 28% 18%, rgba(60, 20, 30, 0.28), transparent 50%),
-      radial-gradient(ellipse at 80% 70%, rgba(20, 40, 80, 0.3), transparent 45%),
-      #05070c; }
-    .world::before { content: ""; position: absolute; inset: 0; opacity: 0.5; background-image:
-      radial-gradient(1px 1px at 12% 18%, #fff, transparent),
-      radial-gradient(1px 1px at 28% 62%, #9cf, transparent),
-      radial-gradient(1.5px 1.5px at 44% 22%, #fff, transparent),
-      radial-gradient(1px 1px at 61% 81%, #cdf, transparent),
-      radial-gradient(1px 1px at 73% 14%, #fff, transparent),
-      radial-gradient(1.5px 1.5px at 88% 48%, #9cf, transparent),
-      radial-gradient(1px 1px at 8% 88%, #fff, transparent),
-      radial-gradient(1px 1px at 51% 51%, #fff, transparent); }
-    .scanlines { pointer-events: none; position: fixed; inset: 0; z-index: 50; background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(0,0,0,0.07) 3px); }
+    .world { position: fixed; inset: 0; background:
+      radial-gradient(ellipse at 28% 18%, rgba(60,20,30,.28), transparent 50%),
+      radial-gradient(ellipse at 80% 70%, rgba(20,40,80,.28), transparent 45%), #05070c; }
+    .scan { pointer-events: none; position: fixed; inset: 0; z-index: 40; background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(0,0,0,.07) 3px); }
 
-    .panel { background: var(--bg-panel); border: 1px solid var(--border); box-shadow: var(--glow); backdrop-filter: blur(10px); transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease, transform 180ms ease; }
-    .panel:hover, .panel:focus-within { background: var(--bg-panel-hot); border-color: var(--border-hot); box-shadow: var(--glow-hot); }
-    .cut { clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px)); }
+    .panel { background: var(--panel); border: 1px solid var(--border); box-shadow: 0 0 14px rgba(70,160,255,.22); backdrop-filter: blur(10px); transition: 160ms ease; }
+    .panel:hover, .panel:focus-within { border-color: var(--hot); }
 
-    /* HUD */
-    .hud-vitals { position: fixed; top: 18px; left: 18px; z-index: 30; width: 340px; padding: 12px 14px 14px; outline: none; }
-    .hud-head { display: flex; justify-content: space-between; font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; margin-bottom: 8px; }
-    .hud-head .id { font-family: "Share Tech Mono", monospace; color: var(--muted); letter-spacing: 0.06em; }
-    .callsign { color: var(--accent); }
-    .bar-row { margin-top: 8px; }
-    .bar-meta { display: flex; justify-content: space-between; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 4px; color: var(--muted); }
-    .bar-meta .val { font-family: "Share Tech Mono", monospace; color: var(--text); letter-spacing: 0.04em; }
-    .track { height: 9px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.08); overflow: hidden; position: relative; }
-    .track::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 6px, rgba(0,0,0,0.28) 6px 7px); pointer-events: none; }
-    .fill { height: 100%; width: 0; transition: width 350ms ease; }
-    .fill.trauma { background: linear-gradient(90deg, #6a1018, var(--trauma)); box-shadow: 0 0 10px rgba(255,59,78,0.7); }
-    .fill.stab { background: linear-gradient(90deg, #0a5a6e, var(--stab)); box-shadow: 0 0 10px rgba(46,230,255,0.5); }
-    .hud-vitals:hover .fill.trauma { box-shadow: 0 0 16px rgba(255,59,78,1); }
-    .hud-vitals.warn { border-color: rgba(255,59,78,0.7); box-shadow: 0 0 22px rgba(255,59,78,0.35); animation: pulse-red 1.2s ease-in-out infinite; }
-    @keyframes pulse-red { 50% { box-shadow: 0 0 28px rgba(255,59,78,0.6); } }
+    .hud { position: fixed; top: 14px; left: 14px; z-index: 30; width: 260px; padding: 10px 12px; }
+    .hud-h { display: flex; justify-content: space-between; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 6px; color: #5ab4ff; }
+    .hud-h b { font-weight: 400; color: var(--muted); font-family: "Share Tech Mono", monospace; }
+    .meta { display: flex; justify-content: space-between; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 6px 0 3px; }
+    .val { font-family: "Share Tech Mono", monospace; color: var(--text); }
+    .track { height: 8px; background: #0007; border: 1px solid #fff1; overflow: hidden; }
+    .fill { height: 100%; width: 0; transition: width .3s; }
+    .fill.t { background: linear-gradient(90deg, #6a1018, var(--trauma)); box-shadow: 0 0 8px #ff3b4e99; }
+    .fill.s { background: linear-gradient(90deg, #0a5a6e, var(--stab)); }
+    .fill.l { background: linear-gradient(90deg, #6a5420, var(--life)); }
+    .hud.warn { border-color: #ff3b4e99; animation: pr 1.2s ease-in-out infinite; }
+    @keyframes pr { 50% { box-shadow: 0 0 22px #ff3b4e88; } }
 
-    .minimap-wrap { position: fixed; top: 18px; right: 18px; z-index: 30; width: 156px; height: 156px; padding: 7px; border-radius: 50%; outline: none; }
-    .minimap { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; position: relative; border: 1px solid var(--border); background: radial-gradient(circle, rgba(20,40,60,0.4), rgba(4,8,14,0.92)), repeating-radial-gradient(circle at 50% 50%, transparent 0 16px, rgba(90,180,255,0.07) 16px 17px); transition: transform 180ms ease, border-color 180ms, box-shadow 180ms; }
-    .minimap-wrap:hover .minimap, .minimap-wrap:focus-within .minimap { transform: scale(1.05); border-color: var(--border-hot); box-shadow: 0 0 22px rgba(90,190,255,0.55); }
-    .sweep { position: absolute; inset: 0; background: conic-gradient(from 0deg, transparent 0deg, rgba(255,80,90,0.28) 40deg, transparent 70deg); animation: spin 4s linear infinite; }
+    .radar { position: fixed; top: 14px; right: 14px; z-index: 30; width: 120px; height: 120px; padding: 6px; border-radius: 50%; }
+    .radar .disk { width: 100%; height: 100%; border-radius: 50%; border: 1px solid var(--border); position: relative; overflow: hidden; background: radial-gradient(circle, #14283c66, #04080e); }
+    .sweep { position: absolute; inset: 0; background: conic-gradient(from 0deg, transparent, #ff506644 40deg, transparent 70deg); animation: spin 4s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .blip { position: absolute; width: 6px; height: 6px; border-radius: 50%; }
-    .blip.you { left: 50%; top: 50%; transform: translate(-50%,-50%); background: #fff; box-shadow: 0 0 8px #fff; }
-    .blip.p { background: var(--stab); box-shadow: 0 0 8px var(--stab); }
-    .blip.t { background: var(--trauma); box-shadow: 0 0 8px var(--trauma); animation: blink 1s infinite; }
-    @keyframes blink { 50% { opacity: 0.25; } }
-    .map-label { position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); font-size: 8px; letter-spacing: 0.26em; color: var(--accent); text-transform: uppercase; }
+    .blip { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: var(--stab); box-shadow: 0 0 6px var(--stab); }
+    .blip.you { left: 50%; top: 50%; transform: translate(-50%,-50%); background: #fff; }
+    .blip.dead { background: var(--trauma); box-shadow: 0 0 6px var(--trauma); }
 
-    .dock { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); z-index: 30; display: flex; gap: 7px; padding: 0; background: transparent; border: 0; box-shadow: none; backdrop-filter: none; }
-    .dock:hover { transform: translateX(-50%); }
-    .slot { width: 58px; min-width: 58px; height: 82px; padding: 8px 4px 6px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 2px; background: linear-gradient(180deg, rgba(18,24,34,0.92), rgba(8,10,16,0.92)); border: 1px solid rgba(90,180,255,0.34); color: var(--muted); font-size: 7px; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 5px 5px 7px 7px; box-shadow: 0 4px 0 rgba(0,0,0,0.35), 0 0 10px rgba(70,160,255,0.12); transition: 160ms ease; position: relative; }
-    .slot::before { content: ""; position: absolute; top: 5px; right: 6px; width: 6px; height: 6px; border: 1px solid rgba(90,180,255,0.35); border-radius: 1px; }
-    .slot:hover, .slot:focus, .slot.active { color: #fff; border-color: var(--border-hot); background: linear-gradient(180deg, rgba(28,44,68,0.95), rgba(12,18,30,0.95)); box-shadow: 0 6px 0 rgba(0,0,0,0.3), 0 0 16px rgba(90,190,255,0.4); transform: translateY(-6px); outline: none; }
-    .slot .g { font-size: 18px; margin-top: 10px; }
-    .slot .k { font-family: "Share Tech Mono", monospace; font-size: 8px; opacity: 0.7; }
+    .dock { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: 30; display: flex; gap: 6px; }
+    .slot { width: 54px; height: 76px; padding: 8px 4px 6px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; background: linear-gradient(#121822,#080a10); border: 1px solid #5ab4ff55; color: var(--muted); font-size: 7px; letter-spacing: .12em; text-transform: uppercase; border-radius: 5px 5px 7px 7px; }
+    .slot .g { font-size: 16px; margin-top: 8px; }
+    .slot:hover, .slot.active { color: #fff; border-color: var(--hot); transform: translateY(-5px); }
 
-    /* screens */
-    .screen { position: fixed; inset: 0; z-index: 10; display: none; padding: 92px 24px 110px; overflow: auto; }
+    .screen { position: fixed; inset: 0; z-index: 10; display: none; padding: 88px 16px 104px; overflow: auto; }
     .screen.on { display: block; }
-    .screen-inner { max-width: 1180px; margin: 0 auto; }
+    .inner { max-width: 640px; margin: 0 auto; }
 
-    h1 { font-size: 28px; letter-spacing: 0.22em; font-weight: 700; }
-    h2 { font-size: 13px; letter-spacing: 0.28em; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; }
-    .sub { font-family: "Share Tech Mono", monospace; color: var(--muted); font-size: 13px; margin-top: 8px; line-height: 1.5; }
+    #screen-boot { text-align: center; padding-top: 22vh; }
+    .logo { font-size: clamp(22px, 6vw, 36px); letter-spacing: .24em; }
+    .logo em { font-style: normal; color: var(--trauma); }
+    .cta { margin-top: 28px; padding: 12px 22px; border: 1px solid var(--border); letter-spacing: .2em; text-transform: uppercase; font-size: 11px; }
 
-    /* BOOT */
-    #screen-boot { display: none; text-align: center; padding-top: 18vh; }
-    #screen-boot.on { display: block; }
-    .logo { font-size: clamp(22px, 4vw, 42px); letter-spacing: 0.28em; }
-    .logo em { font-style: normal; color: var(--trauma); text-shadow: 0 0 18px rgba(255,59,78,0.55); }
-    .cta { margin-top: 36px; display: inline-block; padding: 14px 28px; border: 1px solid var(--border); letter-spacing: 0.24em; text-transform: uppercase; font-size: 12px; }
-    .cta:hover { border-color: var(--border-hot); box-shadow: var(--glow-hot); color: #fff; }
-
-    /* WARD grid — compact patient cards */
-    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-    @media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 860px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-    .bed { text-align: left; padding: 10px; cursor: pointer; width: 100%; border-radius: 6px; min-height: 148px; }
-    .bed:hover { transform: translateY(-3px) rotate(-0.2deg); }
+    .bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .pip { padding: 6px 8px; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    @media (min-width: 720px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+    .bed { padding: 8px; text-align: left; border-radius: 6px; }
+    .bed.sealed { filter: grayscale(.8); opacity: .6; border-color: #ff3b4e55; }
+    .bed.flash { border-color: var(--trauma); box-shadow: 0 0 14px #ff3b4e66; }
     .bed-top { display: flex; gap: 8px; align-items: center; }
-    .avatar { width: 42px; height: 56px; flex-shrink: 0; position: relative; border: 1px solid var(--border); border-radius: 4px 4px 5px 5px; overflow: hidden; }
-    .avatar .face { position: absolute; inset: 0; }
-    .meta h3 { font-size: 11px; letter-spacing: 0.1em; }
-    .meta p { font-family: "Share Tech Mono", monospace; font-size: 10px; color: var(--muted); margin-top: 2px; }
-    .life-row { margin-top: 8px; }
-    .census { display: flex; gap: 8px; align-items: center; margin: 6px 0 14px; }
-    .census .pip { padding: 6px 10px; border-radius: 5px; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; }
-    .life-fill { height: 100%; background: linear-gradient(90deg, #6a5420, var(--life)); box-shadow: 0 0 8px rgba(232,213,163,0.4); }
-    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-    .tag { font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 6px; border: 1px solid rgba(90,180,255,0.25); color: var(--muted); }
-    .tag.red { border-color: rgba(255,59,78,0.45); color: #ff8a96; }
-    .tag.vio { border-color: rgba(155,125,255,0.45); color: #c8b6ff; }
-    .crit { color: var(--trauma); animation: blink 1s infinite; }
+    .av { width: 36px; height: 48px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; flex-shrink: 0; }
+    .av svg { width: 100%; height: 100%; display: block; }
+    .nm { font-size: 10px; letter-spacing: .08em; }
+    .nm p { font-family: "Share Tech Mono", monospace; font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .crit { color: var(--trauma); }
+    .acts { display: flex; gap: 4px; margin-top: 8px; }
+    .mini { flex: 1; padding: 6px 2px; font-size: 8px; letter-spacing: .1em; text-transform: uppercase; border: 1px solid #5ab4ff44; color: var(--muted); border-radius: 4px; }
+    .mini:hover { color: #fff; border-color: var(--hot); }
+    .mini.danger { border-color: #ff3b4e66; color: #ff8a96; }
 
-    /* DOSSIER */
-    .dossier { display: grid; grid-template-columns: 280px 1fr; gap: 18px; }
-    @media (max-width: 900px) { .dossier { grid-template-columns: 1fr; } }
-    .portrait-card { padding: 16px; }
-    .big-av { width: 100%; height: 220px; margin-bottom: 12px; border: 1px solid var(--border); position: relative; overflow: hidden; }
-    .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
-    .tab { padding: 8px 8px 6px; width: 72px; height: 52px; border: 1px solid rgba(90,180,255,0.3); font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); border-radius: 4px 4px 6px 6px; background: rgba(8,10,16,0.55); display: flex; align-items: flex-end; justify-content: center; }
-    .tab:hover, .tab.on { color: #fff; border-color: var(--border-hot); box-shadow: 0 0 12px rgba(90,180,255,0.3); }
-    .pane { display: none; padding: 16px; }
-    .pane.on { display: block; }
-    .stat { margin: 10px 0; }
-    .stat label { display: flex; justify-content: space-between; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-    .prose { font-family: "Share Tech Mono", monospace; font-size: 13px; line-height: 1.65; color: #c5d6ec; }
-    .prose strong { color: #fff; font-weight: 400; }
-    .trio { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 12px 0; }
-    .trio .cell { padding: 10px; text-align: center; border: 1px solid rgba(90,180,255,0.2); }
-    .trio .n { font-size: 20px; font-family: "Share Tech Mono", monospace; }
-    .trio .l { font-size: 8px; letter-spacing: 0.16em; color: var(--muted); margin-top: 4px; text-transform: uppercase; }
-    .shadow-box { margin-top: 12px; padding: 12px; border: 1px solid rgba(155,125,255,0.35); background: rgba(40, 20, 70, 0.25); }
-    .shadow-box h3 { color: var(--shadow-c); font-size: 11px; letter-spacing: 0.2em; margin-bottom: 8px; }
+    .mxbox { position: relative; min-height: 440px; border: 1px solid #2ee67a44; background: #020604; overflow: hidden; }
+    #matrix { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .decrypt { position: relative; z-index: 2; min-height: 440px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .line { font-family: "Share Tech Mono", monospace; font-size: 13px; color: #9fffc8; text-shadow: 0 0 8px #50ffa066; min-height: 1.3em; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+    .chip { padding: 8px 10px; border: 1px solid #50ffa059; color: #9fffc8; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; background: #00140888; }
+    .chip:hover, .chip.on { color: #fff; box-shadow: 0 0 10px #50ffa055; }
 
-    /* ATLAS */
-    .types { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-    @media (max-width: 980px) { .types { grid-template-columns: repeat(2, 1fr); } }
-    .type-card { padding: 10px; text-align: left; min-height: 128px; border-radius: 6px; }
-    .type-card h3 { font-size: 11px; letter-spacing: 0.12em; margin-bottom: 6px; }
-    .type-card p { font-family: "Share Tech Mono", monospace; font-size: 11px; color: var(--muted); line-height: 1.45; }
-    .type-card .fn { color: var(--accent); font-size: 9px; letter-spacing: 0.14em; margin-bottom: 6px; }
+    .incoming { display: flex; justify-content: center; gap: 8px; min-height: 150px; margin: 8px 0; }
+    .card { position: relative; padding: 8px; text-align: left; border-radius: 4px 4px 8px 8px; }
+    .card.trauma { width: 118px; height: 150px; border: 1px solid #ff3b4e88; background: linear-gradient(#380a0ed9, #100408); box-shadow: 0 5px 0 #40000066; }
+    .card.trauma.live { outline: 1px solid #ffd18a; transform: translateY(-4px); }
+    .card .k { font-size: 7px; letter-spacing: .16em; text-transform: uppercase; color: var(--trauma); margin-bottom: 4px; }
+    .card .b { font-family: "Share Tech Mono", monospace; font-size: 10px; line-height: 1.35; }
+    .amp { position: absolute; top: 6px; right: 6px; color: var(--trauma); font-size: 8px; }
+    .jack { display: flex; justify-content: center; align-items: flex-end; height: 180px; }
+    .card.treat { width: 92px; height: 164px; margin: 0 -8px; border: 1px solid #2ee6ff66; background: linear-gradient(#122834, #060a10); box-shadow: 0 8px 0 #0007; padding: 10px 7px; transform-origin: bottom center; }
+    .card.treat:nth-child(1) { transform: rotate(-12deg) translateY(12px); }
+    .card.treat:nth-child(2) { transform: rotate(-6deg) translateY(5px); }
+    .card.treat:nth-child(3) { transform: rotate(0); z-index: 5; }
+    .card.treat:nth-child(4) { transform: rotate(6deg) translateY(5px); }
+    .card.treat:nth-child(5) { transform: rotate(12deg) translateY(12px); }
+    .card.treat:hover { transform: translateY(-14px) rotate(0) scale(1.05); z-index: 8; border-color: #ffe08a; }
+    .card.treat .k { color: var(--stab); }
+    .card.treat strong { display: block; font-size: 9px; margin-bottom: 4px; color: #fff; }
+    .log { max-height: 72px; overflow: auto; padding: 8px; font-family: "Share Tech Mono", monospace; font-size: 11px; color: #b7c8dc; margin-top: 8px; }
+    .log .bad { color: #ff8a96; } .log .good { color: #8af0ff; }
 
-    /* SESSION — narrow jackpot pit */
-    #screen-session .screen-inner { max-width: 640px; }
-    .session-layout { display: flex; flex-direction: column; gap: 10px; }
-    .table { position: relative; padding: 12px; overflow: hidden; }
-    .scene {
-      padding: 12px 14px 14px;
-      border: 1px solid rgba(232,213,163,0.35);
-      background:
-        radial-gradient(ellipse at 50% 0%, rgba(255,180,80,0.08), transparent 55%),
-        rgba(12,10,8,0.7);
-      box-shadow: 0 0 22px rgba(232,180,80,0.12), inset 0 0 18px rgba(0,0,0,0.35);
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
-    .scene .scene-tag { font-size: 8px; letter-spacing: 0.28em; color: var(--life); text-transform: uppercase; margin-bottom: 6px; }
-    .scene h3 { font-size: 13px; letter-spacing: 0.12em; margin-bottom: 8px; }
-    .scene .q { font-family: "Share Tech Mono", monospace; font-size: 13px; line-height: 1.5; color: #f0e6c8; }
-    .scene .hint-q { margin-top: 8px; font-size: 10px; color: var(--muted); letter-spacing: 0.08em; }
-    .incoming { display: flex; justify-content: center; gap: 8px; flex-wrap: nowrap; overflow-x: auto; padding: 4px 0 8px; }
-    .card { padding: 8px; text-align: left; position: relative; border-radius: 4px 4px 8px 8px; }
-    .card.trauma { width: 118px; min-width: 118px; height: 154px; border-color: rgba(255,59,78,0.55); box-shadow: 0 5px 0 rgba(40,0,0,0.4), 0 0 10px rgba(255,59,78,0.18); background: linear-gradient(180deg, rgba(56,10,14,0.85), rgba(16,4,8,0.92)); }
-    .card.trauma:hover { border-color: #ff6a78; transform: translateY(-4px); }
-    .card.trauma.active { outline: 1px solid #ffd18a; transform: translateY(-6px); }
-    .card .amp { position: absolute; top: 6px; right: 6px; color: var(--trauma); font-size: 8px; letter-spacing: 1px; }
-    .card .kind { font-size: 7px; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 5px; }
-    .card.trauma .kind { color: var(--trauma); }
-    .card .body { font-family: "Share Tech Mono", monospace; font-size: 10px; line-height: 1.35; }
-    .card .marks { margin-top: 6px; display: flex; gap: 3px; flex-wrap: wrap; }
-    .jackpot {
-      display: flex; justify-content: center; align-items: flex-end;
-      gap: 0; height: 188px; margin-top: 4px; padding: 0 8px 8px;
-    }
-    .card.treat {
-      flex: 0 0 92px; width: 92px; min-width: 92px; height: 168px;
-      margin: 0 -10px;
-      border-color: rgba(46,230,255,0.4);
-      background:
-        linear-gradient(180deg, rgba(18,40,52,0.95) 0%, rgba(6,10,16,0.96) 100%);
-      box-shadow: 0 8px 0 rgba(0,0,0,0.45), 0 0 12px rgba(46,230,255,0.12);
-      transform-origin: bottom center;
-      padding: 10px 7px 8px;
-    }
-    .card.treat:nth-child(1) { transform: rotate(-12deg) translateY(14px); z-index: 1; }
-    .card.treat:nth-child(2) { transform: rotate(-6deg) translateY(6px); z-index: 2; }
-    .card.treat:nth-child(3) { transform: rotate(0deg) translateY(0); z-index: 5; }
-    .card.treat:nth-child(4) { transform: rotate(6deg) translateY(6px); z-index: 2; }
-    .card.treat:nth-child(5) { transform: rotate(12deg) translateY(14px); z-index: 1; }
-    .card.treat.heal { border-color: rgba(232,213,163,0.55); }
-    .card.treat.heal .kind { color: var(--life); }
-    .card.treat:hover, .card.treat:focus {
-      border-color: #ffe08a;
-      box-shadow: 0 10px 0 rgba(0,0,0,0.4), 0 0 20px rgba(255,210,120,0.35);
-      transform: translateY(-16px) rotate(0deg) scale(1.06);
-      z-index: 9;
-      outline: none;
-    }
-    .card.treat .kind { color: var(--stab); }
-    .card.treat .pip { position: absolute; top: 6px; right: 6px; font-size: 11px; color: #ffe08a; }
-    .card.treat .body strong { display: block; font-size: 9px; letter-spacing: 0.06em; margin-bottom: 4px; color: #fff; }
-    .log { padding: 8px 10px; max-height: 88px; overflow: auto; font-family: "Share Tech Mono", monospace; font-size: 11px; line-height: 1.45; color: #b7c8dc; }
-    .log p { margin-bottom: 6px; }
-    .log .bad { color: #ff8a96; }
-    .log .good { color: #8af0ff; }
-    .log .shadow { color: #c8b6ff; }
-    .jack-label { text-align: center; font-size: 8px; letter-spacing: 0.32em; color: var(--life); text-transform: uppercase; margin-top: 2px; }
-
-    .toast { position: fixed; top: 88px; left: 50%; transform: translateX(-50%); z-index: 40; padding: 10px 16px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; pointer-events: none; opacity: 0; transition: opacity 200ms; }
+    .toast { position: fixed; top: 78px; left: 50%; transform: translateX(-50%); z-index: 50; padding: 8px 12px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; opacity: 0; transition: .2s; pointer-events: none; }
     .toast.show { opacity: 1; }
 
-    .hint { position: fixed; bottom: 6px; right: 14px; font-family: "Share Tech Mono", monospace; font-size: 10px; color: rgba(122,147,176,0.5); z-index: 30; }
-    .tick { position: fixed; z-index: 15; width: 22px; height: 22px; border-color: rgba(90,180,255,0.3); border-style: solid; pointer-events: none; }
-    .tick.tl { top: 8px; left: 8px; border-width: 1px 0 0 1px; }
-    .tick.tr { top: 8px; right: 8px; border-width: 1px 1px 0 0; }
-    .tick.bl { bottom: 8px; left: 8px; border-width: 0 0 1px 1px; }
-    .tick.br { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+    .types { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .tc { padding: 10px; }
+    .tc h3 { font-size: 11px; margin-bottom: 4px; }
+    .tc p { font-family: "Share Tech Mono", monospace; font-size: 11px; color: var(--muted); line-height: 1.4; }
   </style>
 </head>
 <body>
   <div class="world"></div>
-  <div class="scanlines"></div>
-  <div class="tick tl"></div><div class="tick tr"></div><div class="tick bl"></div><div class="tick br"></div>
+  <div class="scan"></div>
 
-  <!-- HUD -->
-  <section class="panel hud-vitals cut" id="hud" tabindex="0" aria-label="Clinician vitals. Red bar is incoming trauma.">
-    <div class="hud-head">
-      <span class="callsign">Clinician // You</span>
-      <span class="id">WARD-θ</span>
-    </div>
-    <div class="bar-row">
-      <div class="bar-meta"><span>Incoming Trauma</span><span class="val" id="trauma-readout">00%</span></div>
-      <div class="track" role="progressbar" aria-label="Incoming trauma"><div class="fill trauma" id="trauma-fill"></div></div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-meta"><span>Stabilizers</span><span class="val" id="stab-readout">100%</span></div>
-      <div class="track" role="progressbar" aria-label="Stabilizers"><div class="fill stab" id="stab-fill"></div></div>
-    </div>
+  <section class="panel hud" id="hud">
+    <div class="hud-h">Clinician <b>WARD-θ</b></div>
+    <div class="meta"><span>Trauma</span><span class="val" id="tr">00%</span></div>
+    <div class="track"><div class="fill t" id="tf"></div></div>
+    <div class="meta"><span>Stabilizers</span><span class="val" id="sr">100%</span></div>
+    <div class="track"><div class="fill s" id="sf"></div></div>
   </section>
 
-  <section class="panel minimap-wrap" tabindex="0" aria-label="Ward radar">
-    <div class="minimap">
+  <section class="panel radar">
+    <div class="disk" id="disk">
       <div class="sweep"></div>
       <span class="blip you"></span>
-      <span class="blip p" style="left:30%;top:40%"></span>
-      <span class="blip p" style="left:68%;top:32%"></span>
-      <span class="blip p" style="left:26%;top:70%"></span>
-      <span class="blip p" style="left:58%;top:58%"></span>
-      <span class="blip p" style="left:42%;top:22%"></span>
-      <span class="blip p" style="left:78%;top:44%"></span>
-      <span class="blip p" style="left:18%;top:52%"></span>
-      <span class="blip t" id="ping" style="left:72%;top:64%; display:none"></span>
     </div>
-    <div class="map-label">Ward θ</div>
   </section>
 
-  <nav class="dock" aria-label="Screens">
-    <button class="slot" data-go="ward"><span class="g">▣</span><span>Ward</span><span class="k">1</span></button>
-    <button class="slot" data-go="dossier" id="btn-dossier" disabled><span class="g">◎</span><span>Psyche</span><span class="k">2</span></button>
-    <button class="slot" data-go="atlas"><span class="g">▦</span><span>Atlas</span><span class="k">3</span></button>
-    <button class="slot" data-go="session" id="btn-session" disabled><span class="g">⌬</span><span>Session</span><span class="k">4</span></button>
+  <nav class="dock">
+    <button class="slot" data-go="ward"><span class="g">▣</span>Ward</button>
+    <button class="slot" data-go="dossier" id="bd" disabled><span class="g">◎</span>Psyche</button>
+    <button class="slot" data-go="atlas"><span class="g">▦</span>Atlas</button>
+    <button class="slot" data-go="session" id="bs" disabled><span class="g">⌬</span>Sit</button>
   </nav>
 
   <div class="toast panel" id="toast"></div>
 
-  <!-- BOOT -->
   <section class="screen on" id="screen-boot">
-    <div class="screen-inner">
+    <div class="inner">
       <div class="logo">THANATOS <em>WARD</em></div>
-      <p class="sub">AETHER PROTOCOL  //  PSYCHE TRIAGE<br />Eight patients online. Red is incoming trauma.<br />Heal cards always work. Sessions run long.<br />Do not let fictional life hit zero.</p>
-      <button class="cta panel cut" id="enter">Enter Ward</button>
+      <button class="cta panel" id="enter">Enter</button>
     </div>
   </section>
 
-  <!-- WARD -->
   <section class="screen" id="screen-ward">
-    <div class="screen-inner">
-      <h2>Open beds</h2>
-      <h1>TRIAGE FLOOR</h1>
-      <div class="census">
-        <span class="pip panel" id="online-count">0 ONLINE</span>
-        <span class="pip panel">ROTATE CARE · LIFE DRAINS SLOW</span>
+    <div class="inner">
+      <div class="bar">
+        <span class="pip panel" id="onl">0 ONLINE</span>
+        <span class="pip panel" id="sel">0 SEALED</span>
+        <span class="pip panel" id="att">—</span>
+        <button class="pip panel mini" id="nshift" style="display:none">New shift</button>
       </div>
-      <p class="sub" style="margin-bottom:12px">Smaller file-cards. Pick anyone still online. Fictional life — do not let it hit zero.</p>
       <div class="grid" id="beds"></div>
     </div>
   </section>
 
-  <!-- DOSSIER -->
   <section class="screen" id="screen-dossier">
-    <div class="screen-inner" id="dossier-root"></div>
+    <div class="inner" id="psy"></div>
   </section>
 
-  <!-- ATLAS -->
   <section class="screen" id="screen-atlas">
-    <div class="screen-inner">
-      <h2>Codex</h2>
-      <h1>PERSONALITY ATLAS</h1>
-      <p class="sub" style="margin:8px 0 18px">Jung’s eight types, the Shadow they refuse, and the Freudian machinery underneath. Treatment cards work when they touch the right layer.</p>
-      <h2>Jung — eight psychological types</h2>
-      <div class="types" id="jung-types"></div>
-      <div style="height:18px"></div>
-      <h2>Freud — structural &amp; developmental map</h2>
-      <div class="grid" id="freud-map"></div>
+    <div class="inner">
+      <div class="types" id="atlas"></div>
     </div>
   </section>
 
-  <!-- SESSION -->
   <section class="screen" id="screen-session">
-    <div class="screen-inner">
-      <h2 id="sess-label">Session</h2>
-      <div class="session-layout">
-        <div class="panel table cut">
-          <div class="bar-meta" style="margin-bottom:6px">
-            <span>Patient life</span><span class="val" id="sess-life">—</span>
-          </div>
-          <div class="track" style="margin-bottom:10px"><div class="fill life-fill" id="sess-life-fill"></div></div>
-          <div class="scene" id="scene">
-            <div class="scene-tag" id="scene-tag">Challenge scene</div>
-            <h3 id="scene-title">—</h3>
-            <p class="q" id="scene-q">Sit the patient. A scene will lock.</p>
-            <p class="hint-q" id="scene-hint"></p>
-          </div>
-          <h2>Trauma reel</h2>
-          <p class="sub" style="margin:0 0 8px;font-size:11px">LIVE card ticks up. Match a tag to peel it. Ignore it and intensity spends life.</p>
-          <div class="incoming" id="incoming"></div>
-        </div>
-        <div class="jack-label">Jackpot hand · pick one</div>
-        <div class="jackpot" id="hand"></div>
-        <aside class="panel log cut" id="log" aria-label="Session log"></aside>
-      </div>
+    <div class="inner">
+      <div class="meta"><span id="sl">Sit</span><span class="val" id="ll">—</span></div>
+      <div class="track"><div class="fill l" id="lf"></div></div>
+      <div class="incoming" id="in"></div>
+      <div class="jack" id="hand"></div>
+      <div class="panel log" id="log"></div>
     </div>
   </section>
 
-  <div class="hint">RED = INCOMING TRAUMA · MATCH CARDS TO TYPE / SHADOW / ID-EGO-SUPEREGO</div>
+<script>
+const JUNG = [
+  { id:"Te", name:"Extraverted Thinking", shadow:"Fi grief", blurb:"Orders the outer measure." },
+  { id:"Ti", name:"Introverted Thinking", shadow:"Fe weather", blurb:"Private architectures." },
+  { id:"Fe", name:"Extraverted Feeling", shadow:"Ti equation", blurb:"Tunes the chorus." },
+  { id:"Fi", name:"Introverted Feeling", shadow:"Te tally", blurb:"Sealed chapel of values." },
+  { id:"Se", name:"Extraverted Sensation", shadow:"Ni omen", blurb:"Lives in the fact of now." },
+  { id:"Si", name:"Introverted Sensation", shadow:"Ne futures", blurb:"Archives exact texture." },
+  { id:"Ne", name:"Extraverted Intuition", shadow:"Si body-memory", blurb:"Forks in public air." },
+  { id:"Ni", name:"Introverted Intuition", shadow:"Se raw now", blurb:"One inner image to the end." }
+];
 
-  <script>
-    /* ---------- Data: Jung types + Freud layers + patients ---------- */
-    const JUNG = [
-      { id: "Te", name: "Extraverted Thinking", fn: "Judging · outer",
-        blurb: "Orders the world by impersonal measure. Trauma lands as systems that will not add up.",
-        shadow: "Introverted Feeling — the unofficial, unofficial grief." },
-      { id: "Ti", name: "Introverted Thinking", fn: "Judging · inner",
-        blurb: "Builds private architectures of logic. Trauma is a contradiction that cannot be housed.",
-        shadow: "Extraverted Feeling — the room’s weather they refuse to feel." },
-      { id: "Fe", name: "Extraverted Feeling", fn: "Judging · outer",
-        blurb: "Tunes the field between people. Trauma is a break in the chorus.",
-        shadow: "Introverted Thinking — the cold equation under the smile." },
-      { id: "Fi", name: "Introverted Feeling", fn: "Judging · inner",
-        blurb: "Keeps a sealed chapel of values. Trauma is a value that betrays itself.",
-        shadow: "Extraverted Thinking — the world’s crude tally." },
-      { id: "Se", name: "Extraverted Sensation", fn: "Perceiving · outer",
-        blurb: "Lives in the fact of now. Trauma is a body event that will not stay past.",
-        shadow: "Introverted Intuition — the omen they will not read." },
-      { id: "Si", name: "Introverted Sensation", fn: "Perceiving · inner",
-        blurb: "Archives the exact texture of what happened. Trauma is a record that rewrites itself.",
-        shadow: "Extraverted Intuition — futures that refuse the archive." },
-      { id: "Ne", name: "Extraverted Intuition", fn: "Perceiving · outer",
-        blurb: "Forks possibilities in public air. Trauma is a fork that only leads back.",
-        shadow: "Introverted Sensation — the unedited body-memory." },
-      { id: "Ni", name: "Introverted Intuition", fn: "Perceiving · inner",
-        blurb: "Follows a single inner image to its end. Trauma is an image that eats the future.",
-        shadow: "Extraverted Sensation — raw fact without myth." }
-    ];
+const TREAT = [
+  { id:"suture", name:"Suture", kind:"Heal", match:[], heal:10, always:true, text:"Mend only." },
+  { id:"integrate", name:"Shadow", kind:"Jung", match:["shadow"], heal:16, text:"Name the refuse." },
+  { id:"interpret", name:"Interpret", kind:"Freud", match:["id","ego","superego"], heal:14, text:"Wish plus law." },
+  { id:"contain", name:"Contain", kind:"Ego", match:["ego","anal"], heal:12, text:"Hold the flood." },
+  { id:"catharsis", name:"Catharsis", kind:"Id", match:["id","oral"], heal:14, text:"Bounded drive." },
+  { id:"persona", name:"Persona", kind:"Jung", match:["persona"], heal:10, text:"Loosen the mask." },
+  { id:"anima", name:"Anima", kind:"Jung", match:["anima"], heal:14, text:"Inner other." },
+  { id:"eros", name:"Eros", kind:"Drive", match:["eros"], heal:16, text:"Re-knit." },
+  { id:"defense", name:"Defense", kind:"Freud", match:["defense","superego"], heal:12, text:"Name the guard." }
+];
 
-    const FREUD = [
-      { t: "Id", d: "Wish, appetite, rage, Eros and Thanatos. Trauma cards tagged ID arrive as impulse without language." },
-      { t: "Ego", d: "The negotiator with reality. Treatment that strengthens Ego buys time; overwhelm shatters it." },
-      { t: "Superego", d: "Inherited law, shame, the watching parent. High Superego patients bleed life from self-sentence." },
-      { t: "Oral", d: "Hunger, fusion, abandonment. Incoming texts about empty rooms, withheld voices." },
-      { t: "Anal", d: "Control, refusal, order. Trauma as mess that cannot be contained — or a lock that will not open." },
-      { t: "Phallic / Oedipal", d: "Rivalry, desire, the forbidden third. Cards about being seen, chosen, replaced." },
-      { t: "Latency", d: "Skill, team, silence of the drives. Collapse looks like competence with no pulse." },
-      { t: "Genital", d: "Adult reciprocity. Trauma here is love that cannot be mutual without annihilation." },
-      { t: "Eros", d: "Binding, making, staying. Playing Eros cards can slow the life drain." },
-      { t: "Thanatos", d: "Unbinding, the pull toward zero. The ward is named for this. Do not feed it by accident." }
-    ];
+const DECK = [
+  { text:"A door that was never opened says your name.", tags:["oral","shadow","id"], who:"elara" },
+  { text:"The future arrives as a smell of metal.", tags:["shadow","persona"], who:"elara" },
+  { text:"The metric was clean. The person was not counted.", tags:["shadow","id"], who:"kael" },
+  { text:"Grief without a ticket number.", tags:["shadow","id"], who:"kael" },
+  { text:"The vote has been called back.", tags:["persona","phallic"], who:"nyx" },
+  { text:"A thought that would end the party grows teeth.", tags:["shadow","superego"], who:"nyx" },
+  { text:"A childhood page is blank and spreading.", tags:["defense","oral"], who:"ion" },
+  { text:"The old house is furnished. No one lives there.", tags:["thanatos"], who:"ion" },
+  { text:"The room wants a mood. You offer a theorem.", tags:["shadow","persona"], who:"riven" },
+  { text:"A feeling will not become a premise.", tags:["id","shadow"], who:"riven" },
+  { text:"They scored you. The number was usable.", tags:["shadow","superego"], who:"mira" },
+  { text:"A vow made alone is being auctioned.", tags:["eros"], who:"mira" },
+  { text:"Nothing is happening. The omen has no fists.", tags:["shadow"], who:"jax" },
+  { text:"Impact without object.", tags:["id","oral"], who:"jax" },
+  { text:"One memory refuses to fork.", tags:["shadow","defense"], who:"sable" },
+  { text:"Every door leads to the same plate.", tags:["anal"], who:"sable" },
+  { text:"The watching parent clears a throat in the ribs.", tags:["superego","defense"], who:null },
+  { text:"Hunger with no object.", tags:["id","oral"], who:null },
+  { text:"A mask smiles. The Self steps back.", tags:["persona"], who:null },
+  { text:"The inner other turns away.", tags:["anima","eros"], who:null }
+];
 
-    const TREATMENTS = [
-      { id: "suture", name: "Life Suture", kind: "Heal", match: [], heal: 10, always: true, text: "Safe mend. Weak vs scene questions." },
-      { id: "hold", name: "Hold Field", kind: "Heal", match: ["ego"], heal: 6, always: true, text: "Buys a breath. Does not answer." },
-      { id: "integrate", name: "Shadow Join", kind: "Jung", match: ["shadow"], heal: 16, text: "Name the refused function." },
-      { id: "interpret", name: "Interpret", kind: "Freud", match: ["id","ego","superego"], heal: 14, text: "Wish plus law." },
-      { id: "contain", name: "Contain", kind: "Ego", match: ["ego","anal"], heal: 12, text: "Hold the flood." },
-      { id: "catharsis", name: "Catharsis", kind: "Id", match: ["id","oral","phallic"], heal: 14, text: "Bounded drive." },
-      { id: "persona", name: "Persona", kind: "Jung", match: ["persona"], heal: 10, text: "Loosen the mask." },
-      { id: "anima", name: "Anima", kind: "Jung", match: ["anima"], heal: 14, text: "Speak to the inner other." },
-      { id: "eros", name: "Eros Bind", kind: "Drive", match: ["eros","genital"], heal: 16, text: "Re-knit a relation." },
-      { id: "defense", name: "Defense", kind: "Freud", match: ["defense","superego"], heal: 12, text: "Name the guard." }
-    ];
+function roster() {
+  return [
+    { id:"elara", name:"ELARA VOSS", unit:"07-A3", type:"Ni", persona:"Quiet Oracle", anima:"Judge in a father’s coat",
+      shadow:"Se — the unendurable now", shadowText:"Present tense as rumor.",
+      freud:{ id:22, ego:48, superego:86, stage:"Oral", defense:"Intellectualization" },
+      life:88, colors:["#1a2a44","#6aa0c8"] },
+    { id:"kael", name:"KAEL RADEK", unit:"11-F2", type:"Te", persona:"Efficient Blade", anima:"Drowned singer",
+      shadow:"Fi — unofficial grief", shadowText:"A value never ratified.",
+      freud:{ id:40, ego:62, superego:55, stage:"Anal", defense:"Isolation" },
+      life:84, colors:["#2a1a14","#c88a4a"] },
+    { id:"nyx", name:"NYX SOLANO", unit:"03-K9", type:"Fe", persona:"Warm Frequency", anima:"Glass thinker",
+      shadow:"Ti — cold equation", shadowText:"A true thought that would empty the room.",
+      freud:{ id:58, ego:40, superego:70, stage:"Oedipal", defense:"Reaction formation" },
+      life:82, colors:["#2a1430","#d080b0"] },
+    { id:"ion", name:"ION MARROW", unit:"19-Θ1", type:"Si", persona:"Archivist", anima:"A mutating file",
+      shadow:"Ne — futures that refuse the archive", shadowText:"Possibility as contamination.",
+      freud:{ id:35, ego:55, superego:50, stage:"Latency", defense:"Repression" },
+      life:90, colors:["#102018","#6cb890"] },
+    { id:"riven", name:"RIVEN QUILL", unit:"22-C4", type:"Ti", persona:"Closed Circuit", anima:"A laughing next room",
+      shadow:"Fe — weather of the room", shadowText:"Mood that will not parse.",
+      freud:{ id:30, ego:70, superego:48, stage:"Latency", defense:"Rationalization" },
+      life:86, colors:["#121826","#7aa0d0"] },
+    { id:"mira", name:"MIRA KEST", unit:"08-L7", type:"Fi", persona:"Private Chapel", anima:"Public clerk",
+      shadow:"Te — crude tally", shadowText:"Being measured cuts deeper than being hurt.",
+      freud:{ id:44, ego:42, superego:72, stage:"Genital", defense:"Against self" },
+      life:80, colors:["#1c1428","#c9a0e0"] },
+    { id:"jax", name:"JAX ORRIN", unit:"14-S0", type:"Se", persona:"Live Wire", anima:"A loud prophet",
+      shadow:"Ni — unread omen", shadowText:"Meaning he cannot punch.",
+      freud:{ id:68, ego:38, superego:28, stage:"Oral", defense:"Acting out" },
+      life:79, colors:["#2a220c","#e0b050"] },
+    { id:"sable", name:"SABLE WREN", unit:"05-N6", type:"Ne", persona:"Forking Mouth", anima:"One unedited memory",
+      shadow:"Si — unedited body-memory", shadowText:"A scar that will not metaphorize.",
+      freud:{ id:50, ego:46, superego:40, stage:"Anal", defense:"Displacement" },
+      life:83, colors:["#0e2430","#5ad0c0"] }
+  ].map((p) => Object.assign(p, { sealed:false, archived:false, alert:false }));
+}
 
-    const SCENES = [
-      { id: "mirror", title: "The Unlit Mirror",
-        q: "They will not look. Who is standing where the reflection should be?",
-        hint: "Correct layer: SHADOW or PERSONA",
-        answer: ["integrate","persona"], tags: ["shadow","persona"] },
-      { id: "door", title: "Door With No Handle",
-        q: "A room they locked from the inside is leaking sound. Do you force it, name the lock, or wait?",
-        hint: "Correct layer: CONTAIN or DEFENSE",
-        answer: ["contain","defense"], tags: ["anal","defense","ego"] },
-      { id: "chair", title: "The Empty Third Chair",
-        q: "Someone who should be here is not. The patient keeps setting a place. What is being asked for?",
-        hint: "Correct layer: ANIMA or EROS",
-        answer: ["anima","eros"], tags: ["anima","eros","genital"] },
-      { id: "court", title: "Metric Tribunal",
-        q: "A number has been read aloud as if it were a verdict. Is this law, wish, or a value in disguise?",
-        hint: "Correct layer: INTERPRET or DEFENSE",
-        answer: ["interpret","defense"], tags: ["superego","defense"] },
-      { id: "feast", title: "Table With No Food",
-        q: "Hunger arrives with no object. If you feed the story instead of the mouth, what happens?",
-        hint: "Correct layer: CATHARSIS or EROS",
-        answer: ["catharsis","eros"], tags: ["id","oral","eros"] },
-      { id: "omen", title: "Fact Without Myth",
-        q: "A raw event sits on the table with no symbol attached. Do you interpret it, or admit the body?",
-        hint: "Correct layer: SHADOW JOIN or INTERPRET",
-        answer: ["integrate","interpret"], tags: ["shadow","id"] },
-      { id: "chorus", title: "Broken Chorus",
-        q: "The room’s weather turned. They smile harder. What is the smile protecting?",
-        hint: "Correct layer: PERSONA or SHADOW",
-        answer: ["persona","integrate"], tags: ["persona","shadow"] },
-      { id: "archive", title: "The Spreading Blank",
-        q: "A page where childhood should be is white and growing. Is this repression, or a future refusing the file?",
-        hint: "Correct layer: DEFENSE or SHADOW JOIN",
-        answer: ["defense","integrate"], tags: ["defense","shadow"] }
-    ];
+const S = {
+  screen:"boot", P: roster(), sel:null, attend:null,
+  trauma:0, stab:100, incoming:[], hand:[], tick:null, ward:null, mx:null
+};
 
-    const PATIENTS = [
-      {
-        id: "elara",
-        name: "ELARA VOSS",
-        unit: "07-A3",
-        type: "Ni",
-        persona: "The Quiet Oracle",
-        anima: "A stern inner judge in a father’s coat",
-        shadow: "Se — the unendurable now",
-        freud: { id: 22, ego: 48, superego: 86, stage: "Oral", defense: "Intellectualization" },
-        life: 88,
-        colors: ["#1a2a44", "#6aa0c8"],
-        dossier: "Dreams in corridors that lengthen as she walks. Speaks in conclusions. Will starve a feeling rather than have it arrive late.",
-        shadowText: "The Shadow is extraverted sensation: fluorescent light, a slammed tray, the smell of antiseptic. She treats the present as a rumor. When trauma arrives as body-fact, her myth cannot metabolize it.",
-        freudText: "Superego-dominant. The watching parent is internalized as a deadline. Id is small and ashamed. Ego bargains by becoming useful. Oral residue: she cannot ask, only infer."
-      },
-      {
-        id: "kael",
-        name: "KAEL RADEK",
-        unit: "11-F2",
-        type: "Te",
-        persona: "The Efficient Blade",
-        anima: "A drowned singer who keeps the real scores",
-        shadow: "Fi — unofficial grief",
-        freud: { id: 40, ego: 62, superego: 55, stage: "Anal", defense: "Isolation of affect" },
-        life: 84,
-        colors: ["#2a1a14", "#c88a4a"],
-        dossier: "Measures every ward protocol twice. Calls feelings ‘noise in the channel.’ Life drops when a metric he trusted turns out to have been a story.",
-        shadowText: "Shadow is introverted feeling. A private value he never ratified. Trauma cards that say ‘this was wrong’ rather than ‘this was inefficient’ bypass his tools.",
-        freudText: "Anal-stage architecture: control, sequence, clean edges. Isolation of affect lets him operate. Thanatos shows up as the wish to shut the system down rather than feel it."
-      },
-      {
-        id: "nyx",
-        name: "NYX SOLANO",
-        unit: "03-K9",
-        type: "Fe",
-        persona: "The Warm Frequency",
-        anima: "A glass thinker who will not come to dinner",
-        shadow: "Ti — the cold equation",
-        freud: { id: 58, ego: 40, superego: 70, stage: "Phallic / Oedipal", defense: "Reaction formation" },
-        life: 82,
-        colors: ["#2a1430", "#d080b0"],
-        dossier: "Keeps the room alive. Knows everyone’s temperature. Collapses when the chorus disagrees and there is no role left that can reconcile it.",
-        shadowText: "Shadow thinking is ruthless and lonely. She fears that if she follows a true thought to its end she will lose the people the thought is about.",
-        freudText: "Oedipal weather: being chosen, being replaced. Reaction formation turns envy into caretaking. Id is loud; Ego is tired of hosting."
-      },
-      {
-        id: "ion",
-        name: "ION MARROW",
-        unit: "19-Θ1",
-        type: "Si",
-        persona: "The Archivist",
-        anima: "A future that keeps changing the files",
-        shadow: "Ne — futures that refuse the archive",
-        freud: { id: 35, ego: 55, superego: 50, stage: "Latency", defense: "Repression" },
-        life: 90,
-        colors: ["#102018", "#6cb890"],
-        dossier: "Remembers the exact pitch of a door in year six. Prefers the known wound to an unknown hallway. Thanatos here is nostalgia sharp enough to stop time.",
-        shadowText: "Shadow extraverted intuition offers too many tomorrows. He experiences possibility as contamination of the record.",
-        freudText: "Latency style: competence, lists, no obvious drive. Repression keeps Eros and Thanatos in the basement. When a trauma card names the basement, life drops fast."
-      },
-      {
-        id: "riven",
-        name: "RIVEN QUILL",
-        unit: "22-C4",
-        type: "Ti",
-        persona: "The Closed Circuit",
-        anima: "A crowd that laughs in the next room",
-        shadow: "Fe — weather of the room",
-        freud: { id: 30, ego: 70, superego: 48, stage: "Latency", defense: "Rationalization" },
-        life: 86,
-        colors: ["#121826", "#7aa0d0"],
-        dossier: "Will not leave a thought unfinished. Treats other people as premises. Online, isolated, precise.",
-        shadowText: "Shadow extraverted feeling is the unsolved social temperature. A trauma text that is only a mood will not parse.",
-        freudText: "Ego-heavy. Rationalization keeps Id downstairs. Collapse comes when a feeling refuses to become an argument."
-      },
-      {
-        id: "mira",
-        name: "MIRA KEST",
-        unit: "08-L7",
-        type: "Fi",
-        persona: "The Private Chapel",
-        anima: "A clerk who tallies her in public",
-        shadow: "Te — the world’s crude tally",
-        freud: { id: 44, ego: 42, superego: 72, stage: "Genital", defense: "Turning against the self" },
-        life: 80,
-        colors: ["#1c1428", "#c9a0e0"],
-        dossier: "Keeps a sealed inner court. Will bleed life before she will let a value be voted on.",
-        shadowText: "Shadow thinking is the spreadsheet of worth. Cards about being measured cut deeper than cards about being hurt.",
-        freudText: "Superego borrows her own ideals and turns them inward. Genital wish for reciprocity fights a court that never adjourns."
-      },
-      {
-        id: "jax",
-        name: "JAX ORRIN",
-        unit: "14-S0",
-        type: "Se",
-        persona: "The Live Wire",
-        anima: "A prophet who will not shut up",
-        shadow: "Ni — the omen unread",
-        freud: { id: 68, ego: 38, superego: 28, stage: "Oral", defense: "Acting out" },
-        life: 79,
-        colors: ["#2a220c", "#e0b050"],
-        dossier: "Lives in impact. Online as long as something is happening. Stillness is the real threat.",
-        shadowText: "Shadow intuition arrives as a meaning he cannot punch. Trauma that is only an image starves the body-channel.",
-        freudText: "Id-forward, oral hunger for stimulus. Acting out spends life in motion. Containment and suture keep him in the chair."
-      },
-      {
-        id: "sable",
-        name: "SABLE WREN",
-        unit: "05-N6",
-        type: "Ne",
-        persona: "The Forking Mouth",
-        anima: "A single unedited memory",
-        shadow: "Si — the unedited body-memory",
-        freud: { id: 50, ego: 46, superego: 40, stage: "Anal", defense: "Displacement" },
-        life: 83,
-        colors: ["#0e2430", "#5ad0c0"],
-        dossier: "Opens every door at once. Online in twelve threads. Cannot stand one fact that will not branch.",
-        shadowText: "Shadow sensation is the stubborn particular — the scar that does not metaphorize.",
-        freudText: "Displacement hops the charge from wound to idea. Anal control shows up as managing possibilities instead of mess."
-      }
-    ];
+const $ = (id) => document.getElementById(id);
+function toast(m){ const e=$("toast"); e.textContent=m; e.classList.add("show"); setTimeout(()=>e.classList.remove("show"),1400); }
+function hud(){
+  $("tf").style.width=S.trauma+"%"; $("tr").textContent=String(S.trauma).padStart(2,"0")+"%";
+  $("sf").style.width=S.stab+"%"; $("sr").textContent=S.stab+"%";
+  $("hud").classList.toggle("warn", S.trauma>=55);
+}
+function av(p){
+  return `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="${p.colors[0]}"/><circle cx="32" cy="26" r="12" fill="${p.colors[1]}"/><ellipse cx="32" cy="52" rx="18" ry="16" fill="${p.colors[1]}" opacity=".7"/></svg>`;
+}
 
-    const TRAUMA_DECK = [
-      { text: "A voice behind a door that was never opened says your name like a diagnosis.", tags: ["oral","shadow","id"], who: "elara" },
-      { text: "The future arrives as a smell of metal. No symbol attached. Only now.", tags: ["shadow","persona"], who: "elara" },
-      { text: "You were useful and therefore loved. The equation is failing in public.", tags: ["superego","anal"], who: "elara" },
-      { text: "The metric was clean. The person inside the metric was not counted.", tags: ["shadow","fi"], who: "kael" },
-      { text: "A lock you installed from the inside. Something on the other side is not asking permission.", tags: ["anal","id"], who: "kael" },
-      { text: "Grief without a ticket number. It will not queue.", tags: ["shadow","id"], who: "kael" },
-      { text: "Everyone smiled when you entered. The smiles were a vote. The vote has been called back.", tags: ["phallic","persona"], who: "nyx" },
-      { text: "A thought arrives that would end the party. You swallow it. It grows teeth.", tags: ["shadow","superego"], who: "nyx" },
-      { text: "You kept them warm. They left anyway. Care was not a contract.", tags: ["oral","eros"], who: "nyx" },
-      { text: "A page in the archive is blank where a childhood should be. The blank is spreading.", tags: ["defense","oral"], who: "ion" },
-      { text: "Tomorrow has too many doors. You nail them shut with memory.", tags: ["shadow","thanatos"], who: "ion" },
-      { text: "The old house is still furnished. No one lives there. You visit nightly.", tags: ["thanatos","si"], who: "ion" },
-      { text: "The watching parent clears their throat inside the ribs.", tags: ["superego","defense"], who: null },
-      { text: "Hunger with no object. The Id writes in a language Ego will not translate.", tags: ["id","oral"], who: null },
-      { text: "A mask smiles correctly while the Self steps back from the body.", tags: ["persona","thanatos"], who: null },
-      { text: "The inner other turns their face away. Anima/Animus goes dark.", tags: ["anima","eros"], who: null },
-      { text: "The room wants something from you. You can only offer a theorem.", tags: ["shadow","persona"], who: "riven" },
-      { text: "A feeling sits in the chair and will not become a premise.", tags: ["id","shadow"], who: "riven" },
-      { text: "They scored you. The number was wrong and also, horribly, usable.", tags: ["shadow","superego"], who: "mira" },
-      { text: "A vow you made alone is being auctioned in a hallway.", tags: ["eros","genital"], who: "mira" },
-      { text: "Nothing is happening. The omen arrives anyway and has no fists.", tags: ["shadow","thanatos"], who: "jax" },
-      { text: "Impact without object. The mouth wants a world that hits back.", tags: ["id","oral"], who: "jax" },
-      { text: "One memory refuses to fork. It stays a smell, a stair, a year.", tags: ["shadow","defense"], who: "sable" },
-      { text: "Every door you opened leads back to the same unwashed plate.", tags: ["anal","thanatos"], who: "sable" }
-    ];
+function go(name){
+  if(name!=="dossier") stopMx();
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
+  $("screen-"+name).classList.add("on");
+  document.querySelectorAll(".dock .slot").forEach(b=>b.classList.toggle("active", b.dataset.go===name));
+  S.screen=name;
+  if(name==="ward") paintWard();
+  if(name==="dossier") paintPsyche();
+  if(name==="session") paintSession();
+}
 
-    /* ---------- State ---------- */
-    const S = {
-      screen: "boot",
-      selected: null,
-      trauma: 0,
-      stab: 100,
-      incoming: [],
-      log: [],
-      tick: null,
-      wardTick: null,
-      scene: null,
-      hand: []
-    };
+function paintRadar(){
+  const disk=$("disk");
+  disk.querySelectorAll(".blip:not(.you)").forEach(n=>n.remove());
+  S.P.filter(p=>!p.archived).forEach((p,i)=>{
+    const b=document.createElement("span");
+    b.className="blip"+(p.sealed?" dead":"");
+    b.style.left=(18+ (i*9)%64)+"%";
+    b.style.top=(22+(i*13)%58)+"%";
+    disk.appendChild(b);
+  });
+}
 
-    const $ = (id) => document.getElementById(id);
+function paintWard(){
+  const live=S.P.filter(p=>!p.sealed && !p.archived && p.life>0);
+  const sealed=S.P.filter(p=>p.sealed && !p.archived);
+  $("onl").textContent=live.length+" ONLINE";
+  $("sel").textContent=sealed.length+" SEALED";
+  $("att").textContent=S.attend && !S.attend.sealed ? S.attend.name.split(" ")[0] : "—";
+  $("nshift").style.display=live.length===0?"inline-block":"none";
+  paintRadar();
+  $("beds").innerHTML=S.P.filter(p=>!p.archived).map(p=>{
+    const dead=p.sealed||p.life<=0;
+    return `<div class="panel bed ${dead?"sealed":""} ${p.alert?"flash":""}" data-id="${p.id}">
+      <div class="bed-top"><div class="av">${av(p)}</div>
+        <div class="nm"><h3>${p.name}</h3><p>${p.unit} · ${p.type}</p>
+        <p class="${!dead && p.life<30?"crit":""}">${dead?"SEALED":Math.round(p.life)+"%"}</p></div></div>
+      <div class="track" style="margin-top:6px"><div class="fill l" style="width:${dead?0:p.life}%"></div></div>
+      <div class="acts">${dead
+        ? `<button class="mini danger" data-a="archive">Archive</button>`
+        : `<button class="mini" data-a="attend">Hold</button>
+           <button class="mini" data-a="psyche">Psyche</button>
+           <button class="mini" data-a="sit">Sit</button>`}</div>
+    </div>`;
+  }).join("");
+  $("beds").querySelectorAll("[data-a]").forEach(btn=>{
+    btn.onclick=()=>act(btn.closest(".bed").dataset.id, btn.dataset.a);
+  });
+}
 
-    function toast(msg) {
-      const el = $("toast");
-      el.textContent = msg;
-      el.classList.add("show");
-      setTimeout(() => el.classList.remove("show"), 1600);
+function act(id, a){
+  const p=S.P.find(x=>x.id===id); if(!p) return;
+  if(a==="archive"){
+    if(!p.sealed) return;
+    p.archived=true;
+    S.trauma=Math.max(0,S.trauma-10);
+    if(S.sel && S.sel.id===p.id){ S.sel=null; $("bd").disabled=true; $("bs").disabled=true; }
+    if(S.attend && S.attend.id===p.id) S.attend=null;
+    hud(); toast("Archived"); paintWard(); return;
+  }
+  if(p.sealed || p.life<=0){ toast("Sealed"); return; }
+  if(a==="attend"){
+    S.attend=p; p.alert=false; S.stab=Math.max(0,S.stab-6); p.life=Math.min(100,p.life+5);
+    hud(); toast("Hold "+p.name.split(" ")[0]); paintWard(); return;
+  }
+  pick(p, a==="sit"?"session":"dossier");
+}
+
+function pick(p, dest){
+  if(p.sealed || p.life<=0){ toast("Sealed"); return; }
+  S.sel=p; $("bd").disabled=false; $("bs").disabled=false; go(dest);
+}
+
+function stopMx(){ if(S.mx){ cancelAnimationFrame(S.mx); S.mx=null; } }
+function startMx(c){
+  stopMx();
+  const ctx=c.getContext("2d");
+  const g="01アイウエオカキクケコサシスセソタチツテトナニヌネノΔΨΩθλΣﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ";
+  let w,h,cols,drops;
+  function sz(){ w=c.width=c.offsetWidth||640; h=c.height=c.offsetHeight||440; cols=Math.max(8,Math.floor(w/14)); drops=Array.from({length:cols},()=>Math.random()*-30); }
+  sz();
+  (function frame(){
+    ctx.fillStyle="rgba(2,6,4,0.14)"; ctx.fillRect(0,0,w,h);
+    ctx.font="13px monospace";
+    for(let i=0;i<drops.length;i++){
+      ctx.fillStyle=i%7===0?"#e8ffe8":"#2ee67a";
+      ctx.fillText(g[Math.floor(Math.random()*g.length)], i*14, drops[i]*16);
+      drops[i]+=0.7+Math.random()*0.35;
+      if(drops[i]*16>h && Math.random()>0.975) drops[i]=-6;
     }
+    S.mx=requestAnimationFrame(frame);
+  })();
+}
 
-    function setHUD() {
-      $("trauma-fill").style.width = S.trauma + "%";
-      $("trauma-readout").textContent = String(S.trauma).padStart(2, "0") + "%";
-      $("stab-fill").style.width = S.stab + "%";
-      $("stab-readout").textContent = S.stab + "%";
-      $("hud").classList.toggle("warn", S.trauma >= 55);
-      $("ping").style.display = S.incoming.length ? "block" : "none";
-    }
+function paintPsyche(){
+  const p=S.sel;
+  if(!p || p.sealed){ $("psy").innerHTML=""; go("ward"); return; }
+  const j=JUNG.find(x=>x.id===p.type);
+  const L={
+    type: j.name+" · "+p.persona,
+    shadow: p.shadow+" — "+p.shadowText,
+    id: "Id "+p.freud.id+" · "+p.freud.stage,
+    ego: "Ego "+p.freud.ego+" · "+p.freud.defense,
+    superego: "Superego "+p.freud.superego,
+    anima: p.anima
+  };
+  $("psy").innerHTML=`<div class="mxbox"><canvas id="matrix"></canvas>
+    <div class="decrypt">
+      <div class="line">${p.name}  ${p.unit}</div>
+      <div class="line" id="mxo">_</div>
+      <div class="chips">${Object.keys(L).map(k=>`<button class="chip" data-k="${k}">${k}</button>`).join("")}
+        <button class="chip" id="sit2">Sit</button></div>
+    </div></div>`;
+  startMx($("matrix"));
+  $("psy").querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{ $("mxo").textContent=L[b.dataset.k]; b.classList.add("on"); });
+  $("sit2").onclick=()=>go("session");
+}
 
-    function go(name) {
-      document.querySelectorAll(".screen").forEach((s) => s.classList.remove("on"));
-      $("screen-" + name).classList.add("on");
-      document.querySelectorAll(".dock .slot").forEach((b) => b.classList.toggle("active", b.dataset.go === name));
-      S.screen = name;
-      if (name === "ward") renderWard();
-      if (name === "dossier") renderDossier();
-      if (name === "session") renderSession();
-    }
+function deal(){
+  const pool=TREAT.filter(t=>!t.always).sort(()=>Math.random()-.5);
+  S.hand=[TREAT[0], ...pool.slice(0,4)].sort(()=>Math.random()-.5);
+  $("hand").innerHTML=S.hand.map(t=>`<button class="panel card treat" data-id="${t.id}">
+    <div class="k">${t.kind}</div><div class="b"><strong>${t.name}</strong>${t.text}</div></button>`).join("");
+  $("hand").querySelectorAll(".treat").forEach(b=>b.onclick=()=>play(b.dataset.id));
+}
 
-    function avatarSVG(p) {
-      const [a, b] = p.colors;
-      return `<svg class="face" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect width="64" height="64" fill="${a}"/>
-        <circle cx="32" cy="26" r="12" fill="${b}" opacity="0.85"/>
-        <ellipse cx="32" cy="52" rx="18" ry="16" fill="${b}" opacity="0.7"/>
-        <rect x="18" y="24" width="28" height="3" fill="#05070c" opacity="0.35"/>
-      </svg>`;
-    }
+function paintIn(){
+  $("in").innerHTML=S.incoming.map((c,i)=>`<article class="panel card trauma ${i===0?"live":""}">
+    <span class="amp">${"▲".repeat(c.amp||1)}</span>
+    <div class="k">${i===0?"LIVE ×"+(c.amp||1):"WAIT"}</div>
+    <div class="b">${c.text}</div></article>`).join("");
+}
 
-    function renderWard() {
-      const live = PATIENTS.filter((p) => p.life > 0).length;
-      const oc = $("online-count");
-      if (oc) oc.textContent = live + " ONLINE";
-      $("beds").innerHTML = PATIENTS.map((p) => {
-        const low = p.life < 30;
-        const j = JUNG.find((x) => x.id === p.type);
-        return `<button class="panel bed cut" data-id="${p.id}">
-          <div class="bed-top">
-            <div class="avatar">${avatarSVG(p)}</div>
-            <div class="meta">
-              <h3>${p.name}</h3>
-              <p>UNIT ${p.unit}  //  ${j.name}</p>
-              <p class="${low ? "crit" : ""}">LIFE ${Math.round(p.life)}%</p>
-            </div>
-          </div>
-          <div class="life-row">
-            <div class="track"><div class="fill life-fill" style="width:${p.life}%"></div></div>
-          </div>
-          <div class="tags">
-            <span class="tag">${p.persona}</span>
-            <span class="tag vio">Shadow ${p.shadow.split("—")[0]}</span>
-            <span class="tag red">${p.freud.stage}</span>
-            <span class="tag">${p.freud.defense}</span>
-          </div>
-        </button>`;
-      }).join("");
-      $("beds").querySelectorAll(".bed").forEach((el) => {
-        el.addEventListener("click", () => selectPatient(el.dataset.id));
-        el.addEventListener("mouseenter", () => { el.style.borderColor = "var(--border-hot)"; });
-        el.addEventListener("mouseleave", () => { el.style.borderColor = ""; });
-      });
-    }
+function paintLife(){
+  if(!S.sel) return;
+  $("sl").textContent=S.sel.name;
+  $("ll").textContent=Math.round(S.sel.life)+"%";
+  $("lf").style.width=S.sel.life+"%";
+}
 
-    function selectPatient(id) {
-      S.selected = PATIENTS.find((p) => p.id === id);
-      $("btn-dossier").disabled = false;
-      $("btn-session").disabled = false;
-      toast("Psyche locked  //  " + S.selected.name);
-      go("dossier");
-    }
+function log(h){ $("log").innerHTML=`<div>${h}</div>`+$("log").innerHTML; }
 
-    function renderDossier() {
-      const p = S.selected;
-      if (!p) {
-        $("dossier-root").innerHTML = `<p class="sub">No psyche selected. Return to the ward.</p>`;
-        return;
-      }
-      const j = JUNG.find((x) => x.id === p.type);
-      $("dossier-root").innerHTML = `
-        <h2>File ${p.unit}</h2>
-        <div class="dossier">
-          <aside class="panel portrait-card cut">
-            <div class="big-av">${avatarSVG(p)}</div>
-            <h3 style="letter-spacing:0.16em">${p.name}</h3>
-            <p class="sub">${j.name}<br/>Persona: ${p.persona}</p>
-            <div class="life-row">
-              <div class="bar-meta"><span>Life</span><span class="val">${Math.round(p.life)}%</span></div>
-              <div class="track"><div class="fill life-fill" style="width:${p.life}%"></div></div>
-            </div>
-            <button class="cta panel cut" style="margin-top:16px;width:100%" id="begin">Begin session</button>
-          </aside>
-          <div>
-            <div class="tabs">
-              <button class="tab on" data-pane="ov">Overview</button>
-              <button class="tab" data-pane="jung">Jung</button>
-              <button class="tab" data-pane="shadow">Shadow</button>
-              <button class="tab" data-pane="freud">Freud</button>
-            </div>
-            <div class="panel pane cut on" id="pane-ov">
-              <p class="prose">${p.dossier}</p>
-              <div class="tags" style="margin-top:12px">
-                <span class="tag">Dominant ${p.type}</span>
-                <span class="tag vio">${p.shadow}</span>
-                <span class="tag red">${p.freud.stage} residue</span>
-              </div>
-            </div>
-            <div class="panel pane cut" id="pane-jung">
-              <p class="prose"><strong>Type.</strong> ${j.name}. ${j.blurb}</p>
-              <p class="prose" style="margin-top:10px"><strong>Persona.</strong> ${p.persona} — the public face the ward is allowed to see.</p>
-              <p class="prose" style="margin-top:10px"><strong>Anima / Animus.</strong> ${p.anima}</p>
-              <p class="prose" style="margin-top:10px"><strong>Self.</strong> Not yet constellated. Session work that only polishes the Persona will not fill it.</p>
-            </div>
-            <div class="panel pane cut" id="pane-shadow">
-              <div class="shadow-box">
-                <h3>// Shadow contents</h3>
-                <p class="prose">${p.shadowText}</p>
-              </div>
-              <p class="prose" style="margin-top:12px">Jung: the Shadow is the inferior function plus the biographical material the Ego will not claim. Integration cards work here. Persona cards do not.</p>
-            </div>
-            <div class="panel pane cut" id="pane-freud">
-              <div class="trio">
-                <div class="cell"><div class="n">${p.freud.id}</div><div class="l">Id</div></div>
-                <div class="cell"><div class="n">${p.freud.ego}</div><div class="l">Ego</div></div>
-                <div class="cell"><div class="n">${p.freud.superego}</div><div class="l">Superego</div></div>
-              </div>
-              <div class="stat"><label>Id Drive<div>${p.freud.id}</div></label><div class="track"><div class="fill trauma" style="width:${p.freud.id}%"></div></div></div>
-              <div class="stat"><label>Ego Reality<div>${p.freud.ego}</div></label><div class="track"><div class="fill stab" style="width:${p.freud.ego}%"></div></div></div>
-              <div class="stat"><label>Superego Law<div>${p.freud.superego}</div></label><div class="track"><div class="fill" style="width:${p.freud.superego}%;background:linear-gradient(90deg,#3a2a6a,#b8a0ff);box-shadow:0 0 8px rgba(180,160,255,.4)"></div></div></div>
-              <p class="prose" style="margin-top:12px">${p.freudText}</p>
-              <p class="prose" style="margin-top:8px"><strong>Dominant defense:</strong> ${p.freud.defense}. Audit it or it will spend the patient’s life for them.</p>
-            </div>
-          </div>
-        </div>`;
-      $("begin").onclick = () => go("session");
-      document.querySelectorAll(".tab").forEach((tab) => {
-        tab.onclick = () => {
-          document.querySelectorAll(".tab").forEach((t) => t.classList.remove("on"));
-          document.querySelectorAll(".pane").forEach((pne) => pne.classList.remove("on"));
-          tab.classList.add("on");
-          $("pane-" + tab.dataset.pane).classList.add("on");
-        };
-      });
-    }
+function drawTrauma(){
+  const p=S.sel; if(!p||p.sealed) return;
+  const pool=DECK.filter(c=>!c.who||c.who===p.id);
+  const c=pool[Math.floor(Math.random()*pool.length)];
+  const amp=1+Math.floor(Math.random()*2);
+  S.incoming.push({...c, amp});
+  S.incoming=S.incoming.slice(-3);
+  S.trauma=Math.min(100,S.trauma+amp*4);
+  p.life=Math.max(0,p.life-amp);
+  hud(); paintIn(); paintLife();
+  if(p.life<=0) seal(p);
+}
 
-    function renderAtlas() {
-      $("jung-types").innerHTML = JUNG.map((t) => `
-        <article class="panel type-card cut">
-          <div class="fn">${t.fn}</div>
-          <h3>${t.name}</h3>
-          <p>${t.blurb}</p>
-          <p style="margin-top:8px;color:#c8b6ff">Shadow: ${t.shadow}</p>
-        </article>`).join("");
-      $("freud-map").innerHTML = FREUD.map((f) => `
-        <article class="panel type-card cut">
-          <h3>${f.t}</h3>
-          <p>${f.d}</p>
-        </article>`).join("");
-    }
+function escalate(){
+  const live=S.incoming[0]; if(!live||!S.sel) return;
+  live.amp=Math.min(4,(live.amp||1)+1);
+  S.sel.life=Math.max(0,S.sel.life-live.amp);
+  S.trauma=Math.min(100,S.trauma+live.amp*2);
+  paintIn();
+}
 
-    function pushLog(html) {
-      S.log.unshift(html);
-      S.log = S.log.slice(0, 14);
-      $("log").innerHTML = S.log.map((x) => `<p>${x}</p>`).join("");
-    }
+function play(id){
+  const p=S.sel; if(!p||p.sealed) return;
+  const t=TREAT.find(x=>x.id===id);
+  const live=S.incoming[0];
+  S.stab=Math.max(0,S.stab-5);
+  if(t.always){
+    p.life=Math.min(100,p.life+(t.heal||8));
+    S.trauma=Math.max(0,S.trauma-6);
+    log(`<span class="good">${t.name}</span>`);
+    hud(); paintLife(); return;
+  }
+  const hit=live && t.match.some(m=>live.tags.includes(m));
+  if(hit){
+    const amp=live.amp||1;
+    S.incoming.shift();
+    S.trauma=Math.max(0,S.trauma-(10+amp*4));
+    p.life=Math.min(100,p.life+t.heal);
+    log(`<span class="good">${t.name} ×${amp}</span>`);
+    deal();
+  } else {
+    S.trauma=Math.min(100,S.trauma+8);
+    p.life=Math.max(0,p.life-7);
+    log(`<span class="bad">${t.name}</span>`);
+  }
+  hud(); paintIn(); paintLife();
+  if(p.life<=0) seal(p);
+}
 
-    function dealScene() {
-      S.scene = SCENES[Math.floor(Math.random() * SCENES.length)];
-      $("scene-tag").textContent = "Challenge scene  //  jackpot question";
-      $("scene-title").textContent = S.scene.title;
-      $("scene-q").textContent = S.scene.q;
-      $("scene-hint").textContent = S.scene.hint;
-      const pool = TREATMENTS.filter((t) => !t.always);
-      const must = TREATMENTS.filter((t) => S.scene.answer.includes(t.id));
-      const decoy = pool.filter((t) => !S.scene.answer.includes(t.id)).sort(() => Math.random() - 0.5);
-      const heal = TREATMENTS.find((t) => t.id === "suture");
-      const five = [...must.slice(0, 2), ...decoy.slice(0, 2), heal].sort(() => Math.random() - 0.5);
-      S.hand = five.slice(0, 5);
-      paintHand();
-    }
+function seal(p){
+  p.life=0; p.sealed=true; p.alert=false;
+  S.trauma=Math.min(100,S.trauma+18);
+  if(S.attend && S.attend.id===p.id) S.attend=null;
+  hud(); toast("Sealed · no return");
+  $("bs").disabled=true;
+  setTimeout(()=>go("ward"),600);
+}
 
-    function drawTrauma() {
-      const p = S.selected;
-      if (!p || p.life <= 0) return;
-      const pool = TRAUMA_DECK.filter((c) => !c.who || c.who === p.id);
-      const card = pool[Math.floor(Math.random() * pool.length)];
-      const intensity = 1 + Math.floor(Math.random() * 2);
-      S.incoming.push({ ...card, uid: Math.random().toString(36).slice(2, 8), intensity });
-      S.incoming = S.incoming.slice(0, 3);
-      const hit = intensity * 4;
-      S.trauma = Math.min(100, S.trauma + hit);
-      S.stab = Math.max(0, S.stab - intensity);
-      p.life = Math.max(0, p.life - intensity);
-      setHUD();
-      paintIncoming();
-      paintLife();
-      pushLog(`<span class="bad">REEL +${intensity}.</span> ${card.text}`);
-      toast("Trauma ×" + intensity);
-      if (p.life <= 0) collapse();
-    }
+function paintSession(){
+  if(!S.sel || S.sel.sealed || S.sel.life<=0){ go("ward"); return; }
+  if(S.tick) clearInterval(S.tick);
+  S.incoming=[]; $("log").innerHTML="";
+  deal(); paintIn(); paintLife();
+  S.tick=setInterval(()=>{
+    if(S.screen!=="session"||!S.sel||S.sel.sealed) return;
+    S.sel.life=Math.max(0,S.sel.life-0.4);
+    S.stab=Math.min(100,S.stab+2);
+    if(S.incoming[0]) escalate();
+    if(Math.random()<0.34) drawTrauma();
+    paintLife(); hud();
+    if(S.sel.life<=0) seal(S.sel);
+  },4000);
+}
 
-    function escalateLive() {
-      const live = S.incoming[0];
-      if (!live || !S.selected) return;
-      live.intensity = Math.min(4, (live.intensity || 1) + 1);
-      S.selected.life = Math.max(0, S.selected.life - live.intensity);
-      S.trauma = Math.min(100, S.trauma + live.intensity * 2);
-      pushLog(`<span class="bad">LIVE ESCALATE ×${live.intensity}.</span> Unanswered text is spending life.`);
-      paintIncoming();
-    }
-
-    function paintIncoming() {
-      $("incoming").innerHTML = S.incoming.length ? S.incoming.map((c, i) => `
-        <article class="panel card trauma ${i === 0 ? "active" : ""}" data-uid="${c.uid}">
-          <span class="amp">${"▲".repeat(c.intensity || 1)}</span>
-          <div class="kind">${i === 0 ? "LIVE ×" + (c.intensity || 1) : "WAIT"}</div>
-          <div class="body">${c.text}</div>
-          <div class="marks">${c.tags.slice(0, 2).map((t) => `<span class="tag red">${t}</span>`).join("")}</div>
-        </article>`).join("") : `<p class="sub">Reel empty — answer the scene.</p>`;
-    }
-
-    function paintHand() {
-      const deck = S.hand.length ? S.hand : TREATMENTS.slice(0, 5);
-      $("hand").innerHTML = deck.map((t) => `
-        <button class="panel card treat ${t.always ? "heal" : ""}" data-id="${t.id}">
-          <span class="pip">◆</span>
-          <div class="kind">${t.kind}</div>
-          <div class="body"><strong>${t.name}</strong>${t.text}</div>
-        </button>`).join("");
-      $("hand").querySelectorAll(".treat").forEach((btn) => {
-        btn.onclick = () => playTreat(btn.dataset.id);
-      });
-    }
-
-    function paintLife() {
-      const p = S.selected;
-      if (!p) return;
-      $("sess-life").textContent = Math.round(p.life) + "%  coherence";
-      $("sess-life-fill").style.width = p.life + "%";
-      $("sess-label").textContent = "Session  //  " + p.name;
-    }
-
-    function playTreat(id) {
-      const p = S.selected;
-      if (!p || p.life <= 0) return;
-      const treat = TREATMENTS.find((t) => t.id === id);
-      const target = S.incoming[0];
-      const scene = S.scene;
-      S.stab = Math.max(0, S.stab - 6);
-
-      const sceneHit = scene && scene.answer.includes(id);
-
-      if (treat.always) {
-        p.life = Math.min(100, p.life + (treat.heal || 6));
-        S.trauma = Math.max(0, S.trauma - 6);
-        pushLog(`<span class="good">SAFE.</span> ${treat.name} mends but does not clear the scene.`);
-        toast("Safe mend — scene remains");
-        setHUD(); paintLife();
-        return;
-      }
-
-      if (sceneHit) {
-        S.trauma = Math.max(0, S.trauma - 28);
-        p.life = Math.min(100, p.life + (treat.heal || 14) + 6);
-        if (target) S.incoming.shift();
-        pushLog(`<span class="good">JACKPOT.</span> ${treat.name} answered “${scene.title}.”`);
-        toast("Jackpot — scene cleared");
-        dealScene();
-      } else {
-        const tagHit = target && treat.match.some((m) => target.tags.includes(m));
-        if (tagHit) {
-          const amp = target.intensity || 1;
-          S.incoming.shift();
-          S.trauma = Math.max(0, S.trauma - (10 + amp * 4));
-          p.life = Math.min(100, p.life + 4 + amp);
-          pushLog(`<span class="good">REEL CLEAR ×${amp}.</span> ${treat.name} matched ${target.tags.filter((t) => treat.match.includes(t)).join(", ")}. Scene still open.`);
-          toast("Reel clear ×" + amp);
-        } else {
-          S.trauma = Math.min(100, S.trauma + 10);
-          p.life = Math.max(0, p.life - 8);
-          pushLog(`<span class="bad">WRONG LAYER.</span> ${treat.name} misses “${scene ? scene.title : "the table"}.”`);
-          toast("Miss — life tax");
-        }
-      }
-      setHUD(); paintIncoming(); paintLife();
-      if (p.life <= 0) collapse();
-    }
-
-    function collapse() {
-      S.trauma = 100;
-      setHUD();
-      pushLog(`<span class="bad">PSYCHE COLLAPSE — ${S.selected.name} has run out of life. Fictional death. Session sealed.</span>`);
-      toast("Patient lost");
-    }
-
-    function renderSession() {
-      if (!S.selected) {
-        $("incoming").innerHTML = `<p class="sub">No patient in chair.</p>`;
-        return;
-      }
-      if (S.tick) clearInterval(S.tick);
-      dealScene();
-      paintIncoming();
-      paintLife();
-      pushLog(`Session open with ${S.selected.name}. Answer the scene. Jackpot hand is five cards.`);
-      S.tick = setInterval(() => {
-        if (S.screen !== "session" || !S.selected || S.selected.life <= 0) return;
-        S.selected.life = Math.max(0, S.selected.life - 0.35);
-        S.stab = Math.min(100, S.stab + 2);
-        S.trauma = Math.max(0, S.trauma - 1);
-        if (S.incoming[0]) escalateLive();
-        paintLife();
-        setHUD();
-        if (Math.random() < 0.32) drawTrauma();
-        if (S.selected.life <= 0) collapse();
-      }, 4200);
-    }
-
-    function startWardPulse() {
-      if (S.wardTick) return;
-      S.wardTick = setInterval(() => {
-        PATIENTS.forEach((p) => {
-          if (p.life <= 0) return;
-          if (S.selected && S.selected.id === p.id && S.screen === "session") return;
-          p.life = Math.max(0, p.life - 0.15);
-        });
-        if (S.screen === "ward") renderWard();
-      }, 5000);
-    }
-
-    /* boot */
-    renderAtlas();
-    setHUD();
-
-    $("enter").onclick = () => { startWardPulse(); go("ward"); };
-    document.querySelectorAll(".dock .slot").forEach((b) => {
-      b.addEventListener("click", () => {
-        if (b.disabled) return;
-        go(b.dataset.go);
-      });
+function pulse(){
+  if(S.ward) return;
+  S.ward=setInterval(()=>{
+    S.P.forEach(p=>{
+      if(p.archived) return;
+      if(p.life<=0){ p.sealed=true; return; }
+      if(p.sealed) return;
+      if(S.sel && S.sel.id===p.id && S.screen==="session") return;
+      const hold=S.attend && S.attend.id===p.id;
+      p.life=Math.max(0,p.life-(hold?0.06:0.24));
+      if(Math.random()<0.16){ p.alert=true; p.life=Math.max(0,p.life-2); S.trauma=Math.min(100,S.trauma+3); }
+      if(p.life<=0) p.sealed=true;
     });
+    hud();
+    if(S.screen==="ward") paintWard();
+  },4000);
+}
 
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "1") go("ward");
-      if (e.key === "2" && S.selected) go("dossier");
-      if (e.key === "3") go("atlas");
-      if (e.key === "4" && S.selected) go("session");
-    });
-  </script>
+function newShift(){
+  S.P=roster(); S.sel=null; S.attend=null; S.incoming=[]; S.trauma=0; S.stab=100;
+  $("bd").disabled=true; $("bs").disabled=true; hud(); toast("New shift"); paintWard();
+}
+
+$("atlas").innerHTML=JUNG.map(j=>`<article class="panel tc"><h3>${j.name}</h3><p>${j.blurb}<br>Shadow ${j.shadow}</p></article>`).join("");
+hud();
+$("enter").onclick=()=>{ pulse(); go("ward"); };
+$("nshift").onclick=newShift;
+document.querySelectorAll(".dock .slot").forEach(b=>b.onclick=()=>{ if(!b.disabled) go(b.dataset.go); });
+</script>
 </body>
 </html>
