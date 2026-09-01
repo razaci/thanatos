@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>THANATOS WARD</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --panel: rgba(14,16,22,.82);
+      --panel: rgba(14,16,22,.86);
       --border: rgba(90,180,255,.38);
       --hot: rgba(140,210,255,.85);
       --trauma: #ff3b4e;
@@ -17,117 +16,121 @@
       --life: #e8d5a3;
       --text: #d7e8ff;
       --muted: #7a93b0;
-      --mx: #2ee67a;
+      --wood: #3a2414;
+      --wood2: #1a100a;
+      --parch: #e8d5b0;
+      --ink: #2a1a10;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #05070c; color: var(--text); font-family: Orbitron, sans-serif; user-select: none; }
     button { font-family: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
     button:disabled { opacity: .35; cursor: default; }
+    input, select { font-family: "Share Tech Mono", monospace; background: #0a1018; color: var(--text); border: 1px solid var(--border); padding: 6px 8px; }
+    a { color: #c9a66b; }
 
     .world { position: fixed; inset: 0; background:
       radial-gradient(ellipse at 28% 18%, rgba(60,20,30,.28), transparent 50%),
       radial-gradient(ellipse at 80% 70%, rgba(20,40,80,.28), transparent 45%), #05070c; }
     .scan { pointer-events: none; position: fixed; inset: 0; z-index: 40; background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(0,0,0,.07) 3px); }
-
-    .panel { background: var(--panel); border: 1px solid var(--border); box-shadow: 0 0 14px rgba(70,160,255,.22); backdrop-filter: blur(10px); transition: 160ms ease; }
+    .panel { background: var(--panel); border: 1px solid var(--border); box-shadow: 0 0 14px rgba(70,160,255,.2); backdrop-filter: blur(8px); }
     .panel:hover, .panel:focus-within { border-color: var(--hot); }
 
-    .hud { position: fixed; top: 14px; left: 14px; z-index: 30; width: 260px; padding: 10px 12px; }
-    .hud-h { display: flex; justify-content: space-between; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 6px; color: #5ab4ff; }
-    .hud-h b { font-weight: 400; color: var(--muted); font-family: "Share Tech Mono", monospace; }
-    .meta { display: flex; justify-content: space-between; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 6px 0 3px; }
+    .hud { position: fixed; top: 12px; left: 12px; z-index: 30; width: 240px; padding: 10px; }
+    .hud-h { display: flex; justify-content: space-between; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #5ab4ff; margin-bottom: 6px; }
+    .meta { display: flex; justify-content: space-between; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 6px 0 3px; }
     .val { font-family: "Share Tech Mono", monospace; color: var(--text); }
     .track { height: 8px; background: #0007; border: 1px solid #fff1; overflow: hidden; }
     .fill { height: 100%; width: 0; transition: width .3s; }
-    .fill.t { background: linear-gradient(90deg, #6a1018, var(--trauma)); box-shadow: 0 0 8px #ff3b4e99; }
-    .fill.s { background: linear-gradient(90deg, #0a5a6e, var(--stab)); }
-    .fill.l { background: linear-gradient(90deg, #6a5420, var(--life)); }
-    .hud.warn { border-color: #ff3b4e99; animation: pr 1.2s ease-in-out infinite; }
-    @keyframes pr { 50% { box-shadow: 0 0 22px #ff3b4e88; } }
+    .fill.t { background: linear-gradient(90deg,#6a1018,var(--trauma)); }
+    .fill.s { background: linear-gradient(90deg,#0a5a6e,var(--stab)); }
+    .fill.l { background: linear-gradient(90deg,#6a5420,var(--life)); }
 
-    .radar { position: fixed; top: 14px; right: 14px; z-index: 30; width: 120px; height: 120px; padding: 6px; border-radius: 50%; }
-    .radar .disk { width: 100%; height: 100%; border-radius: 50%; border: 1px solid var(--border); position: relative; overflow: hidden; background: radial-gradient(circle, #14283c66, #04080e); }
+    .radar { position: fixed; top: 12px; right: 12px; z-index: 30; width: 100px; height: 100px; padding: 5px; border-radius: 50%; }
+    .disk { width: 100%; height: 100%; border-radius: 50%; border: 1px solid var(--border); position: relative; overflow: hidden; background: #04080e; }
     .sweep { position: absolute; inset: 0; background: conic-gradient(from 0deg, transparent, #ff506644 40deg, transparent 70deg); animation: spin 4s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .blip { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: var(--stab); box-shadow: 0 0 6px var(--stab); }
+    .blip { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: var(--stab); }
     .blip.you { left: 50%; top: 50%; transform: translate(-50%,-50%); background: #fff; }
-    .blip.dead { background: var(--trauma); box-shadow: 0 0 6px var(--trauma); }
+    .blip.dead { background: var(--trauma); }
 
-    .dock { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: 30; display: flex; gap: 6px; }
-    .slot { width: 54px; height: 76px; padding: 8px 4px 6px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; background: linear-gradient(#121822,#080a10); border: 1px solid #5ab4ff55; color: var(--muted); font-size: 7px; letter-spacing: .12em; text-transform: uppercase; border-radius: 5px 5px 7px 7px; }
+    .dock { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); z-index: 30; display: flex; gap: 6px; }
+    .slot { width: 58px; height: 78px; padding: 8px 4px 6px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; background: linear-gradient(#121822,#080a10); border: 1px solid #5ab4ff55; color: var(--muted); font-size: 7px; letter-spacing: .1em; text-transform: uppercase; border-radius: 5px 5px 7px 7px; }
     .slot .g { font-size: 16px; margin-top: 8px; }
     .slot:hover, .slot.active { color: #fff; border-color: var(--hot); transform: translateY(-5px); }
 
-    .screen { position: fixed; inset: 0; z-index: 10; display: none; padding: 88px 16px 104px; overflow: auto; }
+    .screen { position: fixed; inset: 0; z-index: 10; display: none; padding: 84px 12px 100px; overflow: auto; }
     .screen.on { display: block; }
-    .inner { max-width: 720px; margin: 0 auto; }
-    #screen-session .inner { max-width: 640px; }
-
+    .inner { max-width: 980px; margin: 0 auto; }
     #screen-boot { text-align: center; padding-top: 22vh; }
     .logo { font-size: clamp(22px, 6vw, 36px); letter-spacing: .24em; }
     .logo em { font-style: normal; color: var(--trauma); }
-    .cta { margin-top: 28px; padding: 12px 22px; border: 1px solid var(--border); letter-spacing: .2em; text-transform: uppercase; font-size: 11px; }
-
-    .bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
-    .pip { padding: 6px 8px; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; }
-    .ward-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-    @media (min-width: 700px) { .ward-grid { grid-template-columns: 1fr 1fr; } }
-    .brain-box { position: relative; min-height: 260px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(ellipse at 50% 45%, #0a2a3a, #05070c 70%); }
-    .brain-box svg { width: min(100%, 360px); height: auto; filter: drop-shadow(0 0 18px #2ee6ff66); }
-    .typelist { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .tp { padding: 8px; text-align: left; }
-    .tp .id { font-size: 11px; letter-spacing: .12em; color: #5ab4ff; }
-    .tp .nm { font-size: 8px; letter-spacing: .08em; color: var(--muted); margin-top: 3px; text-transform: uppercase; }
-    .floor { display: flex; gap: 8px; margin-top: 12px; }
-    .floor .mini { flex: 1; padding: 14px 8px; font-size: 10px; }
-    .mini { flex: 1; padding: 6px 2px; font-size: 8px; letter-spacing: .1em; text-transform: uppercase; border: 1px solid #5ab4ff44; color: var(--muted); border-radius: 4px; }
+    .cta { margin-top: 24px; padding: 12px 22px; border: 1px solid var(--border); letter-spacing: .18em; text-transform: uppercase; font-size: 11px; }
+    .bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .pip { padding: 6px 8px; font-size: 8px; letter-spacing: .12em; text-transform: uppercase; }
+    .mini { padding: 10px 8px; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; border: 1px solid #5ab4ff44; color: var(--muted); }
     .mini:hover { color: #fff; border-color: var(--hot); }
-    .mini.danger { border-color: #ff3b4e66; color: #ff8a96; }
 
-    .mxbox { position: relative; min-height: 440px; border: 1px solid #2ee67a44; background: #020604; overflow: hidden; }
+    .ward-wrap { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    @media (min-width: 860px) { .ward-wrap { grid-template-columns: 280px 1fr; } }
+    .brain-box { min-height: 200px; display: flex; align-items: center; justify-content: center; background: radial-gradient(ellipse at 50% 45%, #0a2a3a, #05070c 70%); }
+    .brain-box svg { width: min(100%, 240px); filter: drop-shadow(0 0 14px #2ee6ff55); }
+    .tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
+    .tab { padding: 7px 10px; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; border: 1px solid #5ab4ff44; color: var(--muted); }
+    .tab.on { color: #fff; border-color: var(--hot); }
+    .pane { display: none; }
+    .pane.on { display: block; }
+
+    .bio form { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .bio label { font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+    .bio .full { grid-column: 1 / -1; }
+    .rhythms { display: grid; gap: 6px; margin-top: 10px; }
+    .rhythms .n { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+
+    /* parchment inventory */
+    .inv { display: grid; grid-template-columns: 1fr 220px; gap: 10px; background: linear-gradient(#2a1810, #140c08); border: 3px solid #5a3a22; padding: 10px; box-shadow: inset 0 0 30px #0008; }
+    @media (max-width: 700px) { .inv { grid-template-columns: 1fr; } }
+    .grid20 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .sq { aspect-ratio: 1; background: #cbb58a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Crect fill='%23e8d5b0' width='8' height='8'/%3E%3C/svg%3E"); border: 2px solid #6a4a28; color: var(--ink); font-family: Cinzel, serif; font-size: 11px; display: flex; align-items: center; justify-content: center; }
+    .sq.on { outline: 2px solid #e8c36a; box-shadow: 0 0 12px #e8c36a88; }
+    .sq.empty { background: #1a100a; border-color: #3a2818; color: #6a5030; }
+    .side { background: #e8d5b0; color: var(--ink); padding: 10px; font-family: Cinzel, serif; min-height: 180px; border: 2px solid #6a4a28; }
+    .side h3 { font-size: 13px; margin-bottom: 6px; }
+    .side p { font-size: 12px; line-height: 1.45; }
+    .side .st { font-family: "Share Tech Mono", monospace; font-size: 11px; margin-top: 8px; }
+
+    .quiz p { font-family: "Share Tech Mono", monospace; font-size: 13px; margin: 8px 0; }
+    .quiz .opts { display: grid; gap: 6px; }
+    .typebox { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+    .typebox .tp { padding: 8px; text-align: left; font-size: 10px; }
+
+    .mxbox { position: relative; min-height: 400px; border: 1px solid #2ee67a44; background: #020604; }
     #matrix { position: absolute; inset: 0; width: 100%; height: 100%; }
-    .decrypt { position: relative; z-index: 2; min-height: 440px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-    .line { font-family: "Share Tech Mono", monospace; font-size: 13px; color: #9fffc8; text-shadow: 0 0 8px #50ffa066; min-height: 1.3em; }
+    .decrypt { position: relative; z-index: 2; min-height: 400px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .line { font-family: "Share Tech Mono", monospace; font-size: 13px; color: #9fffc8; min-height: 1.3em; }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
-    .chip { padding: 8px 10px; border: 1px solid #50ffa059; color: #9fffc8; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; background: #00140888; }
-    .chip:hover, .chip.on { color: #fff; box-shadow: 0 0 10px #50ffa055; }
+    .chip { padding: 8px 10px; border: 1px solid #50ffa059; color: #9fffc8; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
 
-    .incoming { display: flex; justify-content: center; gap: 8px; min-height: 150px; margin: 8px 0; }
+    .incoming { display: flex; justify-content: center; gap: 8px; min-height: 140px; margin: 8px 0; }
     .card { position: relative; padding: 8px; text-align: left; border-radius: 4px 4px 8px 8px; }
-    .card.trauma { width: 118px; height: 150px; border: 1px solid #ff3b4e88; background: linear-gradient(#380a0ed9, #100408); box-shadow: 0 5px 0 #40000066; }
-    .card.trauma.live { outline: 1px solid #ffd18a; transform: translateY(-4px); }
-    .card .k { font-size: 7px; letter-spacing: .16em; text-transform: uppercase; color: var(--trauma); margin-bottom: 4px; }
+    .card.trauma { width: 118px; height: 148px; border: 1px solid #ff3b4e88; background: linear-gradient(#380a0e,#100408); }
+    .card.trauma.live { outline: 1px solid #ffd18a; }
+    .card .k { font-size: 7px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 4px; }
     .card .b { font-family: "Share Tech Mono", monospace; font-size: 10px; line-height: 1.35; }
-    .amp { position: absolute; top: 6px; right: 6px; color: var(--trauma); font-size: 8px; }
-    .jack { display: flex; justify-content: center; align-items: flex-end; height: 180px; }
-    .card.treat { width: 92px; height: 164px; margin: 0 -8px; border: 1px solid #2ee6ff66; background: linear-gradient(#122834, #060a10); box-shadow: 0 8px 0 #0007; padding: 10px 7px; transform-origin: bottom center; }
-    .card.treat:nth-child(1) { transform: rotate(-12deg) translateY(12px); }
-    .card.treat:nth-child(2) { transform: rotate(-6deg) translateY(5px); }
-    .card.treat:nth-child(3) { transform: rotate(0); z-index: 5; }
-    .card.treat:nth-child(4) { transform: rotate(6deg) translateY(5px); }
-    .card.treat:nth-child(5) { transform: rotate(12deg) translateY(12px); }
-    .card.treat:hover { transform: translateY(-14px) rotate(0) scale(1.05); z-index: 8; border-color: #ffe08a; }
-    .card.treat .k { color: var(--stab); }
-    .card.treat strong { display: block; font-size: 9px; margin-bottom: 4px; color: #fff; }
-    .log { max-height: 72px; overflow: auto; padding: 8px; font-family: "Share Tech Mono", monospace; font-size: 11px; color: #b7c8dc; margin-top: 8px; }
-    .log .bad { color: #ff8a96; } .log .good { color: #8af0ff; }
+    .jack { display: flex; justify-content: center; gap: 10px; }
+    .card.treat { width: 140px; min-height: 196px; border: 1px solid #2ee6ff66; background: linear-gradient(#122834,#060a10); padding: 10px; }
+    .card.treat.heal { border-color: #e8d5a3aa; }
+    .card.treat.action { border-color: #2ee6ffaa; }
+    .card.treat.defense { border-color: #9b7dffaa; }
+    .card.treat:hover { transform: translateY(-8px); border-color: #ffe08a; }
+    .card.treat strong { display: block; font-size: 12px; margin: 4px 0; color: #fff; }
+    .log { max-height: 64px; overflow: auto; padding: 8px; font-family: "Share Tech Mono", monospace; font-size: 11px; margin-top: 8px; }
+    .good { color: #8af0ff; } .bad { color: #ff8a96; }
 
-    .toast { position: fixed; top: 78px; left: 50%; transform: translateX(-50%); z-index: 50; padding: 8px 12px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; opacity: 0; transition: .2s; pointer-events: none; }
+    .toast { position: fixed; top: 74px; left: 50%; transform: translateX(-50%); z-index: 50; padding: 8px 12px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; opacity: 0; transition: .2s; pointer-events: none; }
     .toast.show { opacity: 1; }
-
-    .atlas-shell { display: grid; grid-template-columns: 160px 1fr; gap: 10px; min-height: 420px; }
-    @media (max-width: 640px) { .atlas-shell { grid-template-columns: 1fr; } }
-    .atlas-nav .tc { width: 100%; text-align: left; padding: 8px; margin-bottom: 6px; }
-    .atlas-nav .tc.on { border-color: var(--hot); color: #fff; }
-    .atlas-nav .tc h3 { font-size: 11px; margin-bottom: 2px; }
-    .atlas-nav .tc p { font-family: "Share Tech Mono", monospace; font-size: 10px; color: var(--muted); }
-    .depth { padding: 12px; min-height: 380px; }
-    .depth h2 { font-size: 14px; letter-spacing: .16em; margin-bottom: 8px; }
-    .subs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-    .prose { font-family: "Share Tech Mono", monospace; font-size: 12px; line-height: 1.55; color: #c5d6ec; }
-    .aid { display: block; margin-top: 8px; padding: 8px; border: 1px solid #5ab4ff44; color: #9cf; font-size: 10px; letter-spacing: .08em; text-decoration: none; }
-    .aid:hover { border-color: var(--hot); color: #fff; }
-    .note { margin-top: 10px; font-size: 10px; color: #8a9bb0; font-family: "Share Tech Mono", monospace; line-height: 1.4; }
+    .recipes { display: grid; gap: 8px; }
+    .rec { padding: 10px; text-align: left; }
+    .rec.on { border-color: #e8c36a; }
   </style>
 </head>
 <body>
@@ -135,27 +138,20 @@
   <div class="scan"></div>
 
   <section class="panel hud" id="hud">
-    <div class="hud-h">Clinician <b>WARD-θ</b></div>
+    <div class="hud-h">Clinician <span class="val">θ</span></div>
     <div class="meta"><span>Trauma</span><span class="val" id="tr">00%</span></div>
     <div class="track"><div class="fill t" id="tf"></div></div>
     <div class="meta"><span>Stabilizers</span><span class="val" id="sr">100%</span></div>
     <div class="track"><div class="fill s" id="sf"></div></div>
   </section>
-
-  <section class="panel radar">
-    <div class="disk" id="disk">
-      <div class="sweep"></div>
-      <span class="blip you"></span>
-    </div>
-  </section>
+  <section class="panel radar"><div class="disk" id="disk"><div class="sweep"></div><span class="blip you"></span></div></section>
 
   <nav class="dock">
     <button class="slot" data-go="ward"><span class="g">▣</span>Ward</button>
-    <button class="slot" data-go="dossier" id="bd"><span class="g">◎</span>Psyche</button>
-    <button class="slot" data-go="atlas"><span class="g">▦</span>Atlas</button>
-    <button class="slot" data-go="session" id="bs"><span class="g">⌬</span>Sit</button>
+    <button class="slot" data-go="dossier"><span class="g">◎</span>Psyche</button>
+    <button class="slot" data-go="sanctum"><span class="g">✦</span>Sanctum</button>
+    <button class="slot" data-go="session"><span class="g">⌬</span>Sit</button>
   </nav>
-
   <div class="toast panel" id="toast"></div>
 
   <section class="screen on" id="screen-boot">
@@ -169,56 +165,63 @@
     <div class="inner">
       <div class="bar">
         <span class="pip panel" id="onl">0 LIVE</span>
-        <span class="pip panel" id="sel">0 SEALED</span>
-        <span class="pip panel" id="att">FIELD OFF</span>
-      </div>
-      <div class="ward-grid">
-        <div class="panel brain-box" id="brain">
-          <svg viewBox="0 0 200 180" aria-hidden="true">
-            <defs>
-              <radialGradient id="g" cx="50%" cy="45%" r="55%">
-                <stop offset="0%" stop-color="#7ae7ff"/>
-                <stop offset="55%" stop-color="#1a7aa8"/>
-                <stop offset="100%" stop-color="#062033"/>
-              </radialGradient>
-            </defs>
-            <ellipse cx="102" cy="88" rx="78" ry="62" fill="url(#g)" opacity=".95"/>
-            <path d="M40 90 C38 50 70 28 102 30 C140 32 168 55 166 92 C164 128 130 148 102 146 C70 144 42 122 40 90Z" fill="none" stroke="#9ef6ff" stroke-width="1.4"/>
-            <path d="M102 32 C108 58 108 90 102 146" fill="none" stroke="#5ad8ff" stroke-width="1"/>
-            <path d="M58 70 C78 62 90 78 102 70 C120 60 140 72 150 86" fill="none" stroke="#bff" stroke-width=".8" opacity=".8"/>
-            <path d="M55 100 C75 108 88 96 102 104 C122 114 142 100 154 108" fill="none" stroke="#bff" stroke-width=".8" opacity=".75"/>
-            <path d="M62 120 C80 128 96 118 102 128 C116 138 138 126 148 122" fill="none" stroke="#8cf" stroke-width=".7" opacity=".7"/>
-            <ellipse cx="102" cy="154" rx="18" ry="8" fill="#0a3044" stroke="#5ad8ff" stroke-width=".6"/>
-            <circle cx="70" cy="78" r="2.2" fill="#e8ffff"/>
-            <circle cx="128" cy="70" r="2" fill="#e8ffff"/>
-            <circle cx="118" cy="110" r="1.6" fill="#fff"/>
-          </svg>
-        </div>
-        <div class="typelist" id="typelist"></div>
-      </div>
-      <div class="floor">
-        <button class="mini panel" id="hold-all">Hold field</button>
+        <span class="pip panel" id="selc">0 SEALED</span>
+        <span class="pip panel" id="setup">SYSTEM OFF</span>
         <button class="mini panel" id="feed-sit">Feed sit</button>
         <button class="mini panel" id="nshift" style="display:none">New shift</button>
+      </div>
+      <div class="ward-wrap">
+        <div class="panel brain-box">
+          <svg viewBox="0 0 200 180">
+            <defs><radialGradient id="g" cx="50%" cy="45%" r="55%"><stop offset="0%" stop-color="#7ae7ff"/><stop offset="100%" stop-color="#062033"/></radialGradient></defs>
+            <ellipse cx="102" cy="88" rx="78" ry="62" fill="url(#g)"/>
+            <path d="M40 90 C38 50 70 28 102 30 C140 32 168 55 166 92 C164 128 130 148 102 146 C70 144 42 122 40 90Z" fill="none" stroke="#9ef6ff" stroke-width="1.4"/>
+            <path d="M102 32 C108 58 108 90 102 146" fill="none" stroke="#5ad8ff"/>
+          </svg>
+        </div>
+        <div>
+          <div class="tabs">
+            <button class="tab on" data-pane="bio">Biorhythm</button>
+            <button class="tab" data-pane="inv">Inventory</button>
+            <button class="tab" data-pane="plsr">PLSR</button>
+            <button class="tab" data-pane="types">Types</button>
+          </div>
+          <div class="pane on panel" id="pane-bio" style="padding:12px">
+            <form class="bio" id="bio-form">
+              <label>Birth date<input type="date" id="bdate" required></label>
+              <label>Name mark<input id="bname" maxlength="18" placeholder="operative"></label>
+              <label class="full"><button class="mini" type="submit">Map cycles</button></label>
+            </form>
+            <div class="rhythms" id="rhythms"></div>
+          </div>
+          <div class="pane" id="pane-inv">
+            <div class="inv">
+              <div class="grid20" id="grid20"></div>
+              <aside class="side" id="inv-side"><h3>Empty slot</h3><p>Sit cards leave relics here when they expire.</p></aside>
+            </div>
+          </div>
+          <div class="pane panel" id="pane-plsr" style="padding:12px">
+            <div class="quiz" id="quiz"></div>
+            <div class="typebox" id="alltypes"></div>
+          </div>
+          <div class="pane" id="pane-types">
+            <div class="typebox" id="typelist"></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="screen" id="screen-dossier">
-    <div class="inner" id="psy"></div>
-  </section>
+  <section class="screen" id="screen-dossier"><div class="inner" id="psy"></div></section>
 
-  <section class="screen" id="screen-atlas">
+  <section class="screen" id="screen-sanctum">
     <div class="inner">
-      <div class="atlas-shell">
-        <nav class="atlas-nav" id="atlas-nav"></nav>
-        <article class="panel depth" id="atlas-depth"></article>
-      </div>
+      <div class="recipes" id="recipes"></div>
     </div>
   </section>
 
   <section class="screen" id="screen-session">
-    <div class="inner">
+    <div class="inner" style="max-width:640px">
       <div class="meta"><span id="sl">Sit</span><span class="val" id="ll">—</span></div>
       <div class="track"><div class="fill l" id="lf"></div></div>
       <div class="incoming" id="in"></div>
@@ -229,66 +232,42 @@
 
 <script>
 const JUNG = [
-  { id:"Te", name:"Extraverted Thinking", shadow:"Fi — unofficial grief",
-    blurb:"Orders the outer measure. Trauma lands when a system will not add up.",
-    depth:"The Ego uses tallies, clocks, and clean edges. Integration is letting a private value exist without a ticket number.",
-    problem:{ title:"Metric Lock", rare:"Seizure-pattern freeze (ward file)",
-      body:"In-game: the type seizes on a number and cannot leave the courtroom. Real epilepsy and seizures are medical events — this file is lore only." },
-    herb:{ name:"Lemon balm", lore:"+4 coherence in Sit if applied. Calms the tally-voice in fiction.", q:"lemon+balm+tea" } },
-  { id:"Ti", name:"Introverted Thinking", shadow:"Fe — weather of the room",
-    blurb:"Builds private architectures. Trauma is a contradiction that will not house.",
-    depth:"Thought is a closed circuit. The Shadow is the room’s mood. Decrypt Fe or the circuit starves.",
-    problem:{ title:"Closed Circuit Fever", rare:"Neural inflammation analog (ward file)",
-      body:"In-game: logic overheats and will not vent. Not a diagnosis of encephalitis or cancer — a psyche file." },
-    herb:{ name:"Lion’s mane", lore:"Fictional mycelial splice. Shop prop for the archive shelf.", q:"lions+mane+mushroom" } },
-  { id:"Fe", name:"Extraverted Feeling", shadow:"Ti — the cold equation",
-    blurb:"Tunes the chorus. Trauma is a break in the room’s weather.",
-    depth:"Care is the Persona. A true thought that would empty the party is the Shadow.",
-    problem:{ title:"Chorus Collapse", rare:"Vasovagal / faint analog (ward file)",
-      body:"In-game: the field drops when no role remains. Fainting and cardiac events in life need a clinician." },
-    herb:{ name:"Hawthorn", lore:"Lore heart-field. Does not treat heart disease.", q:"hawthorn+berry" } },
-  { id:"Fi", name:"Introverted Feeling", shadow:"Te — the world’s crude tally",
-    blurb:"Sealed chapel of values. Trauma is a vow put up for auction.",
-    depth:"The inner court never adjourns. Being measured cuts deeper than being hurt.",
-    problem:{ title:"Silent Chapel", rare:"Autoimmune analog (ward file)",
-      body:"In-game: the chapel attacks its own pews. Real autoimmune disease and cancer are not herbal files." },
-    herb:{ name:"Turmeric", lore:"Gold dust in the chapel lamp. Culinary / shop only.", q:"turmeric+capsules" } },
-  { id:"Se", name:"Extraverted Sensation", shadow:"Ni — unread omen",
-    blurb:"Lives in the fact of now. Trauma is an image with no fists.",
-    depth:"Impact is food. Stillness is the threat. The omen cannot be punched.",
-    problem:{ title:"Impact Blackout", rare:"Post-ictal analog (ward file)",
-      body:"In-game: too much now, then nothing. Real head injury and seizures need emergency care, not tea." },
-    herb:{ name:"Peppermint", lore:"Wakes the now-channel in fiction.", q:"peppermint+tea" } },
-  { id:"Si", name:"Introverted Sensation", shadow:"Ne — futures that refuse the archive",
-    blurb:"Archives exact texture. Trauma is a page going blank.",
-    depth:"The known wound is safer than an unknown hallway. Possibility contaminates the record.",
-    problem:{ title:"Spreading Blank", rare:"Memory-fade analog (ward file)",
-      body:"In-game: the archive whites out. This is not Alzheimer’s or a tumor protocol." },
-    herb:{ name:"Ginkgo", lore:"Shelf leaf for the file room. Not a dementia treatment.", q:"ginkgo+biloba" } },
-  { id:"Ne", name:"Extraverted Intuition", shadow:"Si — unedited body-memory",
-    blurb:"Forks in public air. Trauma is one plate that will not branch.",
-    depth:"Every door opens. The Shadow is the scar that stays a smell.",
-    problem:{ title:"Fork Storm", rare:"Absence-spell analog (ward file)",
-      body:"In-game: too many tomorrows, then a skip. Real absence seizures are a physician’s file." },
-    herb:{ name:"Chamomile", lore:"Slows the fork-count in fiction.", q:"chamomile+tea" } },
-  { id:"Ni", name:"Introverted Intuition", shadow:"Se — raw fact without myth",
-    blurb:"One inner image to its end. Trauma is metal-smell with no symbol.",
-    depth:"The corridor lengthens. The present is treated as rumor until the body arrives.",
-    problem:{ title:"Corridor Fit", rare:"Temporal-lobe analog (ward file)",
-      body:"In-game: the image eats the minute. Epilepsy in life is not solved in this atlas." },
-    herb:{ name:"Valerian", lore:"Night-lock for the corridor. Sedative herb as shop prop only.", q:"valerian+root" } }
+  { id:"Te", name:"Extraverted Thinking", shadow:"Fi grief", blurb:"Orders the outer measure." },
+  { id:"Ti", name:"Introverted Thinking", shadow:"Fe weather", blurb:"Private architectures." },
+  { id:"Fe", name:"Extraverted Feeling", shadow:"Ti equation", blurb:"Tunes the chorus." },
+  { id:"Fi", name:"Introverted Feeling", shadow:"Te tally", blurb:"Sealed chapel of values." },
+  { id:"Se", name:"Extraverted Sensation", shadow:"Ni omen", blurb:"Lives in the fact of now." },
+  { id:"Si", name:"Introverted Sensation", shadow:"Ne futures", blurb:"Archives exact texture." },
+  { id:"Ne", name:"Extraverted Intuition", shadow:"Si body-memory", blurb:"Forks in public air." },
+  { id:"Ni", name:"Introverted Intuition", shadow:"Se raw now", blurb:"One inner image to the end." }
+];
+
+const ITEMS = {
+  ash:   { name:"Ash Vial", glyph:"△", desc:"Residue of a spent Heal. Coherence dust.", stat:"HEAL RELIC" },
+  iron:  { name:"Iron Nail", glyph:"✚", desc:"Spent Defense. Holds a door that wanted to open.", stat:"DEF RELIC" },
+  spark: { name:"Spark Coin", glyph:"⚡", desc:"Spent Action. One decided motion.", stat:"ACT RELIC" },
+  veil:  { name:"Veil Thread", glyph:"◈", desc:"Advanced-problem drop. Thin as a lie.", stat:"ADV RELIC" },
+  seed:  { name:"Lore Seed", glyph:"❀", desc:"Biorhythm mapped. A day counted twice.", stat:"BIO RELIC" }
+};
+
+const RECIPES = [
+  { id:"hearth", name:"Hearth Lock", need:["ash","iron","spark"], ok:"System armed. Sit now draws advanced problems.", miss:"Need Ash + Nail + Spark." },
+  { id:"veilgate", name:"Veil Gate", need:["veil","seed"], ok:"Corridor mapped. Trauma bleeds slower.", miss:"Need Veil Thread + Lore Seed." }
 ];
 
 const TREAT = [
-  { id:"suture", name:"Suture", kind:"Heal", match:[], heal:10, always:true, text:"Mend only." },
-  { id:"integrate", name:"Shadow", kind:"Jung", match:["shadow"], heal:16, text:"Name the refuse." },
-  { id:"interpret", name:"Interpret", kind:"Freud", match:["id","ego","superego"], heal:14, text:"Wish plus law." },
-  { id:"contain", name:"Contain", kind:"Ego", match:["ego","anal"], heal:12, text:"Hold the flood." },
-  { id:"catharsis", name:"Catharsis", kind:"Id", match:["id","oral"], heal:14, text:"Bounded drive." },
-  { id:"persona", name:"Persona", kind:"Jung", match:["persona"], heal:10, text:"Loosen the mask." },
-  { id:"anima", name:"Anima", kind:"Jung", match:["anima"], heal:14, text:"Inner other." },
-  { id:"eros", name:"Eros", kind:"Drive", match:["eros"], heal:16, text:"Re-knit." },
-  { id:"defense", name:"Defense", kind:"Freud", match:["defense","superego"], heal:12, text:"Name the guard." }
+  { id:"heal", role:"heal", name:"Suture",
+    text:"Bind fictional life. Expires into Ash Vial.",
+    lore:"The needle does not argue with the wound. It only closes what will close.",
+    match:[], always:true, heal:12 },
+  { id:"action", role:"action", name:"Interpret",
+    text:"Strike the LIVE text if tags allow. Expires into Spark Coin.",
+    lore:"Wish plus law. One motion through the reel.",
+    match:["id","ego","superego","shadow","oral","persona","anima","eros","defense","anal"], heal:10 },
+  { id:"defense", role:"defense", name:"Contain",
+    text:"Hold intensity. Peel LIVE if ego/anal/defense. Expires into Iron Nail.",
+    lore:"A room around the flood. Not a cure — a wall.",
+    match:["ego","anal","defense","superego"], heal:8 }
 ];
 
 const DECK = [
@@ -296,75 +275,66 @@ const DECK = [
   { text:"The future arrives as a smell of metal.", tags:["shadow","persona"], who:"elara" },
   { text:"The metric was clean. The person was not counted.", tags:["shadow","id"], who:"kael" },
   { text:"Grief without a ticket number.", tags:["shadow","id"], who:"kael" },
-  { text:"The vote has been called back.", tags:["persona","phallic"], who:"nyx" },
+  { text:"The vote has been called back.", tags:["persona"], who:"nyx" },
   { text:"A thought that would end the party grows teeth.", tags:["shadow","superego"], who:"nyx" },
   { text:"A childhood page is blank and spreading.", tags:["defense","oral"], who:"ion" },
   { text:"The old house is furnished. No one lives there.", tags:["thanatos"], who:"ion" },
-  { text:"The room wants a mood. You offer a theorem.", tags:["shadow","persona"], who:"riven" },
   { text:"A feeling will not become a premise.", tags:["id","shadow"], who:"riven" },
   { text:"They scored you. The number was usable.", tags:["shadow","superego"], who:"mira" },
-  { text:"A vow made alone is being auctioned.", tags:["eros"], who:"mira" },
   { text:"Nothing is happening. The omen has no fists.", tags:["shadow"], who:"jax" },
-  { text:"Impact without object.", tags:["id","oral"], who:"jax" },
   { text:"One memory refuses to fork.", tags:["shadow","defense"], who:"sable" },
-  { text:"Every door leads to the same plate.", tags:["anal"], who:"sable" },
-  { text:"The watching parent clears a throat in the ribs.", tags:["superego","defense"], who:null },
   { text:"Hunger with no object.", tags:["id","oral"], who:null },
   { text:"A mask smiles. The Self steps back.", tags:["persona"], who:null },
   { text:"The inner other turns away.", tags:["anima","eros"], who:null }
 ];
 
-function roster() {
+const Q = [
+  { t:"When a room turns, you first…", a:[["count the exits", "P"],["name the rule that broke", "L"],["feel the weather between people", "S"],["check what it means for a vow", "R"]] },
+  { t:"A blank page in the archive is…", a:[["a body event", "P"],["a contradiction to house", "L"],["someone leaving the chorus", "S"],["a value betrayed", "R"]] },
+  { t:"You would rather…", a:[["move until the omen has fists", "P"],["finish the private circuit", "L"],["keep the party from ending", "S"],["let no one tally you", "R"]] },
+  { t:"Shadow looks like…", a:[["stillness", "P"],["the room’s mood", "L"],["a cold equation", "S"],["a public score", "R"]] }
+];
+
+function roster(){
   return [
-    { id:"elara", name:"ELARA VOSS", unit:"07-A3", type:"Ni", persona:"Quiet Oracle", anima:"Judge in a father’s coat",
-      shadow:"Se — the unendurable now", shadowText:"Present tense as rumor.",
-      freud:{ id:22, ego:48, superego:86, stage:"Oral", defense:"Intellectualization" },
+    { id:"elara", name:"ELARA VOSS", unit:"07-A3", type:"Ni", persona:"Quiet Oracle", anima:"Judge-coat",
+      shadow:"Se now", shadowText:"Present as rumor.", freud:{id:22,ego:48,superego:86,stage:"Oral",defense:"Intellectualization"},
       life:88, colors:["#1a2a44","#6aa0c8"] },
-    { id:"kael", name:"KAEL RADEK", unit:"11-F2", type:"Te", persona:"Efficient Blade", anima:"Drowned singer",
-      shadow:"Fi — unofficial grief", shadowText:"A value never ratified.",
-      freud:{ id:40, ego:62, superego:55, stage:"Anal", defense:"Isolation" },
+    { id:"kael", name:"KAEL RADEK", unit:"11-F2", type:"Te", persona:"Blade", anima:"Drowned singer",
+      shadow:"Fi grief", shadowText:"Unratified value.", freud:{id:40,ego:62,superego:55,stage:"Anal",defense:"Isolation"},
       life:84, colors:["#2a1a14","#c88a4a"] },
-    { id:"nyx", name:"NYX SOLANO", unit:"03-K9", type:"Fe", persona:"Warm Frequency", anima:"Glass thinker",
-      shadow:"Ti — cold equation", shadowText:"A true thought that would empty the room.",
-      freud:{ id:58, ego:40, superego:70, stage:"Oedipal", defense:"Reaction formation" },
+    { id:"nyx", name:"NYX SOLANO", unit:"03-K9", type:"Fe", persona:"Frequency", anima:"Glass thinker",
+      shadow:"Ti equation", shadowText:"Thought that empties the room.", freud:{id:58,ego:40,superego:70,stage:"Oedipal",defense:"Reaction"},
       life:82, colors:["#2a1430","#d080b0"] },
-    { id:"ion", name:"ION MARROW", unit:"19-Θ1", type:"Si", persona:"Archivist", anima:"A mutating file",
-      shadow:"Ne — futures that refuse the archive", shadowText:"Possibility as contamination.",
-      freud:{ id:35, ego:55, superego:50, stage:"Latency", defense:"Repression" },
+    { id:"ion", name:"ION MARROW", unit:"19-Θ1", type:"Si", persona:"Archivist", anima:"Mutating file",
+      shadow:"Ne futures", shadowText:"Possibility as stain.", freud:{id:35,ego:55,superego:50,stage:"Latency",defense:"Repression"},
       life:90, colors:["#102018","#6cb890"] },
-    { id:"riven", name:"RIVEN QUILL", unit:"22-C4", type:"Ti", persona:"Closed Circuit", anima:"A laughing next room",
-      shadow:"Fe — weather of the room", shadowText:"Mood that will not parse.",
-      freud:{ id:30, ego:70, superego:48, stage:"Latency", defense:"Rationalization" },
+    { id:"riven", name:"RIVEN QUILL", unit:"22-C4", type:"Ti", persona:"Circuit", anima:"Next-room laugh",
+      shadow:"Fe weather", shadowText:"Mood that will not parse.", freud:{id:30,ego:70,superego:48,stage:"Latency",defense:"Rationalization"},
       life:86, colors:["#121826","#7aa0d0"] },
-    { id:"mira", name:"MIRA KEST", unit:"08-L7", type:"Fi", persona:"Private Chapel", anima:"Public clerk",
-      shadow:"Te — crude tally", shadowText:"Being measured cuts deeper than being hurt.",
-      freud:{ id:44, ego:42, superego:72, stage:"Genital", defense:"Against self" },
+    { id:"mira", name:"MIRA KEST", unit:"08-L7", type:"Fi", persona:"Chapel", anima:"Public clerk",
+      shadow:"Te tally", shadowText:"Measured, not hurt.", freud:{id:44,ego:42,superego:72,stage:"Genital",defense:"Against self"},
       life:80, colors:["#1c1428","#c9a0e0"] },
-    { id:"jax", name:"JAX ORRIN", unit:"14-S0", type:"Se", persona:"Live Wire", anima:"A loud prophet",
-      shadow:"Ni — unread omen", shadowText:"Meaning he cannot punch.",
-      freud:{ id:68, ego:38, superego:28, stage:"Oral", defense:"Acting out" },
+    { id:"jax", name:"JAX ORRIN", unit:"14-S0", type:"Se", persona:"Live Wire", anima:"Loud prophet",
+      shadow:"Ni omen", shadowText:"Meaning without fists.", freud:{id:68,ego:38,superego:28,stage:"Oral",defense:"Acting out"},
       life:79, colors:["#2a220c","#e0b050"] },
-    { id:"sable", name:"SABLE WREN", unit:"05-N6", type:"Ne", persona:"Forking Mouth", anima:"One unedited memory",
-      shadow:"Si — unedited body-memory", shadowText:"A scar that will not metaphorize.",
-      freud:{ id:50, ego:46, superego:40, stage:"Anal", defense:"Displacement" },
+    { id:"sable", name:"SABLE WREN", unit:"05-N6", type:"Ne", persona:"Fork", anima:"One memory",
+      shadow:"Si scar", shadowText:"Will not metaphorize.", freud:{id:50,ego:46,superego:40,stage:"Anal",defense:"Displacement"},
       life:83, colors:["#0e2430","#5ad0c0"] }
-  ].map((p) => Object.assign(p, { sealed:false, archived:false, alert:false }));
+  ].map(p=>Object.assign(p,{sealed:false,archived:false,alert:false}));
 }
 
 const S = {
-  screen:"boot", P: roster(), sel:null, attend:null, field:false,
-  trauma:0, stab:100, incoming:[], hand:[], tick:null, ward:null, mx:null
+  screen:"boot", P:roster(), sel:null, field:false, advanced:false, hearth:false, veil:false,
+  trauma:0, stab:100, incoming:[], tick:null, ward:null, mx:null,
+  inv: Array(20).fill(null), pick:-1, qi:0, qs:{P:0,L:0,S:0,R:0}, mapped:false
 };
 
-const $ = (id) => document.getElementById(id);
+const $ = id => document.getElementById(id);
 function toast(m){ const e=$("toast"); e.textContent=m; e.classList.add("show"); setTimeout(()=>e.classList.remove("show"),1400); }
 function hud(){
   $("tf").style.width=S.trauma+"%"; $("tr").textContent=String(S.trauma).padStart(2,"0")+"%";
   $("sf").style.width=S.stab+"%"; $("sr").textContent=S.stab+"%";
-  $("hud").classList.toggle("warn", S.trauma>=55);
-}
-function av(p){
-  return `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="${p.colors[0]}"/><circle cx="32" cy="26" r="12" fill="${p.colors[1]}"/><ellipse cx="32" cy="52" rx="18" ry="16" fill="${p.colors[1]}" opacity=".7"/></svg>`;
 }
 
 function go(name){
@@ -376,7 +346,71 @@ function go(name){
   if(name==="ward") paintWard();
   if(name==="dossier") paintPsyche();
   if(name==="session") paintSession();
-  if(name==="atlas") paintAtlas(S.atlasId||"Ni", S.atlasTab||"type");
+  if(name==="sanctum") paintSanctum();
+}
+
+function liveList(){ return S.P.filter(p=>!p.sealed && !p.archived && p.life>0); }
+
+function feed(){
+  const live=liveList();
+  if(!live.length){ toast("Floor empty"); go("ward"); return false; }
+  if(!(S.sel && !S.sel.sealed && live.includes(S.sel)))
+    S.sel=live[Math.floor(Math.random()*live.length)];
+  S.incoming=[];
+  return true;
+}
+
+function addItem(key){
+  const i=S.inv.findIndex(x=>!x);
+  if(i<0){ toast("Pack full"); return; }
+  S.inv[i]=key; toast("Relic · "+ITEMS[key].name);
+  if(S.screen==="ward") paintInv();
+}
+
+function paintInv(){
+  $("grid20").innerHTML=S.inv.map((k,i)=>{
+    const it=k?ITEMS[k]:null;
+    return `<button class="sq ${k?"":"empty"} ${S.pick===i?"on":""}" data-i="${i}">${it?it.glyph:""}</button>`;
+  }).join("");
+  $("grid20").querySelectorAll(".sq").forEach(b=>b.onclick=()=>{
+    S.pick=+b.dataset.i; paintInv();
+    const it=ITEMS[S.inv[S.pick]];
+    $("inv-side").innerHTML=it
+      ? `<h3>${it.name}</h3><p>${it.desc}</p><div class="st">${it.stat}</div>`
+      : `<h3>Empty</h3><p>Expire a Sit card to fill this square.</p>`;
+  });
+}
+
+function hasAll(keys){ return keys.every(k=>S.inv.includes(k)); }
+
+function paintSanctum(){
+  $("recipes").innerHTML=RECIPES.map(r=>{
+    const ready=hasAll(r.need);
+    return `<div class="panel rec ${ready?"on":""}">
+      <strong>${r.name}</strong>
+      <p class="val" style="margin:6px 0">${r.need.map(k=>ITEMS[k].name).join(" + ")}</p>
+      <button class="mini" data-r="${r.id}" ${ready?"":"disabled"}>${ready?"Setup":"Locked"}</button>
+    </div>`;
+  }).join("");
+  $("recipes").querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{
+    const r=RECIPES.find(x=>x.id===b.dataset.r);
+    if(!hasAll(r.need)) return;
+    r.need.forEach(k=>{ const i=S.inv.indexOf(k); if(i>=0) S.inv[i]=null; });
+    if(r.id==="hearth"){ S.hearth=true; S.advanced=true; }
+    if(r.id==="veilgate"){ S.veil=true; }
+    toast(r.ok); paintSanctum(); paintWard();
+  });
+}
+
+function paintWard(){
+  $("onl").textContent=liveList().length+" LIVE";
+  $("selc").textContent=S.P.filter(p=>p.sealed&&!p.archived).length+" SEALED";
+  $("setup").textContent=S.hearth?"SYSTEM ON":"SYSTEM OFF";
+  $("nshift").style.display=liveList().length? "none":"inline-block";
+  paintInv();
+  $("typelist").innerHTML=JUNG.map(j=>`<div class="panel tp"><b>${j.id}</b> ${j.name}<br><span class="val">${j.shadow}</span></div>`).join("");
+  $("alltypes").innerHTML=JUNG.map(j=>`<div class="panel tp"><b>${j.id}</b> ${j.name}</div>`).join("");
+  paintRadar(); paintQuiz();
 }
 
 function paintRadar(){
@@ -385,67 +419,57 @@ function paintRadar(){
   S.P.filter(p=>!p.archived).forEach((p,i)=>{
     const b=document.createElement("span");
     b.className="blip"+(p.sealed?" dead":"");
-    b.style.left=(18+ (i*9)%64)+"%";
-    b.style.top=(22+(i*13)%58)+"%";
+    b.style.left=(18+(i*9)%64)+"%"; b.style.top=(22+(i*13)%58)+"%";
     disk.appendChild(b);
   });
 }
 
-function liveList(){ return S.P.filter(p=>!p.sealed && !p.archived && p.life>0); }
-
-function feed(){
-  const live=liveList();
-  if(!live.length){ toast("Floor empty"); go("ward"); return false; }
-  let p=live[Math.floor(Math.random()*live.length)];
-  if(S.sel && !S.sel.sealed && live.includes(S.sel)) p=S.sel;
-  else if(S.sel && S.sel.sealed) p=live[Math.floor(Math.random()*live.length)];
-  S.sel=p; S.incoming=[];
-  $("bd").disabled=false; $("bs").disabled=false;
-  return true;
+function cycle(days, period){
+  const x=Math.sin(2*Math.PI*(days%period)/period);
+  return Math.round((x+1)*50);
+}
+function mapBio(dateStr){
+  const born=new Date(dateStr+"T00:00:00");
+  const days=Math.floor((Date.now()-born.getTime())/86400000);
+  const phys=cycle(days,23), emo=cycle(days,28), intel=cycle(days,33);
+  $("rhythms").innerHTML=`
+    <div><div class="n">Physical ${phys}%</div><div class="track"><div class="fill l" style="width:${phys}%"></div></div></div>
+    <div><div class="n">Emotional ${emo}%</div><div class="track"><div class="fill t" style="width:${emo}%"></div></div></div>
+    <div><div class="n">Intellectual ${intel}%</div><div class="track"><div class="fill s" style="width:${intel}%"></div></div></div>
+    <p class="val" style="margin-top:8px">Lore: ${phys>=60?"body-channel open":"body ebb"} · ${emo>=60?"feeling-tide":"feeling neap"} · ${intel>=60?"circuit bright":"circuit dim"}</p>`;
+  if(!S.mapped){ S.mapped=true; addItem("seed"); }
 }
 
-function paintWard(){
-  const live=liveList();
-  const sealed=S.P.filter(p=>p.sealed && !p.archived);
-  $("onl").textContent=live.length+" LIVE";
-  $("sel").textContent=sealed.length+" SEALED";
-  $("att").textContent=S.field?"FIELD ON":"FIELD OFF";
-  $("nshift").style.display=live.length===0?"inline-block":"none";
-  paintRadar();
-  $("typelist").innerHTML=JUNG.map(j=>{
-    const n=S.P.filter(p=>p.type===j.id && !p.archived);
-    const live=n.filter(p=>!p.sealed && p.life>0).length;
-    return `<button class="panel tp" data-type="${j.id}">
-      <div class="id">${j.id} · ${j.name}</div>
-      <div class="nm">Shadow ${j.shadow}</div>
-    </button>`;
-  }).join("");
-  $("typelist").querySelectorAll("[data-type]").forEach(b=>b.onclick=()=>{ go("atlas"); paintAtlas(b.dataset.type,"type"); });
-}
-
-function holdField(){
-  S.field=!S.field;
-  S.stab=Math.max(0,S.stab-(S.field?10:0));
-  S.P.forEach(p=>{ if(!p.sealed) p.alert=false; });
-  hud(); toast(S.field?"Field on":"Field off"); paintWard();
+function paintQuiz(){
+  const box=$("quiz");
+  if(S.qi>=Q.length){
+    const map={P:"Se",L:"Ti",S:"Fe",R:"Fi"};
+    const top=Object.entries(S.qs).sort((a,b)=>b[1]-a[1])[0][0];
+    const j=JUNG.find(x=>x.id===map[top]);
+    box.innerHTML=`<p>PLSR  P${S.qs.P} L${S.qs.L} S${S.qs.S} R${S.qs.R}</p>
+      <p>Mapped type · <b>${j.id} ${j.name}</b></p>
+      <p>${j.blurb}</p>`;
+    return;
+  }
+  const q=Q[S.qi];
+  box.innerHTML=`<p>${q.t}</p><div class="opts">${q.a.map((o,i)=>`<button class="mini panel" data-k="${o[1]}">${o[0]}</button>`).join("")}</div>`;
+  box.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{ S.qs[b.dataset.k]++; S.qi++; paintQuiz(); });
 }
 
 function stopMx(){ if(S.mx){ cancelAnimationFrame(S.mx); S.mx=null; } }
 function startMx(c){
   stopMx();
   const ctx=c.getContext("2d");
-  const g="01アイウエオカキクケコサシスセソタチツテトナニヌネノΔΨΩθλΣﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ";
+  const g="01アイウエオカキクケコΔΨΩθλΣ";
   let w,h,cols,drops;
-  function sz(){ w=c.width=c.offsetWidth||640; h=c.height=c.offsetHeight||440; cols=Math.max(8,Math.floor(w/14)); drops=Array.from({length:cols},()=>Math.random()*-30); }
+  function sz(){ w=c.width=c.offsetWidth||640; h=c.height=c.offsetHeight||400; cols=Math.max(8,Math.floor(w/14)); drops=Array.from({length:cols},()=>Math.random()*-20); }
   sz();
   (function frame(){
-    ctx.fillStyle="rgba(2,6,4,0.14)"; ctx.fillRect(0,0,w,h);
+    ctx.fillStyle="rgba(2,6,4,.14)"; ctx.fillRect(0,0,w,h);
     ctx.font="13px monospace";
     for(let i=0;i<drops.length;i++){
-      ctx.fillStyle=i%7===0?"#e8ffe8":"#2ee67a";
-      ctx.fillText(g[Math.floor(Math.random()*g.length)], i*14, drops[i]*16);
-      drops[i]+=0.7+Math.random()*0.35;
-      if(drops[i]*16>h && Math.random()>0.975) drops[i]=-6;
+      ctx.fillStyle="#2ee67a"; ctx.fillText(g[Math.floor(Math.random()*g.length)], i*14, drops[i]*16);
+      drops[i]+=0.7; if(drops[i]*16>h && Math.random()>.975) drops[i]=-6;
     }
     S.mx=requestAnimationFrame(frame);
   })();
@@ -453,72 +477,47 @@ function startMx(c){
 
 function paintPsyche(){
   if(!S.sel || S.sel.sealed){ if(!feed()) return; }
-  const p=S.sel;
-  if(!p || p.sealed){ go("ward"); return; }
-  const j=JUNG.find(x=>x.id===p.type);
-  const L={
-    type: j.name+" · "+p.persona,
-    shadow: p.shadow+" — "+p.shadowText,
-    id: "Id "+p.freud.id+" · "+p.freud.stage,
-    ego: "Ego "+p.freud.ego+" · "+p.freud.defense,
-    superego: "Superego "+p.freud.superego,
-    anima: p.anima
-  };
+  const p=S.sel, j=JUNG.find(x=>x.id===p.type);
+  const L={ type:j.name+" · "+p.persona, shadow:p.shadow+" — "+p.shadowText, id:"Id "+p.freud.id, ego:"Ego "+p.freud.ego, anima:p.anima };
   $("psy").innerHTML=`<div class="mxbox"><canvas id="matrix"></canvas>
-    <div class="decrypt">
-      <div class="line">${p.name}  ${p.unit}</div>
-      <div class="line" id="mxo">_</div>
-      <div class="chips">${Object.keys(L).map(k=>`<button class="chip" data-k="${k}">${k}</button>`).join("")}
-        <button class="chip" id="sit2">Sit</button></div>
-    </div></div>`;
+    <div class="decrypt"><div class="line">${p.name} ${p.unit}</div><div class="line" id="mxo">_</div>
+    <div class="chips">${Object.keys(L).map(k=>`<button class="chip" data-k="${k}">${k}</button>`).join("")}
+    <button class="chip" id="sit2">Sit</button></div></div></div>`;
   startMx($("matrix"));
-  $("psy").querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{ $("mxo").textContent=L[b.dataset.k]; b.classList.add("on"); });
+  $("psy").querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>$("mxo").textContent=L[b.dataset.k]);
   $("sit2").onclick=()=>go("session");
 }
 
-function deal(){
-  const pool=TREAT.filter(t=>!t.always).sort(()=>Math.random()-.5);
-  S.hand=[TREAT[0], ...pool.slice(0,4)].sort(()=>Math.random()-.5);
-  $("hand").innerHTML=S.hand.map(t=>`<button class="panel card treat" data-id="${t.id}">
-    <div class="k">${t.kind}</div><div class="b"><strong>${t.name}</strong>${t.text}</div></button>`).join("");
+function dealHand(){
+  $("hand").innerHTML=TREAT.map(t=>`<button class="panel card treat ${t.role}" data-id="${t.id}">
+    <div class="k">${t.role}</div><strong>${t.name}</strong>
+    <div class="b">${t.text}<br><br>${t.lore}</div></button>`).join("");
   $("hand").querySelectorAll(".treat").forEach(b=>b.onclick=()=>play(b.dataset.id));
 }
 
 function paintIn(){
   $("in").innerHTML=S.incoming.map((c,i)=>`<article class="panel card trauma ${i===0?"live":""}">
-    <span class="amp">${"▲".repeat(c.amp||1)}</span>
-    <div class="k">${i===0?"LIVE ×"+(c.amp||1):"WAIT"}</div>
-    <div class="b">${c.text}</div></article>`).join("");
+    <div class="k">${i===0?"LIVE ×"+(c.amp||1):"WAIT"}</div><div class="b">${c.text}</div></article>`).join("");
 }
-
 function paintLife(){
   if(!S.sel) return;
-  $("sl").textContent=S.sel.name;
+  $("sl").textContent=S.sel.name+(S.advanced?" · ADV":"");
   $("ll").textContent=Math.round(S.sel.life)+"%";
   $("lf").style.width=S.sel.life+"%";
 }
-
 function log(h){ $("log").innerHTML=`<div>${h}</div>`+$("log").innerHTML; }
 
 function drawTrauma(){
   const p=S.sel; if(!p||p.sealed) return;
-  const pool=DECK.filter(c=>!c.who||c.who===p.id);
+  let pool=DECK.filter(c=>!c.who||c.who===p.id);
+  if(S.advanced) pool=pool.concat(DECK.filter(c=>!c.who));
   const c=pool[Math.floor(Math.random()*pool.length)];
-  const amp=1+Math.floor(Math.random()*2);
-  S.incoming.push({...c, amp});
-  S.incoming=S.incoming.slice(-3);
+  const amp=1+Math.floor(Math.random()*(S.advanced?3:2));
+  S.incoming.push({...c, amp}); S.incoming=S.incoming.slice(-3);
   S.trauma=Math.min(100,S.trauma+amp*4);
   p.life=Math.max(0,p.life-amp);
   hud(); paintIn(); paintLife();
   if(p.life<=0) seal(p);
-}
-
-function escalate(){
-  const live=S.incoming[0]; if(!live||!S.sel) return;
-  live.amp=Math.min(4,(live.amp||1)+1);
-  S.sel.life=Math.max(0,S.sel.life-live.amp);
-  S.trauma=Math.min(100,S.trauma+live.amp*2);
-  paintIn();
 }
 
 function play(id){
@@ -526,52 +525,52 @@ function play(id){
   const t=TREAT.find(x=>x.id===id);
   const live=S.incoming[0];
   S.stab=Math.max(0,S.stab-5);
+  const drop=t.role==="heal"?"ash":t.role==="defense"?"iron":"spark";
   if(t.always){
-    p.life=Math.min(100,p.life+(t.heal||8));
+    p.life=Math.min(100,p.life+t.heal);
     S.trauma=Math.max(0,S.trauma-6);
-    log(`<span class="good">${t.name}</span>`);
+    addItem(drop); log(`<span class="good">${t.role}</span> expires · ${ITEMS[drop].name}`);
     hud(); paintLife(); return;
   }
   const hit=live && t.match.some(m=>live.tags.includes(m));
   if(hit){
     const amp=live.amp||1;
     S.incoming.shift();
-    S.trauma=Math.max(0,S.trauma-(10+amp*4));
+    S.trauma=Math.max(0,S.trauma-(10+amp*3));
     p.life=Math.min(100,p.life+t.heal);
-    log(`<span class="good">${t.name} ×${amp}</span>`);
-    deal();
+    addItem(drop);
+    if(S.advanced && Math.random()<.35) addItem("veil");
+    log(`<span class="good">${t.role} ×${amp}</span>`);
   } else {
     S.trauma=Math.min(100,S.trauma+8);
     p.life=Math.max(0,p.life-7);
-    log(`<span class="bad">${t.name}</span>`);
+    addItem(drop);
+    log(`<span class="bad">${t.role} miss</span> · relic still drops`);
   }
   hud(); paintIn(); paintLife();
   if(p.life<=0) seal(p);
 }
 
 function seal(p){
-  p.life=0; p.sealed=true; p.alert=false;
-  S.trauma=Math.min(100,S.trauma+18);
-  if(S.sel && S.sel.id===p.id) S.sel=null;
-  hud(); toast("Sealed");
-  if(liveList().length){ feed(); paintSession(); }
-  else go("ward");
+  p.life=0; p.sealed=true;
+  S.trauma=Math.min(100,S.trauma+16);
+  if(S.sel&&S.sel.id===p.id) S.sel=null;
+  toast("Sealed");
+  if(liveList().length){ feed(); paintSession(); } else go("ward");
 }
 
 function paintSession(){
-  if(!S.sel || S.sel.sealed || S.sel.life<=0){
-    if(!feed()) return;
-  }
+  if(!S.sel||S.sel.sealed||S.sel.life<=0){ if(!feed()) return; }
   if(S.tick) clearInterval(S.tick);
   S.incoming=[]; $("log").innerHTML="";
-  deal(); paintIn(); paintLife();
+  dealHand(); paintIn(); paintLife();
   S.tick=setInterval(()=>{
     if(S.screen!=="session"||!S.sel||S.sel.sealed) return;
-    S.sel.life=Math.max(0,S.sel.life-0.4);
+    S.sel.life=Math.max(0,S.sel.life-(S.veil?0.2:0.4));
     S.stab=Math.min(100,S.stab+2);
-    if(S.incoming[0]) escalate();
-    if(Math.random()<0.34) drawTrauma();
-    paintLife(); hud();
+    if(S.incoming[0]){ S.incoming[0].amp=Math.min(4,(S.incoming[0].amp||1)+1); S.sel.life=Math.max(0,S.sel.life-S.incoming[0].amp); }
+    if(Math.random()<(S.advanced?0.42:0.32)) drawTrauma();
+    paintLife(); paintIn(); hud();
     if(S.sel.life<=0) seal(S.sel);
   },4000);
 }
@@ -580,62 +579,26 @@ function pulse(){
   if(S.ward) return;
   S.ward=setInterval(()=>{
     S.P.forEach(p=>{
-      if(p.archived) return;
-      if(p.life<=0){ p.sealed=true; return; }
-      if(p.sealed) return;
-      if(S.sel && S.sel.id===p.id && S.screen==="session") return;
-      const hold=S.field;
-      p.life=Math.max(0,p.life-(hold?0.08:0.24));
-      if(Math.random()<0.16){ p.alert=true; p.life=Math.max(0,p.life-2); S.trauma=Math.min(100,S.trauma+3); }
+      if(p.archived||p.sealed) return;
+      if(S.sel&&S.sel.id===p.id&&S.screen==="session") return;
+      p.life=Math.max(0,p.life-0.2);
       if(p.life<=0) p.sealed=true;
     });
-    hud();
-    if(S.screen==="ward") paintWard();
-  },4000);
-}
-
-function newShift(){
-  S.P=roster(); S.sel=null; S.attend=null; S.field=false; S.incoming=[]; S.trauma=0; S.stab=100;
-  hud(); toast("New shift"); feed(); go("session");
-}
-
-function paintAtlas(id, tab){
-  S.atlasId=id||"Ni"; S.atlasTab=tab||"type";
-  const j=JUNG.find(x=>x.id===S.atlasId)||JUNG[7];
-  $("atlas-nav").innerHTML=JUNG.map(t=>`<button class="panel tc ${t.id===j.id?"on":""}" data-id="${t.id}">
-    <h3>${t.id}</h3><p>${t.name}</p></button>`).join("");
-  $("atlas-nav").querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>paintAtlas(b.dataset.id, S.atlasTab));
-  const shop="https://www.amazon.com/s?k="+encodeURIComponent(j.herb.q.replace(/\+/g," "));
-  const panes={
-    type:`<p class="prose">${j.blurb}</p><p class="prose" style="margin-top:8px">${j.depth}</p>`,
-    shadow:`<p class="prose"><strong>Shadow.</strong> ${j.shadow}</p><p class="prose" style="margin-top:8px">Treatment cards tagged shadow speak here. Persona cards do not.</p>`,
-    problem:`<p class="prose"><strong>${j.problem.title}</strong> — ${j.problem.rare}</p><p class="prose" style="margin-top:8px">${j.problem.body}</p>
-      <p class="note">Rare-problem files in this atlas are fictional ward lore. Seizures, epilepsy, and cancer are real medical conditions. They are not treated by this game or by herbs.</p>`,
-    materia:`<p class="prose"><strong>${j.herb.name}</strong> — ${j.herb.lore}</p>
-      <a class="aid" href="${shop}" target="_blank" rel="noopener">Amazon search · ${j.herb.name}</a>
-      <button class="aid" id="apply-aid" type="button">Apply lore aid in Sit (+4 life)</button>
-      <p class="note">Shop link is a search, not a prescription. Lore aid is a game buff only.</p>`
-  };
-  $("atlas-depth").innerHTML=`<h2>${j.id} · ${j.name}</h2>
-    <div class="subs">
-      ${["type","shadow","problem","materia"].map(k=>`<button class="chip ${k===S.atlasTab?"on":""}" data-tab="${k}">${k}</button>`).join("")}
-    </div>
-    <div id="apane">${panes[S.atlasTab]||panes.type}</div>`;
-  $("atlas-depth").querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>paintAtlas(j.id, b.dataset.tab));
-  const apply=$("apply-aid");
-  if(apply) apply.onclick=()=>{
-    if(S.sel && !S.sel.sealed){ S.sel.life=Math.min(100,S.sel.life+4); toast("Lore aid"); }
-    else toast("No one in Sit");
-  };
+    hud(); if(S.screen==="ward") paintWard();
+  },4500);
 }
 
 hud();
 $("enter").onclick=()=>{ pulse(); feed(); go("session"); };
-$("nshift").onclick=newShift;
-$("hold-all").onclick=holdField;
+$("nshift").onclick=()=>{ S.P=roster(); S.sel=null; S.trauma=0; S.stab=100; feed(); go("session"); };
 $("feed-sit").onclick=()=>{ S.sel=null; if(feed()) go("session"); };
+$("bio-form").onsubmit=e=>{ e.preventDefault(); if($("bdate").value) mapBio($("bdate").value); };
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll(".pane").forEach(x=>x.classList.remove("on"));
+  t.classList.add("on"); $("pane-"+t.dataset.pane).classList.add("on");
+});
 document.querySelectorAll(".dock .slot").forEach(b=>b.onclick=()=>{
-  if(b.disabled) return;
   if(b.dataset.go==="session"){ feed(); go("session"); return; }
   if(b.dataset.go==="dossier"){ feed(); go("dossier"); return; }
   go(b.dataset.go);
