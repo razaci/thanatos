@@ -69,11 +69,14 @@
 
     .bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
     .pip { padding: 6px 8px; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; }
-    .channels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
-    .ch { padding: 12px 8px; min-height: 88px; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; }
-    .ch.hot { border-color: #ff3b4e88; box-shadow: 0 0 12px #ff3b4e44; }
-    .ch.dead { opacity: .35; filter: grayscale(1); }
-    .ch .n { font-size: 8px; letter-spacing: .2em; color: var(--muted); }
+    .ward-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    @media (min-width: 700px) { .ward-grid { grid-template-columns: 1fr 1fr; } }
+    .brain-box { position: relative; min-height: 260px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(ellipse at 50% 45%, #0a2a3a, #05070c 70%); }
+    .brain-box svg { width: min(100%, 360px); height: auto; filter: drop-shadow(0 0 18px #2ee6ff66); }
+    .typelist { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .tp { padding: 8px; text-align: left; }
+    .tp .id { font-size: 11px; letter-spacing: .12em; color: #5ab4ff; }
+    .tp .nm { font-size: 8px; letter-spacing: .08em; color: var(--muted); margin-top: 3px; text-transform: uppercase; }
     .floor { display: flex; gap: 8px; margin-top: 12px; }
     .floor .mini { flex: 1; padding: 14px 8px; font-size: 10px; }
     .mini { flex: 1; padding: 6px 2px; font-size: 8px; letter-spacing: .1em; text-transform: uppercase; border: 1px solid #5ab4ff44; color: var(--muted); border-radius: 4px; }
@@ -159,7 +162,30 @@
         <span class="pip panel" id="sel">0 SEALED</span>
         <span class="pip panel" id="att">FIELD OFF</span>
       </div>
-      <div class="channels" id="channels"></div>
+      <div class="ward-grid">
+        <div class="panel brain-box" id="brain">
+          <svg viewBox="0 0 200 180" aria-hidden="true">
+            <defs>
+              <radialGradient id="g" cx="50%" cy="45%" r="55%">
+                <stop offset="0%" stop-color="#7ae7ff"/>
+                <stop offset="55%" stop-color="#1a7aa8"/>
+                <stop offset="100%" stop-color="#062033"/>
+              </radialGradient>
+            </defs>
+            <ellipse cx="102" cy="88" rx="78" ry="62" fill="url(#g)" opacity=".95"/>
+            <path d="M40 90 C38 50 70 28 102 30 C140 32 168 55 166 92 C164 128 130 148 102 146 C70 144 42 122 40 90Z" fill="none" stroke="#9ef6ff" stroke-width="1.4"/>
+            <path d="M102 32 C108 58 108 90 102 146" fill="none" stroke="#5ad8ff" stroke-width="1"/>
+            <path d="M58 70 C78 62 90 78 102 70 C120 60 140 72 150 86" fill="none" stroke="#bff" stroke-width=".8" opacity=".8"/>
+            <path d="M55 100 C75 108 88 96 102 104 C122 114 142 100 154 108" fill="none" stroke="#bff" stroke-width=".8" opacity=".75"/>
+            <path d="M62 120 C80 128 96 118 102 128 C116 138 138 126 148 122" fill="none" stroke="#8cf" stroke-width=".7" opacity=".7"/>
+            <ellipse cx="102" cy="154" rx="18" ry="8" fill="#0a3044" stroke="#5ad8ff" stroke-width=".6"/>
+            <circle cx="70" cy="78" r="2.2" fill="#e8ffff"/>
+            <circle cx="128" cy="70" r="2" fill="#e8ffff"/>
+            <circle cx="118" cy="110" r="1.6" fill="#fff"/>
+          </svg>
+        </div>
+        <div class="typelist" id="typelist"></div>
+      </div>
       <div class="floor">
         <button class="mini panel" id="hold-all">Hold field</button>
         <button class="mini panel" id="feed-sit">Feed sit</button>
@@ -332,12 +358,12 @@ function paintWard(){
   $("att").textContent=S.field?"FIELD ON":"FIELD OFF";
   $("nshift").style.display=live.length===0?"inline-block":"none";
   paintRadar();
-  const chans=S.P.filter(p=>!p.archived);
-  $("channels").innerHTML=chans.map((p,i)=>{
-    const dead=p.sealed||p.life<=0;
-    return `<div class="panel ch ${dead?"dead":""} ${p.alert?"hot":""}">
-      <div class="n">CH ${String(i+1).padStart(2,"0")}</div>
-      <div class="track"><div class="fill l" style="width:${dead?0:p.life}%"></div></div>
+  $("typelist").innerHTML=JUNG.map(j=>{
+    const n=S.P.filter(p=>p.type===j.id && !p.archived);
+    const live=n.filter(p=>!p.sealed && p.life>0).length;
+    return `<div class="panel tp">
+      <div class="id">${j.id} · ${j.name}</div>
+      <div class="nm">Shadow ${j.shadow}</div>
     </div>`;
   }).join("");
 }
