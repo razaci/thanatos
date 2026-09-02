@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD · Floor Playable Fixed Edition</title>
+  <title>THANATOS WARD · Psyche Sanctum Working Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -390,6 +390,33 @@
 @media(max-width:850px){.seq-shell{grid-template-columns:1fr}}
 @media(max-width:560px){.hyp-grid{grid-template-columns:1fr}.seq-readout{grid-template-columns:1fr}.seq-task{grid-template-columns:22px 1fr}.seq-task button{grid-column:2;width:100%}}
 
+
+/* === WORKING PSYCHE + SANCTUM === */
+.simple-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:7px 0}
+.simple-tabs button.on{border-color:#e8c36a;background:#171104;color:#ffe6a1}
+.easy-panel{padding:10px}
+.easy-panel h3{margin:0 0 6px;font:9px "Share Tech Mono";letter-spacing:.12em;color:#d4f0ff}
+.easy-note{padding:8px;border-left:2px solid #e8c36a66;background:#100c04;font:8px/1.45 "Share Tech Mono";color:#c2af7b}
+.easy-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}
+.easy-stat{padding:7px;border:1px solid #48687b44;background:#050c11}
+.easy-stat b{display:block;font:7px "Share Tech Mono";color:#96bdd4}.easy-stat span{font:9px "Share Tech Mono";color:#d9eef9}
+.easy-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.easy-actions button{min-height:42px}
+.psy-page,.san-page{display:none}.psy-page.on,.san-page.on{display:block}
+.hyp3{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.hyp3 select,.patient-select2{width:100%;background:#03070a;color:#d7effb;border:1px solid #4a6b7f55;padding:8px;font:8px "Share Tech Mono"}
+.planline{padding:7px;border-left:2px solid #45677a55;background:#061019;margin-bottom:5px;font:8px/1.4 "Share Tech Mono";color:#8fa7b8}
+.planline.done{border-color:#68ce98;color:#a0e8be}
+.toolrow{padding:8px;border:1px solid #48687a44;background:#050c11;margin-bottom:5px}
+.toolrow b{display:block;font:8px "Share Tech Mono";color:#ceeaf8}
+.toolrow span{display:block;font:7px/1.4 "Share Tech Mono";color:#819bad;margin:3px 0 6px}
+.relicline{display:flex;justify-content:space-between;gap:8px;padding:7px;border-bottom:1px solid #39586933;font:8px "Share Tech Mono"}
+.relicline b{color:#d4efff}.relicline span{color:#7f9aad}
+.reward4{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.reward4 .reward-stat{min-width:0}
+@media(max-width:700px){.easy-grid{grid-template-columns:1fr}.easy-actions{grid-template-columns:1fr}.hyp3{grid-template-columns:1fr}.reward4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.simple-tabs{grid-template-columns:repeat(2,1fr)}}
+
 </style>
 </head>
 <body>
@@ -593,50 +620,118 @@
 </section>
 
 
-  <section class="screen" id="screen-dossier"><div class="inner" id="psy"></div></section>
+  
+<section class="screen" id="screen-dossier">
+  <div class="inner">
+    <div class="panel easy-panel">
+      <div class="smallcaps">PSYCHE // CASE WORKSPACE</div>
+      <div class="easy-note" id="psy-next">Choose a patient from Cases or Floor.</div>
+    </div>
+    <div class="simple-tabs">
+      <button class="mini panel on" data-psy-tab="overview">Overview</button>
+      <button class="mini panel" data-psy-tab="evidence">Evidence</button>
+      <button class="mini panel" data-psy-tab="hypothesis">Hypothesis</button>
+      <button class="mini panel" data-psy-tab="plan">Plan</button>
+    </div>
+
+    <div class="psy-page on" id="psy-overview-page">
+      <div class="panel easy-panel"><h3>CASE OVERVIEW</h3><div class="easy-grid" id="psy-overview-grid"></div></div>
+      <div class="panel easy-panel" style="margin-top:7px"><h3>CASE ARC</h3><div id="psy-arc-simple"></div></div>
+      <div class="panel easy-panel" style="margin-top:7px"><h3>FUNCTIONAL STATE</h3><div class="easy-grid" id="psy-function-simple"></div></div>
+    </div>
+
+    <div class="psy-page" id="psy-evidence-page">
+      <div class="panel easy-panel"><h3>EVIDENCE BOARD</h3><div id="psy-evidence-simple"></div></div>
+    </div>
+
+    <div class="psy-page" id="psy-hypothesis-page">
+      <div class="panel easy-panel">
+        <h3>HYPOTHESIS ENGINE</h3>
+        <div class="easy-note">Match the dominant process, maintaining process, and context using evidence from the Floor. A coherent 3/3 model unlocks Sanctum Patient Bay.</div>
+        <div class="hyp3" style="margin-top:7px">
+          <select id="psy-hyp-primary"></select>
+          <select id="psy-hyp-maint"></select>
+          <select id="psy-hyp-context"></select>
+        </div>
+        <button class="mini panel" id="psy-hyp-commit" style="width:100%;margin-top:6px">Commit Hypothesis</button>
+        <div class="commit-result" id="psy-hyp-result" style="margin-top:6px">No hypothesis committed.</div>
+      </div>
+    </div>
+
+    <div class="psy-page" id="psy-plan-page">
+      <div class="panel easy-panel"><h3>CASE PLAN</h3><div id="psy-plan-simple"></div></div>
+      <div class="easy-actions" style="margin-top:7px">
+        <button class="mini panel" id="psy-floor-go">Floor</button>
+        <button class="mini panel" id="psy-sit-go">Sit</button>
+        <button class="mini panel" id="psy-sanctum-go">Sanctum</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 
   
-  <section class="screen" id="screen-sanctum">
-    <div class="inner">
-      <div class="panel brainlesson" style="margin-bottom:8px">
-        <strong>SANCTUM // RESEARCH · REWARD · TREATMENT SIMULATION</strong>
-        <button class="mini panel sound-toggle" id="sound-toggle">Sound ON</button>
-        <p>Fictional game systems inspired by contemporary evidence-informed psychological approaches. This is not diagnosis, treatment advice, or a substitute for professional care.</p>
-        <div class="tagrow" id="sanctum-status"></div>
+  
+<section class="screen" id="screen-sanctum">
+  <div class="inner">
+    <div class="panel easy-panel">
+      <div class="smallcaps">SANCTUM // FORGE · TREAT · UPGRADE · REWARD</div>
+      <div class="easy-note">Sanctum is the follow-up workspace. Build a coherent hypothesis in Psyche, then treat that patient here or forge permanent ward upgrades.</div>
+      <div class="reward4" style="margin-top:7px">
+        <div class="reward-stat"><b id="ward-token-num">0</b><span>Ward Tokens</span></div>
+        <div class="reward-stat"><b id="streak-num">0</b><span>Model Streak</span></div>
+        <div class="reward-stat"><b id="multi-num">×1.0</b><span>Multiplier</span></div>
+        <div class="reward-stat"><b id="pot-num">0</b><span>Resonance Pot</span></div>
       </div>
-      <div class="panel jackpot-shell" id="jackpot-shell">
-        <div class="jackpot-title">HYPOTHESIS RESONANCE ENGINE // NO CASH VALUE</div>
-        <div class="reels"><div class="reel" id="reel-a">Ψ</div><div class="reel" id="reel-b">◈</div><div class="reel" id="reel-c">⌘</div></div>
-        <div class="jackpot-banner" id="jackpot-banner">Commit a hypothesis in Psyche to drive the engine.</div>
-        <div class="reward-strip">
-          <div class="reward-stat"><b id="ward-token-num">0</b><span>Ward Tokens</span></div>
-          <div class="reward-stat"><b id="streak-num">0</b><span>Model Streak</span></div>
-          <div class="reward-stat"><b id="multi-num">×1.0</b><span>Multiplier</span></div>
-          <div class="reward-stat"><b id="pot-num">0</b><span>Resonance Pot</span></div>
-        </div>
-      </div>
-      <div class="sanctum-tabs">
-        <button class="mini panel on" data-sanctum-tab="forge">Forge</button>
-        <button class="mini panel" data-sanctum-tab="treatment">Patient Bay</button>
-        <button class="mini panel" data-sanctum-tab="tools">Tool Library</button>
-        <button class="mini panel" data-sanctum-tab="rewards">Reward Systems</button>
-      </div>
-      <div class="sanctum-page on" id="sanctum-forge"><div class="recipes" id="recipes"></div></div>
-      <div class="sanctum-page" id="sanctum-treatment">
-        <div class="panel patient-bay" style="padding:10px">
-          <h3 class="smallcaps">PATIENT TREATMENT SIMULATION</h3>
-          <select class="patient-select" id="sanctum-patient"></select>
-          <div class="treatment-state" id="treatment-state"></div>
-          <div class="tool-grid" id="patient-tools"></div>
-          <div class="section-title">Treatment Log</div><div class="treatlog" id="treatment-log"></div>
-        </div>
-      </div>
-      <div class="sanctum-page" id="sanctum-tools"><div class="tool-grid" id="psych-tool-library"></div>
-        <div class="sanctum-note">Game abstraction: these cards borrow broad concepts such as collaborative questioning, values-guided action, mindfulness/distress-tolerance skills, motivational interviewing, behavioral activation, problem solving, and trauma-informed choice/safety. They are simplified mechanics, not therapy protocols.</div>
-      </div>
-      <div class="sanctum-page" id="sanctum-rewards"><div class="panel" style="padding:10px"><h3 class="smallcaps">REWARD ECONOMY REVIEW</h3><div class="reward-table" id="reward-review"></div></div></div>
     </div>
-  </section>
+
+    <div class="simple-tabs">
+      <button class="mini panel on" data-san-tab="forge">Forge</button>
+      <button class="mini panel" data-san-tab="patient">Patient Bay</button>
+      <button class="mini panel" data-san-tab="tools">Tools</button>
+      <button class="mini panel" data-san-tab="rewards">Rewards</button>
+    </div>
+
+    <div class="san-page on" id="san-forge-page">
+      <div class="panel easy-panel"><h3>FORGE</h3><div class="easy-note">Recipes consume relics you find during play. Ready recipes have a working Forge button.</div><div id="san-forge-list" style="margin-top:7px"></div></div>
+    </div>
+
+    <div class="san-page" id="san-patient-page">
+      <div class="panel easy-panel">
+        <h3>PATIENT BAY</h3>
+        <select id="san-patient-select2" class="patient-select2"></select>
+        <div class="easy-grid" id="san-patient-state2" style="margin-top:7px"></div>
+        <div class="easy-note" id="san-patient-next2" style="margin-top:7px"></div>
+      </div>
+      <div class="panel easy-panel" style="margin-top:7px"><h3>TREATMENT TOOLS</h3><div id="san-patient-tools2"></div></div>
+      <div class="panel easy-panel" style="margin-top:7px"><h3>TREATMENT LOG</h3><div id="san-treatment-log2"></div></div>
+    </div>
+
+    <div class="san-page" id="san-tools-page">
+      <div class="panel easy-panel">
+        <h3>TOOL LIBRARY</h3>
+        <div class="easy-note">Fictional gameplay abstractions inspired by psychological approaches; not clinical instructions.</div>
+        <div id="san-tools-list2" style="margin-top:7px"></div>
+      </div>
+    </div>
+
+    <div class="san-page" id="san-rewards-page">
+      <div class="panel easy-panel">
+        <h3>HYPOTHESIS RESONANCE ENGINE</h3>
+        <div class="reels"><div class="reel" id="reel-a">Ψ</div><div class="reel" id="reel-b">◈</div><div class="reel" id="reel-c">⌘</div></div>
+        <div class="jackpot-banner" id="jackpot-banner">Commit hypotheses to drive the engine.</div>
+        <div id="san-reward-explain" style="margin-top:7px"></div>
+      </div>
+    </div>
+
+    <div class="easy-actions" style="margin-top:7px">
+      <button class="mini panel" id="san-psyche-go">Back to Psyche</button>
+      <button class="mini panel" id="san-floor-go">Go to Floor</button>
+      <button class="mini panel" id="sound-toggle">Sound ON</button>
+    </div>
+  </div>
+</section>
+
 
 
   <section class="screen" id="screen-session">
@@ -2854,6 +2949,134 @@ document.addEventListener("DOMContentLoaded",()=>{
   try{ensureSeqState();paintSeqFloor();}
   catch(e){console.error("Sequential floor init",e);}
 });
+
+/* === OVERRIDE: SIMPLE WORKING PSYCHE + SANCTUM === */
+function psychPatient(){ if(!S.sel||S.sel.sealed){const l=liveList();if(l.length)S.sel=l[0];} return S.sel||S.P[0]; }
+
+function setupSimplePsyTabs(){
+ document.querySelectorAll("[data-psy-tab]").forEach(b=>b.onclick=()=>{
+   document.querySelectorAll("[data-psy-tab]").forEach(x=>x.classList.toggle("on",x===b));
+   document.querySelectorAll(".psy-page").forEach(x=>x.classList.remove("on"));
+   $("psy-"+b.dataset.psyTab+"-page")?.classList.add("on");
+ });
+}
+function paintPsyche(){
+ const p=psychPatient(); if(!p)return;
+ setupSimplePsyTabs();
+ const j=JUNG.find(x=>x.id===p.type), f=functionalState(p);
+ $("psy-overview-grid").innerHTML=[
+  ["Patient",p.name],["Unit",p.unit],["Jung Type",p.type+" · "+(j?.name||"")],
+  ["Persona",p.persona],["Shadow",p.shadow],["Defense",p.freud.defense],
+  ["Rapport",Math.round(p.rapport)],["Resistance",Math.round(p.resistance)]
+ ].map(x=>`<div class="easy-stat"><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");
+ $("psy-function-simple").innerHTML=[
+  ["Threat",f.threat],["Avoidance",f.avoidance],["Control",f.control],["Context",f.context],
+  ["Reward",f.reward],["Uncertainty",f.uncertainty],["Insight",Math.round(p.insight)],["Evidence",(p.evidence||[]).length]
+ ].map(x=>`<div class="easy-stat"><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");
+ $("psy-arc-simple").innerHTML=p.arc.map((x,i)=>`<div class="planline ${i<=p.stage?"done":""}">${i<=p.stage?"✓":"·"} ${i<=p.stage?x:"Locked case stage"}</div>`).join("");
+ $("psy-evidence-simple").innerHTML=(p.evidence||[]).slice().reverse().map(e=>`<div class="archive-item"><b>${Math.round(e.reliability||50)}%</b> · ${e.text}</div>`).join("")||'<div class="archive-item">No evidence yet. Go to Floor and complete the Evidence room.</div>';
+
+ const opts={
+  primary:[["threat","Threat processing"],["reward","Reward learning"],["control","Cognitive control"],["memory","Contextual memory"],["social","Social prediction"]],
+  maint:[["avoidance","Avoidance reinforcement"],["habit","Habit strength"],["uncertainty","Uncertainty"],["interference","Interference"],["social","Social expectation"]],
+  context:[["social","Social evaluation"],["memory","Memory cue"],["performance","Performance demand"],["loss","Loss cue"],["ambiguity","Ambiguity"]]
+ };
+ [["psy-hyp-primary","primary"],["psy-hyp-maint","maint"],["psy-hyp-context","context"]].forEach(([id,k])=>{
+   const el=$(id); el.innerHTML=opts[k].map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("");
+   if(p.hypothesis&&opts[k].some(o=>o[0]===p.hypothesis[k]))el.value=p.hypothesis[k];
+ });
+ $("psy-hyp-result").innerHTML=p.hypothesis?`Current model · <b>${p.hypothesis.primary}</b> → <b>${p.hypothesis.maint}</b> · ${p.hypothesis.context}`:"No hypothesis committed.";
+ $("psy-hyp-commit").onclick=()=>{
+   p.hypothesis={primary:$("psy-hyp-primary").value,maint:$("psy-hyp-maint").value,context:$("psy-hyp-context").value};
+   const hits=[p.hypothesis.primary===p.hidden.primary,p.hypothesis.maint===p.hidden.maint,p.hypothesis.context===p.hidden.context].filter(Boolean).length;
+   const msg=hypothesisReward(p,hits);
+   if(hits===3){p.treatmentReady=true;gainInsight(p,5,"coherent psyche model");}
+   else if(hits===2)addEvidence(p,"Psyche engine: one hypothesis dimension remains unstable.",p.hidden.primary,80);
+   else addEvidence(p,"Psyche engine produced corrective evidence after weak model fit.",p.hidden.maint,72);
+   $("psy-hyp-result").innerHTML=`Model fit <b>${hits}/3 · ${Math.round(hits/3*100)}%</b><br>${msg}`;
+   paintRewardHUD();
+   setTimeout(paintPsyche,50);
+ };
+ const plan=[
+   ["Collect Floor evidence",(p.evidence||[]).length>0],
+   ["Commit hypothesis",!!p.hypothesis],
+   ["Unlock Patient Bay",!!p.treatmentReady],
+   ["Apply Sanctum tool",(p.treatmentPlan||[]).length>0]
+ ];
+ $("psy-plan-simple").innerHTML=plan.map(x=>`<div class="planline ${x[1]?"done":""}">${x[1]?"✓":"·"} ${x[0]}</div>`).join("");
+ let next="Go to Floor → collect evidence.";
+ if((p.evidence||[]).length&&!p.hypothesis)next="Open Hypothesis → commit a model.";
+ else if(p.hypothesis&&!p.treatmentReady)next="Refine the hypothesis using more Floor evidence.";
+ else if(p.treatmentReady&&!(p.treatmentPlan||[]).length)next="Go to Sanctum → Patient Bay → apply a tool.";
+ else if((p.treatmentPlan||[]).length)next="Return to Floor and continue the room sequence.";
+ $("psy-next").textContent=p.name+" · "+next;
+ $("psy-floor-go").onclick=()=>go("dungeon");
+ $("psy-sit-go").onclick=()=>go("session");
+ $("psy-sanctum-go").onclick=()=>go("sanctum");
+}
+
+function setupSimpleSanTabs(){
+ document.querySelectorAll("[data-san-tab]").forEach(b=>b.onclick=()=>{
+   document.querySelectorAll("[data-san-tab]").forEach(x=>x.classList.toggle("on",x===b));
+   document.querySelectorAll(".san-page").forEach(x=>x.classList.remove("on"));
+   $("san-"+b.dataset.sanTab+"-page")?.classList.add("on");
+ });
+}
+function sanPatient2(){
+ const v=$("san-patient-select2")?.value;
+ return S.P.find(p=>p.unit===v)||S.sel||S.P[0];
+}
+function forgeRecipe2(id){
+ const r=RECIPES.find(x=>x.id===id); if(!r||!hasAll(r.need))return;
+ r.need.forEach(k=>{const i=S.inv.indexOf(k);if(i>=0)S.inv[i]=null;});
+ if(id==="hearth"){S.hearth=true;S.advanced=true}
+ if(id==="veilgate")S.veil=true;
+ if(id==="archive")S.archiveLens=true;
+ if(id==="echo")S.echoStabilizer=true;
+ if(id==="oracle")S.oracleRelay=true;
+ S.wardTokens+=2;S.resonancePot+=1;gainXP(10,"Sanctum forge");audioTone(740,.09,"triangle",.03);
+ toast(r.ok+" · +2 Ward Tokens");paintSanctum();paintWard();
+}
+function paintSanctum(){
+ setupSimpleSanTabs();paintRewardHUD();
+ const p0=S.sel||S.P[0];
+ const sel=$("san-patient-select2"), old=sel.value;
+ sel.innerHTML=S.P.map(p=>`<option value="${p.unit}">${p.name} · ${p.treatmentReady?"READY":"MODEL NEEDED"}</option>`).join("");
+ sel.value=(old&&S.P.some(p=>p.unit===old))?old:(p0?.unit||S.P[0].unit);
+ sel.onchange=()=>{S.sel=sanPatient2();paintSanctum();};
+ const p=sanPatient2(),f=functionalState(p);
+ $("san-patient-state2").innerHTML=[
+  ["Rapport",Math.round(p.rapport)],["Resistance",Math.round(p.resistance)],
+  ["Arousal",Math.round(p.model.arousal)],["Uncertainty",f.uncertainty],
+  ["Threat",f.threat],["Insight",Math.round(p.insight)]
+ ].map(x=>`<div class="easy-stat"><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");
+ $("san-patient-next2").textContent=p.treatmentReady?
+   "Treatment unlocked. Pick one tool. Its effect changes this patient and is recorded below.":
+   "Treatment locked. Go to Psyche or Floor and commit a coherent 3/3 hypothesis first.";
+ $("san-patient-tools2").innerHTML=PSYCH_TOOLS.map(t=>`<div class="toolrow"><b>${t.name} · ${t.cost} tokens</b><span>${t.desc}<br>${t.mechanic}</span><button class="mini panel" data-tool2="${t.id}" ${(!p.treatmentReady||S.wardTokens<t.cost)?"disabled":""}>Apply Tool</button></div>`).join("");
+ document.querySelectorAll("[data-tool2]").forEach(b=>b.onclick=()=>{applySanctumTool(b.dataset.tool2);paintSanctum();});
+ $("san-treatment-log2").innerHTML=(S.treatmentLog||[]).map(x=>`<div class="planline done">${x}</div>`).join("")||'<div class="planline">No treatment tools used yet.</div>';
+
+ $("san-tools-list2").innerHTML=PSYCH_TOOLS.map(t=>`<div class="toolrow"><b>${t.name}</b><span>${t.basis}<br>${t.desc}<br><b>Game effect:</b> ${t.mechanic}</span></div>`).join("");
+
+ $("san-forge-list").innerHTML=RECIPES.map(r=>{
+   const ready=hasAll(r.need);
+   return `<div class="toolrow"><b>${r.name} · ${ready?"READY":"LOCKED"}</b><span>Needs: ${r.need.map(k=>ITEMS[k]?.name||k).join(" + ")}<br>${r.ok}</span><button class="mini panel" data-forge2="${r.id}" ${ready?"":"disabled"}>Forge</button></div>`;
+ }).join("");
+ document.querySelectorAll("[data-forge2]").forEach(b=>b.onclick=()=>forgeRecipe2(b.dataset.forge2));
+
+ $("san-reward-explain").innerHTML=[
+  ["Hypothesis","Correct models build streak, tokens, AP and mystery rewards."],
+  ["Floor","Cleared rooms and evidence feed the case loop."],
+  ["Patient Bay","3/3 hypotheses unlock patient-specific tool use."],
+  ["Forge","Relics become persistent ward upgrades."]
+ ].map(x=>`<div class="relicline"><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");
+ $("san-psyche-go").onclick=()=>go("dossier");
+ $("san-floor-go").onclick=()=>go("dungeon");
+ $("sound-toggle").textContent="Sound "+(S.soundOn?"ON":"OFF");
+ $("sound-toggle").onclick=()=>{S.soundOn=!S.soundOn;$("sound-toggle").textContent="Sound "+(S.soundOn?"ON":"OFF");if(S.soundOn)jackpotSound(1);};
+}
+
 </script>
 </body>
 </html>
