@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD · Deep Dungeon Edition</title>
+  <title>THANATOS WARD · Jackpot Sanctum Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -271,6 +271,33 @@
     .big-dungeon{min-height:52vh}
     @media(max-width:560px){.big-dungeon{min-height:48vh}.dungeon-legend{grid-template-columns:repeat(2,1fr)}}
 
+
+    /* === JACKPOT + SANCTUM TREATMENT EDITION === */
+    .jackpot-shell{padding:10px;border:1px solid #e8c36a66;background:radial-gradient(circle at 50% 20%,#281c05,#090804 55%,#030404)}
+    .jackpot-title{font-size:10px;letter-spacing:.18em;color:#ffe59b;text-transform:uppercase;text-align:center}
+    .reels{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-width:360px;margin:8px auto}
+    .reel{height:64px;display:grid;place-items:center;border:1px solid #e8c36a88;background:#050505;font:29px "Share Tech Mono";color:#fff;box-shadow:inset 0 0 18px #e8c36a18}
+    .reel.spin{animation:reelPulse .16s linear infinite}
+    @keyframes reelPulse{0%{transform:translateY(-2px);filter:brightness(.7)}50%{transform:translateY(2px);filter:brightness(1.55)}100%{transform:translateY(-2px);filter:brightness(.7)}}
+    .jackpot-banner{text-align:center;font:11px/1.4 "Share Tech Mono";color:#ffe59b;min-height:18px}
+    .reward-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px}
+    .reward-stat{padding:6px;text-align:center;border:1px solid #e8c36a33;background:#0d0a03}
+    .reward-stat b{display:block;font:14px "Share Tech Mono";color:#fff}.reward-stat span{font-size:6px;letter-spacing:.1em;color:#a99563;text-transform:uppercase}
+    .sanctum-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:8px 0}
+    .sanctum-tabs button.on{border-color:#e8c36a;background:#201705;color:#ffe9a7}
+    .sanctum-page{display:none}.sanctum-page.on{display:block}
+    .tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:7px}
+    .tool-card{padding:9px}.tool-card h3{font-size:9px;color:#bcecff;letter-spacing:.11em;text-transform:uppercase;margin-bottom:4px}
+    .tool-card p{font:9px/1.4 "Share Tech Mono";color:#8fa9c0}.tool-card .mechanic{margin-top:5px;padding:5px;border-left:2px solid #7ee8c566;color:#a7d7c6;font:8px/1.4 "Share Tech Mono"}
+    .tool-card .cost{font:8px "Share Tech Mono";color:#ffe19b;margin:5px 0}
+    .patient-bay{display:grid;gap:8px}.patient-select{width:100%;background:#04090d;color:#cdefff;border:1px solid #52758d55;padding:9px;font:10px "Share Tech Mono"}
+    .treatment-state{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.treatlog{max-height:180px;overflow:auto;display:grid;gap:4px}
+    .treatlog div{padding:6px;background:#061019;border-left:2px solid #7ee8c555;font:8px/1.4 "Share Tech Mono";color:#95b0c7}
+    .reward-table{display:grid;gap:5px}.reward-row{display:grid;grid-template-columns:90px 1fr;gap:6px;padding:7px;border:1px solid #e8c36a22;background:#0a0804;font:8px/1.4 "Share Tech Mono"}
+    .reward-row b{color:#ffe49a}.sound-toggle{float:right}.sanctum-note{font:8px/1.45 "Share Tech Mono";color:#6f8ca4;margin-top:7px}
+    .cascade-flash{animation:cascadeFlash .55s ease}@keyframes cascadeFlash{0%{box-shadow:0 0 0 transparent}35%{box-shadow:0 0 30px #e8c36a88}100%{box-shadow:0 0 0 transparent}}
+    @media(max-width:560px){.sanctum-tabs{grid-template-columns:repeat(2,1fr)}.reward-strip,.treatment-state{grid-template-columns:repeat(2,1fr)}}
+
   </style>
 </head>
 <body>
@@ -452,16 +479,49 @@
 
   <section class="screen" id="screen-dossier"><div class="inner" id="psy"></div></section>
 
+  
   <section class="screen" id="screen-sanctum">
     <div class="inner">
       <div class="panel brainlesson" style="margin-bottom:8px">
-        <strong>SANCTUM // RELIC ENGINEERING</strong>
-        <p>Recipes now unlock permanent campaign modifiers, new treatment choices, and research momentum.</p>
+        <strong>SANCTUM // RESEARCH · REWARD · TREATMENT SIMULATION</strong>
+        <button class="mini panel sound-toggle" id="sound-toggle">Sound ON</button>
+        <p>Fictional game systems inspired by contemporary evidence-informed psychological approaches. This is not diagnosis, treatment advice, or a substitute for professional care.</p>
         <div class="tagrow" id="sanctum-status"></div>
       </div>
-      <div class="recipes" id="recipes"></div>
+      <div class="panel jackpot-shell" id="jackpot-shell">
+        <div class="jackpot-title">HYPOTHESIS RESONANCE ENGINE // NO CASH VALUE</div>
+        <div class="reels"><div class="reel" id="reel-a">Ψ</div><div class="reel" id="reel-b">◈</div><div class="reel" id="reel-c">⌘</div></div>
+        <div class="jackpot-banner" id="jackpot-banner">Commit a hypothesis in Psyche to drive the engine.</div>
+        <div class="reward-strip">
+          <div class="reward-stat"><b id="ward-token-num">0</b><span>Ward Tokens</span></div>
+          <div class="reward-stat"><b id="streak-num">0</b><span>Model Streak</span></div>
+          <div class="reward-stat"><b id="multi-num">×1.0</b><span>Multiplier</span></div>
+          <div class="reward-stat"><b id="pot-num">0</b><span>Resonance Pot</span></div>
+        </div>
+      </div>
+      <div class="sanctum-tabs">
+        <button class="mini panel on" data-sanctum-tab="forge">Forge</button>
+        <button class="mini panel" data-sanctum-tab="treatment">Patient Bay</button>
+        <button class="mini panel" data-sanctum-tab="tools">Tool Library</button>
+        <button class="mini panel" data-sanctum-tab="rewards">Reward Systems</button>
+      </div>
+      <div class="sanctum-page on" id="sanctum-forge"><div class="recipes" id="recipes"></div></div>
+      <div class="sanctum-page" id="sanctum-treatment">
+        <div class="panel patient-bay" style="padding:10px">
+          <h3 class="smallcaps">PATIENT TREATMENT SIMULATION</h3>
+          <select class="patient-select" id="sanctum-patient"></select>
+          <div class="treatment-state" id="treatment-state"></div>
+          <div class="tool-grid" id="patient-tools"></div>
+          <div class="section-title">Treatment Log</div><div class="treatlog" id="treatment-log"></div>
+        </div>
+      </div>
+      <div class="sanctum-page" id="sanctum-tools"><div class="tool-grid" id="psych-tool-library"></div>
+        <div class="sanctum-note">Game abstraction: these cards borrow broad concepts such as collaborative questioning, values-guided action, mindfulness/distress-tolerance skills, motivational interviewing, behavioral activation, problem solving, and trauma-informed choice/safety. They are simplified mechanics, not therapy protocols.</div>
+      </div>
+      <div class="sanctum-page" id="sanctum-rewards"><div class="panel" style="padding:10px"><h3 class="smallcaps">REWARD ECONOMY REVIEW</h3><div class="reward-table" id="reward-review"></div></div></div>
     </div>
   </section>
+
 
   <section class="screen" id="screen-session">
     <div class="inner" style="max-width:640px">
@@ -514,6 +574,19 @@ const ITEMS = {
   sigil: { name:"Circuit Sigil", glyph:"⌘", desc:"Earned by completing a research objective.", stat:"RESEARCH RELIC" },
   key:   { name:"Archive Key", glyph:"⚿", desc:"Opens sealed case notes and deeper room events.", stat:"ARCHIVE RELIC" }
 };
+
+
+const PSYCH_TOOLS = [
+ {id:"cbt",name:"Cognitive Reappraisal Lab",basis:"CBT-style cognitive work",desc:"Compare an interpretation with available evidence and construct an alternative model.",cost:3,effect:"uncertainty",mechanic:"Lowers uncertainty when evidence precision is high; weak evidence can make the attempt less useful."},
+ {id:"act",name:"Values Compass",basis:"ACT-inspired values-guided action",desc:"Separate difficult internal events from the direction of chosen action.",cost:3,effect:"control",mechanic:"Raises goal strength and reduces control demand after a coherent case model."},
+ {id:"dbt",name:"Regulation Console",basis:"DBT-inspired skills domains",desc:"Game abstraction of mindfulness, emotion regulation, distress tolerance, and interpersonal effectiveness.",cost:4,effect:"arousal",mechanic:"Reduces arousal and resistance; strongest during high activation."},
+ {id:"mi",name:"Change-Talk Resonator",basis:"Motivational interviewing-inspired",desc:"Collaboratively explore ambivalence, autonomy, values, and reasons for change.",cost:3,effect:"rapport",mechanic:"Raises rapport and can expose a maintaining process without increasing resistance."},
+ {id:"ba",name:"Activation Scheduler",basis:"Behavioral activation-inspired",desc:"Reconnect behavior with meaningful and rewarding activity.",cost:4,effect:"value",mechanic:"Raises expected value and weakens avoidance reinforcement over repeated uses."},
+ {id:"pst",name:"Problem-Solving Array",basis:"Problem-solving therapy-inspired",desc:"Define a problem, generate options, compare costs, choose an action, and review the result.",cost:3,effect:"control",mechanic:"Reduces control demand and creates a bonus evidence card."},
+ {id:"mind",name:"Attention Anchor",basis:"Mindfulness-informed",desc:"Return attention to present-moment information without treating every signal as a conclusion.",cost:2,effect:"attention",mechanic:"Reduces attention load and improves the next Floor Analyze reliability."},
+ {id:"trauma",name:"Choice & Safety Protocol",basis:"Trauma-informed care principles",desc:"Prioritize safety, choice, collaboration, and avoiding forced re-exposure.",cost:2,effect:"safety",mechanic:"Reduces threat estimate and protects against one premature Challenge penalty."}
+];
+const JACKPOT_SYMBOLS=["Ψ","◈","⌘","⚡","◇","❀","♛"];
 
 const RECIPES = [
   { id:"hearth", name:"Hearth Lock", need:["ash","iron","spark"], ok:"System armed. Sit now draws advanced problems.", miss:"Need Ash + Nail + Spark." },
@@ -783,6 +856,9 @@ function roster(){
   defenseChain:["persona","rationalization","avoidance","withdrawal"].slice(0,2+(i%3)),
   defenseBroken:0,
   hypothesis:null,
+  treatmentReady:false,
+  treatmentPlan:[],
+  toolHistory:{},
   model:{
     priorBelief:45+(i%5)*7,
     evidencePrecision:35+(i%4)*8,
@@ -813,7 +889,7 @@ const S = {
   archiveLens:false, echoStabilizer:false, oracleRelay:false,
   fmEvent:"ambiguity", fmTrace:[],
   run:{ap:10,risk:0,evidence:0,depth:1,banked:0,active:true,anchorFound:false,roomsEntered:0,locksOpened:0,hazardsCleared:0,path:[],objectiveDone:false},
-  build:null, skillPoints:1, sitTurns:8, boss:null, lastTactic:null, tacticRepeat:0
+  build:null, skillPoints:1, sitTurns:8, boss:null, lastTactic:null, tacticRepeat:0, wardTokens:0, modelStreak:0, rewardMultiplier:1, resonancePot:0, soundOn:true, jackpotState:{symbols:["Ψ","◈","⌘"],message:"Commit a hypothesis in Psyche to drive the engine."}, treatmentLog:[], treatmentUses:{}, nextAnalyzeBonus:0, challengeShield:false
 };
 
 const $ = id => document.getElementById(id);
@@ -904,9 +980,162 @@ function paintInv(){
   });
 }
 
+
+function audioTone(freq=440,dur=.08,type="sine",gain=.035,delay=0){
+  if(!S.soundOn)return;
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC)return;
+    window._twAudio=window._twAudio||new AC();
+    const ctx=window._twAudio,o=ctx.createOscillator(),g=ctx.createGain();
+    o.type=type;o.frequency.value=freq;g.gain.value=gain;o.connect(g);g.connect(ctx.destination);
+    const t=ctx.currentTime+delay;o.start(t);o.stop(t+dur);
+  }catch(e){}
+}
+function jackpotSound(level){
+  const seq=level===3?[523,659,784,1047,1319]:level===2?[440,554,659]:level===1?[330,392]:[180,145];
+  seq.forEach((f,i)=>audioTone(f,level===3?.12:.09,level===0?"sawtooth":"triangle",level===3?.045:.025,i*.075));
+}
+function randomJackSymbol(){return JACKPOT_SYMBOLS[Math.floor(Math.random()*JACKPOT_SYMBOLS.length)];}
+function rewardMultiplier(){return Math.min(3,1+Math.floor(S.modelStreak/2)*.25);}
+function paintRewardHUD(){
+  S.rewardMultiplier=rewardMultiplier();
+  if($("ward-token-num"))$("ward-token-num").textContent=S.wardTokens;
+  if($("streak-num"))$("streak-num").textContent=S.modelStreak;
+  if($("multi-num"))$("multi-num").textContent="×"+S.rewardMultiplier.toFixed(2);
+  if($("pot-num"))$("pot-num").textContent=S.resonancePot;
+  if($("jackpot-banner"))$("jackpot-banner").innerHTML=S.jackpotState.message;
+  const sy=S.jackpotState.symbols||["Ψ","◈","⌘"];
+  ["reel-a","reel-b","reel-c"].forEach((id,i)=>{if($(id))$(id).textContent=sy[i]});
+}
+function animateJackpot(finalSymbols,message,level=0){
+  S.jackpotState={symbols:finalSymbols,message};
+  const reels=[$("reel-a"),$("reel-b"),$("reel-c")];
+  if(reels.some(x=>!x)){jackpotSound(level);return}
+  reels.forEach(x=>x.classList.add("spin"));
+  let ticks=0;
+  const timer=setInterval(()=>{
+    reels.forEach(x=>x.textContent=randomJackSymbol());
+    audioTone(170+ticks*20,.025,"square",.008,0);
+    ticks++;
+    if(ticks>=12){
+      clearInterval(timer);
+      reels.forEach((x,i)=>{x.classList.remove("spin");x.textContent=finalSymbols[i]});
+      if($("jackpot-banner"))$("jackpot-banner").innerHTML=message;
+      if($("jackpot-shell")){$("jackpot-shell").classList.remove("cascade-flash");void $("jackpot-shell").offsetWidth;$("jackpot-shell").classList.add("cascade-flash");}
+      jackpotSound(level);paintRewardHUD();
+    }
+  },55);
+}
+function mysteryReward(p){
+  const roll=Math.random();
+  if(roll<.25){addItem("mirror");return "Mirror Shard";}
+  if(roll<.5){addItem("thread");return "Red Thread";}
+  if(roll<.72){S.run.ap=Math.min(14,S.run.ap+2);return "+2 Floor AP";}
+  if(roll<.88){gainInsight(p,3,"resonance bonus");return "+3 Insight";}
+  addItem("sigil");return "Circuit Sigil";
+}
+function hypothesisReward(p,hits){
+  const mult=rewardMultiplier();
+  if(hits===3){
+    S.modelStreak++;S.resonancePot+=3;
+    const tokens=Math.round((8+S.resonancePot)*mult);
+    S.wardTokens+=tokens;S.run.ap=Math.min(14,S.run.ap+3);p.treatmentReady=true;
+    const mystery=mysteryReward(p);
+    const msg=`<span class="good">JACKPOT · MODEL COHERENT</span> · +${tokens} Ward Tokens · +3 AP · ${mystery} · Patient Bay unlocked`;
+    animateJackpot(["♛","♛","♛"],msg,3);return msg;
+  }
+  if(hits===2){
+    S.modelStreak++;S.resonancePot+=1;
+    const tokens=Math.max(3,Math.round(4*mult));S.wardTokens+=tokens;S.run.ap=Math.min(14,S.run.ap+1);
+    const msg=`<span class="good">DOUBLE RESONANCE</span> · +${tokens} Tokens · +1 AP · one model dimension remains unstable`;
+    animateJackpot(["◈","◈",randomJackSymbol()],msg,2);return msg;
+  }
+  if(hits===1){
+    S.modelStreak=0;S.resonancePot+=1;S.wardTokens+=2;
+    const msg=`PARTIAL SIGNAL · +2 Tokens · Pot grows to ${S.resonancePot}`;
+    animateJackpot(["Ψ",randomJackSymbol(),randomJackSymbol()],msg,1);return msg;
+  }
+  S.modelStreak=0;S.resonancePot=Math.min(12,S.resonancePot+2);S.run.risk=clamp(S.run.risk+5);
+  const msg=`MODEL COLLAPSE · no token reward · Resonance Pot +2 · run risk +5`;
+  animateJackpot(["×","?","×"],msg,0);return msg;
+}
+function paintRewardReview(){
+  if(!$("reward-review"))return;
+  const rows=[
+    ["Immediate","Reels, sound, tokens, AP, mystery relics and visible case motion."],
+    ["Run-level","AP restoration, evidence bonuses, risk changes, Analyze bonuses and boss access."],
+    ["Case-level","Treatment Bay unlock, case-arc movement, insight and patient tool history."],
+    ["Campaign","Model streak multiplier, Resonance Pot, Ward Tokens, recipes, research and XP."],
+    ["Failure","Wrong models still create information, risk and pot growth so a miss is not a dead click."],
+    ["Currency","Ward Tokens have no cash value and only power fictional Sanctum systems."]
+  ];
+  $("reward-review").innerHTML=rows.map(r=>`<div class="reward-row"><b>${r[0]}</b><span>${r[1]}</span></div>`).join("");
+}
+
 function hasAll(keys){ return keys.every(k=>S.inv.includes(k)); }
 
+
+function sanctumPatient(){
+  const id=$("sanctum-patient")?.value;
+  return S.P.find(p=>p.unit===id)||S.sel||S.P[0];
+}
+function paintPsychTools(){
+  if(!$("psych-tool-library"))return;
+  $("psych-tool-library").innerHTML=PSYCH_TOOLS.map(t=>`<div class="panel tool-card"><h3>${t.name}</h3><p><span class="val">${t.basis}</span><br>${t.desc}</p><div class="mechanic">${t.mechanic}</div></div>`).join("");
+}
+function toolUseful(p,t){
+  const m=p.model;
+  if(t.effect==="uncertainty")return m.evidencePrecision>=55;
+  if(t.effect==="control")return !!p.hypothesis||m.controlDemand>=50;
+  if(t.effect==="arousal")return m.arousal>=45;
+  if(t.effect==="rapport")return p.resistance>=45||p.rapport<65;
+  if(t.effect==="value")return m.expectedValue<=60||p.hidden.maint==="avoidance";
+  if(t.effect==="attention")return m.attentionLoad>=40||m.uncertainty>=45;
+  if(t.effect==="safety")return m.threatEstimate>=40||p.resistance>=55;
+  return true;
+}
+function applySanctumTool(toolId){
+  const p=sanctumPatient(),t=PSYCH_TOOLS.find(x=>x.id===toolId);if(!p||!t)return;
+  if(!p.treatmentReady){toast("Commit a coherent hypothesis first");return}
+  if(S.wardTokens<t.cost){toast("Not enough Ward Tokens");return}
+  S.wardTokens-=t.cost;const useful=toolUseful(p,t);
+  p.toolHistory[toolId]=(p.toolHistory[toolId]||0)+1;let result="";
+  if(t.id==="cbt"){if(useful){p.model.uncertainty=clamp(p.model.uncertainty-10);p.model.priorBelief=fmClamp((p.model.priorBelief+p.model.evidencePrecision)/2);gainInsight(p,2,"reappraisal simulation");result="Alternative model integrated."}else{p.model.uncertainty=clamp(p.model.uncertainty+4);result="Evidence base too weak; uncertainty rose."}}
+  if(t.id==="act"){p.model.controlDemand=clamp(p.model.controlDemand-(useful?10:4));p.model.expectedValue=clamp(p.model.expectedValue+5);result="Values-guided action signal strengthened."}
+  if(t.id==="dbt"){p.model.arousal=clamp(p.model.arousal-(useful?14:7));p.resistance=clamp(p.resistance-5);S.stab=clamp(S.stab+5);result="Regulation load reduced."}
+  if(t.id==="mi"){p.rapport=clamp(p.rapport+9);p.resistance=clamp(p.resistance-6);addEvidence(p,"Change-talk simulation exposed motivation signal",p.hidden.maint,72);result="Ambivalence became usable evidence."}
+  if(t.id==="ba"){p.model.expectedValue=clamp(p.model.expectedValue+10);p.model.habitStrength=clamp(p.model.habitStrength-4);p.model.threatEstimate=clamp(p.model.threatEstimate-3);result="Approach value increased."}
+  if(t.id==="pst"){p.model.controlDemand=clamp(p.model.controlDemand-9);addEvidence(p,"Problem-solving array generated decision trace",p.hidden.context,75);result="Decision structure clarified."}
+  if(t.id==="mind"){p.model.attentionLoad=clamp(p.model.attentionLoad-10);p.model.uncertainty=clamp(p.model.uncertainty-5);S.nextAnalyzeBonus=15;result="Attention stabilized; next Analyze gains reliability."}
+  if(t.id==="trauma"){p.model.threatEstimate=clamp(p.model.threatEstimate-10);p.resistance=clamp(p.resistance-4);S.challengeShield=true;result="Choice/safety buffer armed."}
+  p.treatmentPlan.unshift(t.name);p.treatmentPlan=p.treatmentPlan.slice(0,6);
+  S.treatmentLog.unshift(`${p.name} · ${t.name} · ${result}`);S.treatmentLog=S.treatmentLog.slice(0,20);
+  gainXP(4,"sanctum treatment simulation");audioTone(useful?660:260,.1,useful?"triangle":"sine",.03);
+  paintSanctum();paintCases();paintPsyche();paintRewardHUD();
+}
+function paintTreatmentBay(){
+  if(!$("sanctum-patient"))return;
+  const current=$("sanctum-patient").value||S.sel?.unit||S.P[0].unit;
+  $("sanctum-patient").innerHTML=S.P.map(p=>`<option value="${p.unit}" ${p.unit===current?"selected":""}>${p.name} · ${p.treatmentReady?"READY":"MODEL REQUIRED"}</option>`).join("");
+  const p=sanctumPatient();
+  $("treatment-state").innerHTML=[["Rapport",Math.round(p.rapport)],["Resistance",Math.round(p.resistance)],["Arousal",Math.round(p.model.arousal)],["Uncertainty",Math.round(p.model.uncertainty)]].map(x=>`<div class="reward-stat"><b>${x[1]}</b><span>${x[0]}</span></div>`).join("");
+  $("patient-tools").innerHTML=PSYCH_TOOLS.map(t=>`<div class="panel tool-card"><h3>${t.name}</h3><p>${t.desc}</p><div class="mechanic">${t.mechanic}</div><div class="cost">${t.cost} WARD TOKENS</div><button class="mini panel" data-tool="${t.id}" ${(!p.treatmentReady||S.wardTokens<t.cost)?"disabled":""}>${p.treatmentReady?"Apply simulation":"Commit model first"}</button></div>`).join("");
+  $("patient-tools").querySelectorAll("[data-tool]").forEach(b=>b.onclick=()=>applySanctumTool(b.dataset.tool));
+  $("treatment-log").innerHTML=S.treatmentLog.map(x=>`<div>${x}</div>`).join("")||"<div>No Sanctum treatment simulations yet.</div>";
+  $("sanctum-patient").onchange=paintTreatmentBay;
+}
+function setupSanctumTabs(){
+  document.querySelectorAll("[data-sanctum-tab]").forEach(b=>b.onclick=()=>{
+    document.querySelectorAll("[data-sanctum-tab]").forEach(x=>x.classList.toggle("on",x===b));
+    document.querySelectorAll(".sanctum-page").forEach(x=>x.classList.toggle("on",x.id==="sanctum-"+b.dataset.sanctumTab));
+  });
+  if($("sound-toggle"))$("sound-toggle").onclick=()=>{S.soundOn=!S.soundOn;$("sound-toggle").textContent="Sound "+(S.soundOn?"ON":"OFF");if(S.soundOn)jackpotSound(1);};
+}
+
 function paintSanctum(){
+  paintRewardHUD();paintRewardReview();paintPsychTools();paintTreatmentBay();setupSanctumTabs();
+  if($("sound-toggle"))$("sound-toggle").textContent="Sound "+(S.soundOn?"ON":"OFF");
   $("sanctum-status").innerHTML=[
     ["Hearth",S.hearth],["Veil",S.veil],["Archive Lens",S.archiveLens],
     ["Echo Stabilizer",S.echoStabilizer],["Oracle Relay",S.oracleRelay]
@@ -928,8 +1157,7 @@ function paintSanctum(){
     if(r.id==="archive"){ S.archiveLens=true; }
     if(r.id==="echo"){ S.echoStabilizer=true; }
     if(r.id==="oracle"){ S.oracleRelay=true; }
-    gainXP(10,"sanctum forge");
-    toast(r.ok); paintSanctum(); paintWard();
+    gainXP(10,"sanctum forge"); S.wardTokens+=2; S.resonancePot+=1; audioTone(740,.09,"triangle",.03); toast(r.ok+" · +2 Ward Tokens"); paintSanctum(); paintWard();
   });
 }
 
@@ -942,6 +1170,7 @@ function paintWard(){
   $("typelist").innerHTML=JUNG.map(j=>`<div class="panel tp"><b>${j.id}</b> ${j.name}<br><span class="val">${j.shadow}</span></div>`).join("");
   $("alltypes").innerHTML=JUNG.map(j=>`<div class="panel tp"><b>${j.id}</b> ${j.name}</div>`).join("");
   paintRadar(); paintQuiz(); paintCases(); paintResearch(); paintBrainMap(); paintFunctionMatrix(); paintContextMatrix();
+paintRewardHUD();
 }
 
 
@@ -969,7 +1198,7 @@ function analyzeRoom(){
   const h=p.hidden;
   const candidates=[h.primary,h.maint,h.context,"reward","control","memory","social","threat"];
   const support=candidates[Math.floor(Math.random()*Math.min(3,candidates.length))];
-  addEvidence(p,`Analysis ${S.run.depth}.${S.roomsSearched} · ${rm.theme.label} pattern`,support,58+Math.random()*30);
+  addEvidence(p,`Analysis ${S.run.depth}.${S.roomsSearched} · ${rm.theme.label} pattern`,support,58+Math.random()*30+(S.nextAnalyzeBonus||0)); if(S.nextAnalyzeBonus){toast("Attention Anchor bonus applied");S.nextAnalyzeBonus=0;}
   p.model.evidencePrecision=fmClamp(p.model.evidencePrecision+5);
   fmTrace(`ANALYZE · ${p.name} · evidence favors ${support}`);
   gainXP(2,"analysis"); paintPsyche(); paintContextMatrix();
@@ -990,13 +1219,25 @@ function commitHypothesis(){
  const p=S.sel;if(!p)return;
  const guess={primary:$("hyp-primary").value,maint:$("hyp-maint").value,context:$("hyp-context").value};
  p.hypothesis=guess;
- let hits=(guess.primary===p.hidden.primary)+(guess.maint===p.hidden.maint)+(guess.context===p.hidden.context);
- let score=Math.round(hits/3*100);
+ const checks=[["dominant",guess.primary===p.hidden.primary],["maintaining",guess.maint===p.hidden.maint],["context",guess.context===p.hidden.context]];
+ const hits=checks.filter(x=>x[1]).length,score=Math.round(hits/3*100);
  let msg=`Model fit ${score}% · ${hits}/3 constructs matched.`;
- if(S.build==="interpreter"&&hits<3) msg+=` Partial signal: dominant process ${guess.primary===p.hidden.primary?"SUPPORTED":"NOT SUPPORTED"}.`;
- $("hyp-result").innerHTML=msg+(hits===3?`<br><span class="good">MODEL COHERENT · case insight gained</span>`:`<br>Gather more independent evidence and revise.`);
- if(hits===3){gainInsight(p,8,"hypothesis convergence");gainXP(S.build==="investigator"?18:12,"model solved");advanceCase(p,"Hidden model inferred");}
- else {p.model.uncertainty=clamp(p.model.uncertainty+4);}
+ if(S.build==="interpreter"&&hits<3)msg+=` Partial signal: dominant process ${guess.primary===p.hidden.primary?"SUPPORTED":"NOT SUPPORTED"}.`;
+ const rewardMsg=hypothesisReward(p,hits);
+ if(hits===3){
+   gainInsight(p,8,"hypothesis convergence");gainXP(S.build==="investigator"?18:12,"model solved");advanceCase(p,"Hidden model inferred");
+   p.model.uncertainty=clamp(p.model.uncertainty-12);p.model.contextStrength=clamp(p.model.contextStrength+10);p.treatmentReady=true;S.run.objectiveDone=true;
+   fmTrace(`HYPOTHESIS JACKPOT · ${p.name} · treatment bay + case cascade unlocked`);
+ }else if(hits===2){
+   p.model.uncertainty=clamp(p.model.uncertainty-3);gainInsight(p,3,"partial hypothesis");
+   const wrong=checks.find(x=>!x[1]);msg+=`<br><span class="val">${wrong?wrong[0].toUpperCase():"ONE"} DIMENSION UNSTABLE</span>`;
+   const key=wrong?.[0]==="dominant"?"primary":wrong?.[0]==="maintaining"?"maint":"context";
+   addEvidence(p,"Partial model commit generated corrective signal",p.hidden[key]||p.hidden.primary,78);
+ }else{
+   p.model.uncertainty=clamp(p.model.uncertainty+5);p.model.predictionError=fmClamp(p.model.predictionError+7);
+ }
+ $("hyp-result").innerHTML=msg+`<br>${rewardMsg}<br><span class="smallcaps">Sanctum resonance updated · case state moved</span>`;
+ paintRewardHUD();paintRunHUD();paintCases();paintContextMatrix();
 }
 function paintEvidence(p){
  if(!$("evidence-board"))return;
