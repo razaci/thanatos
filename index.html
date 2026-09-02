@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD · Psyche Sanctum Working Edition</title>
+  <title>THANATOS WARD · Ten Systems Campaign Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -417,6 +417,26 @@
 @media(max-width:700px){.easy-grid{grid-template-columns:1fr}.easy-actions{grid-template-columns:1fr}.hyp3{grid-template-columns:1fr}.reward4{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.simple-tabs{grid-template-columns:repeat(2,1fr)}}
 
+
+/* === TEN SYSTEMS CAMPAIGN EXPANSION === */
+.campaign-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:6px 0}
+.campaign-stat{padding:6px;text-align:center;border:1px solid #45677b44;background:#050c11}
+.campaign-stat b{display:block;font:10px "Share Tech Mono";color:#d8efff}.campaign-stat span{font:7px "Share Tech Mono";color:#7e98aa}
+.branch-card{padding:7px;border:1px solid #4b6b7d44;background:#061019;margin-bottom:5px}
+.branch-card b{font:8px "Share Tech Mono";color:#cdeaf8}.branch-card span{display:block;font:7px/1.4 "Share Tech Mono";color:#829daf;margin-top:3px}
+.hyp-bars{display:grid;gap:5px}.hypbar{display:grid;grid-template-columns:90px 1fr 36px;gap:5px;align-items:center;font:7px "Share Tech Mono";color:#94aec0}
+.hypbar .bar{height:7px;background:#020507;border:1px solid #45667a44}.hypbar .bar i{display:block;height:100%;background:linear-gradient(90deg,#2a617e,#72d3ff)}
+.defense-chain{display:flex;gap:4px;flex-wrap:wrap}.defense-node{padding:6px;border:1px solid #496a7e55;font:7px "Share Tech Mono";color:#7f99aa}
+.defense-node.broken{border-color:#69d19a;color:#9ce8bb;text-decoration:line-through}.defense-node.active{border-color:#e8c36a;color:#ffe39a;background:#151004}
+.combo-builder{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.combo-slot{min-height:46px;padding:6px;border:1px dashed #58778a66;font:7px/1.3 "Share Tech Mono";color:#829bad}
+.shift-patients{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:5px}
+.shift-card{padding:7px;border:1px solid #46677a44;background:#050c11}.shift-card.selected{border-color:#e8c36a;background:#151004}
+.mystery-board{display:grid;gap:5px}.mystery-fragment{padding:7px;border-left:2px solid #745d89;background:#0b0710;font:8px/1.4 "Share Tech Mono";color:#b6a6c4}
+.resolution-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.resolution-card{padding:8px;border:1px solid #496a7e44;background:#050c11}
+.resolution-card b{display:block;font:7px "Share Tech Mono";color:#9ec8de}.resolution-card span{font:8px/1.4 "Share Tech Mono";color:#c4dce8}
+.event-card{padding:8px;border:1px solid #b38d4c55;background:#100c04;font:8px/1.45 "Share Tech Mono";color:#c7b582}
+@media(max-width:560px){.campaign-strip{grid-template-columns:repeat(2,1fr)}.resolution-grid{grid-template-columns:1fr}.combo-builder{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -660,6 +680,16 @@
 
     <div class="psy-page" id="psy-plan-page">
       <div class="panel easy-panel"><h3>CASE PLAN</h3><div id="psy-plan-simple"></div></div>
+<div class="panel easy-panel" style="margin-top:7px">
+ <h3>COMPETING HYPOTHESES</h3><div class="hyp-bars" id="competing-hypotheses"></div>
+</div>
+<div class="panel easy-panel" style="margin-top:7px">
+ <h3>DEFENSE CHAIN</h3><div class="defense-chain" id="defense-chain-ui"></div>
+</div>
+<div class="panel easy-panel" style="margin-top:7px">
+ <h3>CASE RESOLUTION BOARD</h3><div class="resolution-grid" id="resolution-board"></div>
+ <button class="mini panel" id="resolve-case-btn" style="width:100%;margin-top:6px">Resolve Current Case Stage</button>
+</div>
       <div class="easy-actions" style="margin-top:7px">
         <button class="mini panel" id="psy-floor-go">Floor</button>
         <button class="mini panel" id="psy-sit-go">Sit</button>
@@ -704,6 +734,13 @@
         <div class="easy-note" id="san-patient-next2" style="margin-top:7px"></div>
       </div>
       <div class="panel easy-panel" style="margin-top:7px"><h3>TREATMENT TOOLS</h3><div id="san-patient-tools2"></div></div>
+<div class="panel easy-panel" style="margin-top:7px">
+ <h3>TREATMENT COMBO</h3>
+ <div class="easy-note">Choose three tools. Order matters. Correct sequencing creates a Treatment Cascade.</div>
+ <div class="combo-builder" id="combo-builder" style="margin-top:7px"></div>
+ <button class="mini panel" id="run-combo-btn" style="width:100%;margin-top:6px">Run 3-Step Plan</button>
+ <button class="mini panel" id="clear-combo-btn" style="width:100%;margin-top:4px">Clear Plan</button>
+</div>
       <div class="panel easy-panel" style="margin-top:7px"><h3>TREATMENT LOG</h3><div id="san-treatment-log2"></div></div>
     </div>
 
@@ -789,6 +826,35 @@ const ITEMS = {
 
 
 
+
+
+const PATIENT_CAMPAIGNS={
+ "07-A3":["Observe the metallic-scent trigger","Separate sensation from prediction","Recover the locked-door context","Test the oracle narrative","Break withdrawal reinforcement","Integrate contradictory memory","Approach the threshold","Rebuild context confidence","Resolve the sealed archive","Stabilize Elara's active case"],
+ "11-F2":["Map performance pressure","Find the grief metric","Expose rationalization","Test control under uncertainty","Interrupt tally habit","Recover the promise","Challenge persona safely","Practice flexible updating","Resolve the tally room","Stabilize Kael's active case"],
+ "03-K9":["Map harmony behavior","Find private prediction","Test social ambiguity","Expose appeasement loop","Tolerate silence","Recover own preference","Break Frequency defense","Practice direct signal","Resolve mirror gallery","Stabilize Nyx's active case"],
+ "19-Θ1":["Locate archive gap","Verify source memory","Test interference","Recover house context","Expose repression defense","Compare competing fragments","Rebind source/context","Open sealed object","Resolve archive contradiction","Stabilize Ion's active case"],
+ "22-C4":["Observe analysis armor","Find contradiction","Test response conflict","Expose intellectualization","Introduce affect evidence","Break circuit repetition","Practice uncertainty","Integrate emotion/context","Resolve logic chamber","Stabilize Riven's active case"],
+ "08-L7":["Map moral evaluation","Locate hidden anger","Test scorecard belief","Expose self-judgment loop","Differentiate value from verdict","Recover source context","Break chapel defense","Practice self-directed choice","Resolve evaluation chamber","Stabilize Mira's active case"],
+ "14-S0":["Observe action-first loop","Measure prediction lag","Test stillness","Expose habit reinforcement","Ground sensory overload","Practice response inhibition","Break live-wire defense","Choose delayed action","Resolve impulse corridor","Stabilize Jax's active case"],
+ "05-N6":["Map possibility branching","Find persistent memory","Test ambiguity tolerance","Expose displacement","Reduce option overload","Contextualize loss cue","Break fork defense","Commit to one model","Resolve branching hall","Stabilize Sable's active case"]
+};
+const DEFENSE_LIBRARY=["Persona","Rationalization","Avoidance","Intellectualization","Projection","Withdrawal","Control","Core Conflict"];
+const TREATMENT_COMBOS=[
+ {seq:["regulate","anchor","reappraise"],name:"REGULATE → ATTEND → REAPPRAISE",targets:["threat","uncertainty"]},
+ {seq:["mi","values","activation"],name:"MOTIVATE → VALUES → ACTIVATE",targets:["avoidance","reward"]},
+ {seq:["anchor","problem","reappraise"],name:"ATTEND → SOLVE → REAPPRAISE",targets:["control","interference"]},
+ {seq:["safety","mi","values"],name:"SAFETY → COLLABORATE → VALUES",targets:["social","avoidance"]}
+];
+const WARD_MYSTERY=[
+ "Fragment 01 · Patient unit timestamps predate the current Ward registry.",
+ "Fragment 02 · Two sealed rooms share the same impossible case number.",
+ "Fragment 03 · The phrase 'THANATOS IS AN OBSERVER' appears in three unrelated archives.",
+ "Fragment 04 · A clinician signature matches no employee record.",
+ "Fragment 05 · Floor geometry changes after coherent hypotheses.",
+ "Fragment 06 · The resonance engine contains patient terminology in its boot log.",
+ "Fragment 07 · Archive Key metadata references a missing Floor Zero.",
+ "Fragment 08 · Final fragment: the Ward may be testing the clinician's models as much as the patients."
+];
 
 const SEQ_ROOM_TEMPLATES=[
  {name:"Observation Room",desc:"Record what is actually happening before interpreting it.",task:"Observe",action:"observe"},
@@ -1175,7 +1241,7 @@ const S = {
   archiveLens:false, echoStabilizer:false, oracleRelay:false,
   fmEvent:"ambiguity", fmTrace:[],
   run:{ap:10,risk:0,evidence:0,depth:1,banked:0,active:true,anchorFound:false,roomsEntered:0,locksOpened:0,hazardsCleared:0,path:[],objectiveDone:false,keys:0,switches:0,trials:0,shortcuts:0,helpSeen:false},
-  build:null, skillPoints:1, sitTurns:8, boss:null, lastTactic:null, tacticRepeat:0, wardTokens:0, modelStreak:0, rewardMultiplier:1, resonancePot:0, soundOn:true, jackpotState:{symbols:["Ψ","◈","⌘"],message:"Commit a hypothesis in Psyche to drive the engine."}, treatmentLog:[], treatmentUses:{}, nextAnalyzeBonus:0, challengeShield:false, floorCase:null, floorRegion:null, roomDepth:0, clueChain:[], routeMods:[], activeSubevent:null, miniboss:null, seqFloor:{room:0,cleared:[],tasks:{},hypothesisCommitted:false,hypothesisScore:0,interventionDone:false,outcomeReviewed:false}
+  build:null, skillPoints:1, sitTurns:8, boss:null, lastTactic:null, tacticRepeat:0, wardTokens:0, modelStreak:0, rewardMultiplier:1, resonancePot:0, soundOn:true, jackpotState:{symbols:["Ψ","◈","⌘"],message:"Commit a hypothesis in Psyche to drive the engine."}, treatmentLog:[], treatmentUses:{}, nextAnalyzeBonus:0, challengeShield:false, floorCase:null, floorRegion:null, roomDepth:0, clueChain:[], routeMods:[], activeSubevent:null, miniboss:null, seqFloor:{room:0,cleared:[],tasks:{},hypothesisCommitted:false,hypothesisScore:0,interventionDone:false,outcomeReviewed:false}, shift:{number:1,activeUnits:[],time:12,resolved:0}, wardMystery:[], wardMysteryLevel:0, comboQueue:[], shiftEvent:null
 };
 
 const $ = id => document.getElementById(id);
@@ -1416,7 +1482,8 @@ function setupSanctumTabs(){
     document.querySelectorAll("[data-sanctum-tab]").forEach(x=>x.classList.toggle("on",x===b));
     document.querySelectorAll(".sanctum-page").forEach(x=>x.classList.toggle("on",x.id==="sanctum-"+b.dataset.sanctumTab));
   });
-  if($("sound-toggle"))$("sound-toggle").onclick=()=>{S.soundOn=!S.soundOn;$("sound-toggle").textContent="Sound "+(S.soundOn?"ON":"OFF");if(S.soundOn)jackpotSound(1);};
+  if($("sound-toggle"))setupComboButtons();
+ $("sound-toggle").onclick=()=>{S.soundOn=!S.soundOn;$("sound-toggle").textContent="Sound "+(S.soundOn?"ON":"OFF");if(S.soundOn)jackpotSound(1);};
 }
 
 function paintSanctum(){
@@ -2634,13 +2701,13 @@ function seqAction(a){
  if(!p)return;
  if(a==="observe"){
    if(!spendAP(1,"observation"))return;
-   addEvidence(p,`Room ${i+1} structured observation: behavior changed under ${p.hidden.context} context.`,p.hidden.primary,70);
+   campaignAddEvidence(p,`Room ${i+1} · ${patientRoomFlavor(p,i)} · behavior changed under ${p.hidden.context} context.`,p.hidden.primary,70); patientInteraction(p);
    p.model.evidencePrecision=clamp(p.model.evidencePrecision+4);t.observe=true;toast("Observation recorded");
  }
  if(a==="evidence"){
    if(!spendAP(1,"evidence"))return;
    const rel=78+Math.random()*12;
-   addEvidence(p,`Verified clue supports ${p.hidden.maint} as a maintaining process.`,p.hidden.maint,rel);
+   campaignAddEvidence(p,`Verified ${patientRoomFlavor(p,i)} clue supports ${p.hidden.maint} as a maintaining process.`,p.hidden.maint,rel);
    p.model.evidencePrecision=clamp(p.model.evidencePrecision+7);t.evidence=true;toast("Reliable evidence collected");
  }
  if(a==="formulate"){
@@ -2696,7 +2763,7 @@ function seqCommitHypothesis(){
    addEvidence(p,"Hypothesis engine: one dimension remains inconsistent.",p.hidden.primary,80);
  }else{
    p.model.predictionError=fmClamp(p.model.predictionError+6);
-   addEvidence(p,"Hypothesis engine generated corrective evidence after a weak fit.",p.hidden.maint,72);
+   campaignAddEvidence(p,"BRANCH OPENED · weak hypothesis produced contradictory evidence and an alternate route.",p.hidden.maint,78); p.campaignLog.push("Alternate branch: model revision required");
  }
  if($("seq-hyp-result"))$("seq-hyp-result").innerHTML=`Model fit <b>${Math.round(hits/3*100)}%</b> · ${hits}/3 matched.<br>${reward}`;
  toast(`Hypothesis committed · ${hits}/3 match`);
@@ -2960,6 +3027,160 @@ function setupSimplePsyTabs(){
    $("psy-"+b.dataset.psyTab+"-page")?.classList.add("on");
  });
 }
+
+/* === TEN SYSTEMS CAMPAIGN LOGIC === */
+function ensureCampaignPatient(p){
+ if(!p)return;
+ if(!p.campaignStage)p.campaignStage=0;
+ if(!p.campaignLog)p.campaignLog=[];
+ if(!p.hypConfidence)p.hypConfidence={threat:20,reward:20,control:20,memory:20,social:20};
+ if(!p.defenseFull)p.defenseFull=DEFENSE_LIBRARY.slice((S.P.indexOf(p))%3,(S.P.indexOf(p))%3+4);
+ if(!p.defenseFull.length)p.defenseFull=["Persona","Avoidance","Core Conflict"];
+ if(p.defenseBroken==null)p.defenseBroken=0;
+ if(!p.relationships)p.relationships={};
+}
+function updateHypConfidence(p,support,rel=60){
+ ensureCampaignPatient(p);
+ Object.keys(p.hypConfidence).forEach(k=>p.hypConfidence[k]=clamp(p.hypConfidence[k]-(k===support?0:1)));
+ if(p.hypConfidence[support]!=null)p.hypConfidence[support]=clamp(p.hypConfidence[support]+Math.round(rel/10));
+}
+function campaignAddEvidence(p,text,support,reliability){
+ addEvidence(p,text,support,reliability);updateHypConfidence(p,support,reliability);
+}
+function paintCampaignSystems(p){
+ if(!p)return;ensureCampaignPatient(p);
+ if($("competing-hypotheses")){
+  const vals=Object.entries(p.hypConfidence).sort((a,b)=>b[1]-a[1]);
+  $("competing-hypotheses").innerHTML=vals.map(([k,v])=>`<div class="hypbar"><span>${k.toUpperCase()}</span><div class="bar"><i style="width:${v}%"></i></div><b>${v}%</b></div>`).join("");
+ }
+ if($("defense-chain-ui"))$("defense-chain-ui").innerHTML=p.defenseFull.map((d,i)=>`<div class="defense-node ${i<p.defenseBroken?"broken":i===p.defenseBroken?"active":""}">${i+1}. ${d}</div>`).join("");
+ if($("resolution-board")){
+  const top=Object.entries(p.hypConfidence).sort((a,b)=>b[1]-a[1])[0];
+  const contradict=(p.evidence||[]).filter(e=>(e.reliability||0)<60).slice(-2).map(e=>e.text).join(" · ")||"No strong contradiction recorded.";
+  $("resolution-board").innerHTML=[
+   ["What is happening?",p.hypothesis?`${p.hypothesis.primary} / ${p.hypothesis.context}`:"Model not committed"],
+   ["What maintains it?",p.hypothesis?.maint||"Unknown"],
+   ["Strongest competing model",`${top[0]} · ${top[1]}%`],
+   ["Contradictory evidence",contradict],
+   ["Treatment result",(p.treatmentPlan||[]).slice(-3).join(" → ")||"No sequence yet"],
+   ["Campaign stage",`${p.campaignStage+1}/10 · ${(PATIENT_CAMPAIGNS[p.unit]||[])[p.campaignStage]||"Complete"}`]
+  ].map(x=>`<div class="resolution-card"><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");
+ }
+ if($("resolve-case-btn"))$("resolve-case-btn").onclick=()=>resolveCaseStage(p);
+}
+function resolveCaseStage(p){
+ ensureCampaignPatient(p);
+ if(!p.hypothesis){toast("Commit a hypothesis first");return}
+ if((p.evidence||[]).length<2){toast("Collect at least two evidence traces");return}
+ const fit=[p.hypothesis.primary===p.hidden.primary,p.hypothesis.maint===p.hidden.maint,p.hypothesis.context===p.hidden.context].filter(Boolean).length;
+ if(fit<2){campaignAddEvidence(p,"Case resolution failed: current model predicts poorly.",p.hidden.primary,82);p.model.predictionError=clamp(p.model.predictionError+7);toast("Case not resolved · new corrective evidence generated");paintPsyche();return}
+ p.campaignStage=Math.min(9,p.campaignStage+1);p.defenseBroken=Math.min(p.defenseFull.length,p.defenseBroken+1);
+ p.campaignLog.push((PATIENT_CAMPAIGNS[p.unit]||[])[p.campaignStage-1]||"Stage resolved");
+ gainInsight(p,5,"case stage resolution");gainXP(10,"case stage");S.wardTokens+=3;
+ if(p.campaignStage%2===0)discoverWardMystery();
+ toast(`Case stage resolved · defense layer ${p.defenseBroken}/${p.defenseFull.length}`);
+ paintPsyche();paintRewardHUD();
+}
+function discoverWardMystery(){
+ if(S.wardMysteryLevel>=WARD_MYSTERY.length)return;
+ const f=WARD_MYSTERY[S.wardMysteryLevel++];S.wardMystery.push(f);toast("WARD MYSTERY FRAGMENT DISCOVERED");
+}
+function patientRoomFlavor(p,roomIndex){
+ const flavors={
+  "07-A3":["metallic condensation","locked threshold","oracle glyphs","echoing hinge"],
+  "11-F2":["tally marks","performance clocks","broken metric wall","sealed promise"],
+  "03-K9":["mirrored voices","empty audience","frequency glass","silent chamber"],
+  "19-Θ1":["missing shelves","house blueprint","misfiled object","archive dust"],
+  "22-C4":["logic gates","contradictory equations","circuit hum","warm artifact"],
+  "08-L7":["scorecards","chapel glass","redacted verdict","hidden ember"],
+  "14-S0":["moving lights","impulse switches","stillness field","delayed door"],
+  "05-N6":["branching corridors","duplicate signs","persistent photograph","single exit"]
+ };
+ const a=flavors[p.unit]||["clinical trace","sealed record","signal","threshold"];
+ return a[roomIndex%a.length];
+}
+function applyDefenseEffect(p,toolId){
+ ensureCampaignPatient(p);
+ const active=p.defenseFull[p.defenseBroken];if(!active)return 1.15;
+ const map={
+  "Persona":["mi","safety"],"Rationalization":["reappraise","problem"],"Avoidance":["activation","values"],
+  "Intellectualization":["mi","regulate"],"Projection":["reappraise","safety"],"Withdrawal":["mi","values"],
+  "Control":["anchor","problem"],"Core Conflict":["safety","values"]
+ };
+ const good=(map[active]||[]).includes(toolId);
+ if(good){p.defenseBroken=Math.min(p.defenseFull.length,p.defenseBroken+1);toast(`${active} defense opened`);return 1.35}
+ p.resistance=clamp(p.resistance+4);return .75;
+}
+function addComboTool(id){
+ if(S.comboQueue.length>=3){toast("Plan already has 3 tools");return}
+ const t=PSYCH_TOOLS.find(x=>x.id===id);if(!t)return;
+ S.comboQueue.push(id);paintComboBuilder();
+}
+function paintComboBuilder(){
+ if(!$("combo-builder"))return;
+ $("combo-builder").innerHTML=[0,1,2].map(i=>{
+  const id=S.comboQueue[i],t=PSYCH_TOOLS.find(x=>x.id===id);
+  return `<div class="combo-slot">${t?`<b>${i+1}. ${t.name}</b><br>${t.cost} tokens`:`${i+1}. Choose tool below`}</div>`;
+ }).join("");
+}
+function runTreatmentCombo(){
+ const p=sanPatient2();if(!p?.treatmentReady){toast("Patient treatment is locked");return}
+ if(S.comboQueue.length!==3){toast("Choose exactly 3 tools");return}
+ const tools=S.comboQueue.map(id=>PSYCH_TOOLS.find(t=>t.id===id));const cost=tools.reduce((n,t)=>n+t.cost,0);
+ if(S.wardTokens<cost){toast(`Need ${cost} Ward Tokens`);return}
+ const key=S.comboQueue.join(">"),combo=TREATMENT_COMBOS.find(c=>c.seq.join(">")===key);
+ S.wardTokens-=cost;
+ let mult=combo?1.7:1;
+ S.comboQueue.forEach(id=>mult*=applyDefenseEffect(p,id));
+ p.model.threatEstimate=clamp(p.model.threatEstimate-Math.round(7*mult));
+ p.model.uncertainty=clamp(p.model.uncertainty-Math.round(6*mult));
+ p.resistance=clamp(p.resistance-Math.round(4*mult));
+ p.rapport=clamp(p.rapport+Math.round(3*mult));
+ p.treatmentPlan.push(...S.comboQueue);
+ S.treatmentLog.push(`${p.name} · ${combo?combo.name:"custom 3-step plan"} · effect ×${mult.toFixed(2)}`);
+ if(combo){S.resonancePot+=3;gainInsight(p,5,"Treatment Cascade");jackpotSound(3);toast("TREATMENT CASCADE · "+combo.name)}
+ else toast("Custom treatment plan completed");
+ S.comboQueue=[];paintSanctum();paintRewardHUD();
+}
+function setupComboButtons(){
+ paintComboBuilder();
+ document.querySelectorAll("[data-tool2]").forEach(b=>{
+  const old=b.onclick;
+  b.textContent="Add to 3-Step Plan";
+  b.onclick=()=>addComboTool(b.dataset.tool2);
+ });
+ if($("run-combo-btn"))$("run-combo-btn").onclick=runTreatmentCombo;
+ if($("clear-combo-btn"))$("clear-combo-btn").onclick=()=>{S.comboQueue=[];paintComboBuilder()};
+}
+function startShift(){
+ if(!S.shift.activeUnits.length){
+  S.shift.activeUnits=liveList().slice(0,3).map(p=>p.unit);
+ }
+ S.shift.time=12;S.shift.resolved=0;randomShiftEvent();toast(`Shift ${S.shift.number} started · 3 active cases`);
+}
+function randomShiftEvent(){
+ const events=[
+  "POWER FLICKER · Analyze costs +1 AP for the next room.",
+  "PATIENT CROSSOVER · one patient's behavior becomes evidence in another case.",
+  "ARCHIVE ERROR · a low-reliability clue enters the board.",
+  "QUIET HOUR · all active patients gain +4 rapport.",
+  "RESONANCE SURGE · Ward Token rewards increase this shift."
+ ];
+ S.shiftEvent=events[Math.floor(Math.random()*events.length)];
+ if(S.shiftEvent.startsWith("QUIET"))S.shift.activeUnits.forEach(u=>{const p=S.P.find(x=>x.unit===u);if(p)p.rapport=clamp(p.rapport+4)});
+}
+function endShift(){
+ S.shift.activeUnits.forEach(u=>{const p=S.P.find(x=>x.unit===u);if(p&&!p.treatmentPlan.length){p.resistance=clamp(p.resistance+3);p.model.uncertainty=clamp(p.model.uncertainty+3)}});
+ S.shift.number++;S.shift.activeUnits=[];S.shift.time=12;S.comboQueue=[];toast("Shift ended · unresolved cases changed");startShift();
+}
+function patientInteraction(p){
+ const others=S.shift.activeUnits.map(u=>S.P.find(x=>x.unit===u)).filter(x=>x&&x!==p);
+ if(!others.length)return;
+ const q=others[Math.floor(Math.random()*others.length)];
+ const text=`Cross-case observation: ${q.name}'s behavior altered ${p.name}'s ${p.hidden.context} context.`;
+ campaignAddEvidence(p,text,p.hidden.context,68);p.relationships[q.unit]=(p.relationships[q.unit]||0)+1;
+}
+
 function paintPsyche(){
  const p=psychPatient(); if(!p)return;
  setupSimplePsyTabs();
@@ -3013,6 +3234,7 @@ function paintPsyche(){
  $("psy-floor-go").onclick=()=>go("dungeon");
  $("psy-sit-go").onclick=()=>go("session");
  $("psy-sanctum-go").onclick=()=>go("sanctum");
+ paintCampaignSystems(p);
 }
 
 function setupSimpleSanTabs(){
@@ -3076,6 +3298,29 @@ function paintSanctum(){
  $("sound-toggle").textContent="Sound "+(S.soundOn?"ON":"OFF");
  $("sound-toggle").onclick=()=>{S.soundOn=!S.soundOn;$("sound-toggle").textContent="Sound "+(S.soundOn?"ON":"OFF");if(S.soundOn)jackpotSound(1);};
 }
+
+
+function installCampaignDashboard(){
+ const cases=$("cases")||$("case-list")||document.querySelector(".case-grid")?.parentElement;
+ if(cases&&!$("campaign-dashboard")){
+  const d=document.createElement("div");d.id="campaign-dashboard";d.className="panel easy-panel";d.style.marginTop="8px";
+  d.innerHTML=`<h3>SHIFT + WARD MYSTERY</h3><div class="campaign-strip" id="campaign-strip"></div><div class="event-card" id="shift-event"></div><div class="shift-patients" id="shift-patients" style="margin-top:6px"></div><div class="mystery-board" id="ward-mystery-board" style="margin-top:7px"></div><div class="easy-actions" style="margin-top:6px"><button class="mini panel" id="start-shift-btn">Start / Fill Shift</button><button class="mini panel" id="end-shift-btn">End Shift</button></div>`;
+  cases.appendChild(d);
+ }
+ paintCampaignDashboard();
+}
+function paintCampaignDashboard(){
+ if(!$("campaign-strip"))return;
+ $("campaign-strip").innerHTML=[
+  ["Shift",S.shift.number],["Time",S.shift.time],["Active",S.shift.activeUnits.length+"/3"],["Resolved",S.shift.resolved],["Mystery",S.wardMysteryLevel+"/8"]
+ ].map(x=>`<div class="campaign-stat"><b>${x[1]}</b><span>${x[0]}</span></div>`).join("");
+ $("shift-event").textContent=S.shiftEvent||"No shift event yet.";
+ $("shift-patients").innerHTML=S.P.map(p=>`<div class="shift-card ${S.shift.activeUnits.includes(p.unit)?"selected":""}"><b>${p.name}</b><br><span>Campaign ${(p.campaignStage||0)+1}/10</span></div>`).join("");
+ $("ward-mystery-board").innerHTML=S.wardMystery.map(x=>`<div class="mystery-fragment">${x}</div>`).join("")||'<div class="mystery-fragment">No Ward fragments discovered.</div>';
+ $("start-shift-btn").onclick=()=>{startShift();paintCampaignDashboard()};
+ $("end-shift-btn").onclick=()=>{endShift();paintCampaignDashboard()};
+}
+document.addEventListener("DOMContentLoaded",()=>{S.P.forEach(ensureCampaignPatient);startShift();setTimeout(installCampaignDashboard,50);});
 
 </script>
 </body>
