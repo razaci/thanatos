@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD · Ultimate Floor Loop Edition</title>
+  <title>THANATOS WARD · Deep Dungeon Expanded Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -320,6 +320,44 @@
 .floor-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
 @media(max-width:560px){.loop-steps{grid-template-columns:repeat(4,1fr)}.form-chain{grid-template-columns:1fr}.prediction-grid{grid-template-columns:repeat(3,1fr)}}
 
+
+/* === COMPLEX + ACCESSIBLE DUNGEON === */
+.dungeon-command{position:sticky;top:4px;z-index:12;padding:8px;background:#03080deF;border:1px solid #4d718766;backdrop-filter:blur(7px);margin-bottom:7px}
+.command-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.command-grid button{min-height:38px}
+.command-grid button.primary{border-color:#e8c36a;color:#ffe7a5;background:#171104}
+.floor-progress{height:7px;border:1px solid #45677c55;background:#010406;margin-top:6px}.floor-progress span{display:block;height:100%;background:linear-gradient(90deg,#4e9cc8,#d8bc69)}
+.dungeon-shell{grid-template-columns:minmax(0,1fr)!important}
+.dungeon-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.75fr);gap:8px}
+.dungeon-side{max-height:none}
+.big-dungeon{min-height:62vh;position:relative}
+.map-toolbar{display:flex;gap:5px;flex-wrap:wrap;padding:6px}
+.map-toolbar button{min-height:32px}
+.room-tooltip{position:absolute;pointer-events:none;z-index:8;max-width:190px;padding:7px;background:#02070bf2;border:1px solid #76cfff88;font:8px/1.35 "Share Tech Mono";color:#b9d6e8;display:none}
+.quest-list{display:grid;gap:5px}.quest{padding:6px;border-left:2px solid #536f8355;background:#061019;font:8px/1.35 "Share Tech Mono";color:#8ca8bc}.quest.done{border-color:#76dda6;color:#9ee7bd}
+.room-actions-big{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}.room-actions-big button{min-height:44px}
+.dungeon-help{font:8px/1.45 "Share Tech Mono";color:#8ca5b8}.dungeon-help b{color:#d6f2ff}
+.map-chip{padding:4px 6px;border:1px solid #4e728755;font:7px "Share Tech Mono";color:#9eb8ca}
+.path-history{display:flex;gap:3px;overflow-x:auto;padding-bottom:3px}.path-history span{white-space:nowrap;padding:4px;border:1px solid #3e607344;font:7px "Share Tech Mono"}
+@media(max-width:850px){.dungeon-layout{grid-template-columns:1fr}.big-dungeon{min-height:50vh}.dungeon-command{position:relative;top:auto}}
+@media(max-width:560px){.command-grid{grid-template-columns:repeat(3,1fr)}.big-dungeon{min-height:44vh}.room-actions-big{grid-template-columns:1fr}.dungeon-command{padding:6px}}
+
+
+/* === DEEP DETAIL DUNGEON EXPANSION === */
+.region-banner{padding:8px;border:1px solid #4e728755;background:linear-gradient(90deg,#071019,#0c1218);margin-bottom:6px}
+.region-banner b{font:10px "Share Tech Mono";color:#d8efff;letter-spacing:.12em}.region-banner span{display:block;font:7px/1.4 "Share Tech Mono";color:#8199ab;margin-top:3px}
+.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.detail-card{padding:7px;border:1px solid #48677a33;background:#050b10}
+.detail-card b{display:block;font:7px "Share Tech Mono";color:#9fd6f0;margin-bottom:3px}.detail-card span{font:8px/1.4 "Share Tech Mono";color:#8ca6ba}
+.layer-stack{display:grid;gap:4px}.layer{padding:6px;border-left:2px solid #496c8055;background:#061019;font:8px/1.4 "Share Tech Mono";color:#8fa8bb}
+.layer.active{border-color:#e8c36a;color:#ffe4a0;background:#141004}.layer.done{border-color:#78d9a1;color:#9ce8ba}
+.choice-list{display:grid;gap:5px}.choice-list button{text-align:left;padding:8px;min-height:44px}.choice-list b{display:block;font-size:8px}.choice-list span{font:7px/1.35 "Share Tech Mono";color:#7f9baf}
+.clue-chain{display:grid;gap:4px}.clue{padding:6px;background:#061019;border-left:2px solid #5a7c9055;font:8px/1.35 "Share Tech Mono";color:#91aabe}.clue.verified{border-color:#76dda6;color:#a5e8c2}.clue.false{border-color:#dca05f;color:#e4b97b}
+.route-mods{display:flex;gap:4px;flex-wrap:wrap}.route-mods span{padding:4px 6px;border:1px solid #4a6d8155;font:7px "Share Tech Mono";color:#9cb7ca}
+.depth-meter{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}.depth-meter span{height:7px;background:#09131a;border:1px solid #3f607455}.depth-meter span.on{background:#2c789f}
+.miniboss{padding:8px;border:1px solid #c59b4f66;background:#120d05}.miniboss h4{font:9px "Share Tech Mono";color:#ffd98a}.miniboss p{font:8px/1.4 "Share Tech Mono";color:#b7a27b}
+.easy-summary{padding:7px;border:1px solid #7dd6ff33;background:#061119;font:8px/1.45 "Share Tech Mono";color:#a5c5d8}
+@media(max-width:560px){.detail-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -447,7 +485,21 @@
   </section>
 
   <section class="screen" id="screen-dungeon">
-    <div class="inner"><div class="dungeon-shell"><div>
+    <div class="inner">
+
+<div class="dungeon-command">
+  <div class="command-grid">
+    <button class="mini panel primary" id="cmd-next">▶ Recommended</button>
+    <button class="mini panel" id="cmd-search">⌕ Search</button>
+    <button class="mini panel" id="cmd-analyze">◇ Analyze</button>
+    <button class="mini panel" id="cmd-case">Ψ Case Loop</button>
+    <button class="mini panel" id="cmd-retreat">↩ Bank / Retreat</button>
+    <button class="mini panel" id="cmd-help">? Help</button>
+  </div>
+  <div class="floor-progress"><span id="floor-progress-fill" style="width:0%"></span></div>
+  <div class="path-history" id="path-history"></div>
+</div>
+<div class="dungeon-shell"><div class="dungeon-layout"><div>
       <div class="bar">
         <span class="pip panel" id="dseed">SEED —</span>
         <button class="mini panel" id="dgen">Carve floor</button>
@@ -483,7 +535,31 @@
   </div>
 </div>
 
-        <div class="panel objective-board">
+        
+<div class="panel" style="padding:9px" id="region-panel">
+  <div class="region-banner" id="region-banner"><b>FLOOR REGION</b><span>Enter the dungeon to reveal its current district.</span></div>
+  <div class="route-mods" id="route-mods"></div>
+</div>
+<div class="panel" style="padding:9px" id="room-depth-panel">
+  <div class="section-title">ROOM DEPTH</div>
+  <div class="depth-meter" id="depth-meter"></div>
+  <div class="layer-stack" id="room-layers"></div>
+</div>
+<div class="panel" style="padding:9px" id="room-detail-panel">
+  <div class="section-title">ROOM DETAIL</div>
+  <div class="detail-grid" id="room-detail-grid"></div>
+</div>
+<div class="panel" style="padding:9px" id="clue-chain-panel">
+  <div class="section-title">CLUE CHAIN</div>
+  <div class="clue-chain" id="clue-chain"></div>
+</div>
+<div class="panel" style="padding:9px" id="subevent-panel">
+  <div class="section-title">CURRENT SUB-EVENT</div>
+  <div class="easy-summary" id="subevent-summary">Tap a room. The game will surface one clear next decision.</div>
+  <div class="choice-list" id="subevent-choices"></div>
+</div>
+
+<div class="panel objective-board">
           <h3>Floor Objective</h3>
           <div id="floor-objective">Locate the Anchor room and extract one verified fragment.</div>
           <div class="dungeon-status" id="dungeon-status" style="margin-top:7px"></div>
@@ -508,7 +584,7 @@
           </div>
         </div>
       </div>
-</div></div>
+</div></div></div>
   </section>
 
   <section class="screen" id="screen-dossier"><div class="inner" id="psy"></div></section>
@@ -610,6 +686,45 @@ const ITEMS = {
 };
 
 
+
+
+const FLOOR_REGIONS=[
+ {id:"intake",name:"INTAKE RING",desc:"Low-risk observation rooms, orientation spaces, basic evidence and introductory patient behavior.",risk:0,bonus:"Observation reliability +10"},
+ {id:"memory",name:"MNEMONIC WARD",desc:"Context-heavy rooms, memory fragments, contradictions, source confusion and archive locks.",risk:5,bonus:"Memory evidence +15"},
+ {id:"threat",name:"ALARM SECTOR",desc:"Higher arousal, hazards, false alarms, avoidance loops and fast risk growth.",risk:9,bonus:"Threat evidence +15"},
+ {id:"social",name:"MIRROR GALLERY",desc:"Social prediction, evaluation, rapport tests, persona defenses and ambiguous feedback.",risk:7,bonus:"Rapport actions +20%"},
+ {id:"control",name:"EXECUTIVE SPINE",desc:"Response conflict, goal maintenance, inhibition, switching and performance-monitoring trials.",risk:8,bonus:"Analyze AP -1 once"},
+ {id:"reward",name:"INCENTIVE VAULT",desc:"Approach/avoidance choices, delayed rewards, habit loops and jackpot-linked caches.",risk:8,bonus:"Ward Token drops +25%"}
+];
+const ROOM_LAYERS=[
+ {id:"threshold",name:"Threshold",desc:"Initial sensory/behavioral read. Low commitment."},
+ {id:"surface",name:"Surface Pattern",desc:"Visible behavior, obvious clue, or environmental cue."},
+ {id:"mechanism",name:"Mechanism Layer",desc:"Maintaining process becomes testable."},
+ {id:"contradiction",name:"Contradiction Layer",desc:"A clue challenges the current model."},
+ {id:"core",name:"Core Chamber",desc:"High-value evidence, treatment trial, or mini-boss."}
+];
+const SUBEVENTS=[
+ {id:"ambiguous",title:"Ambiguous Signal",summary:"A cue could support two different mechanisms.",choices:[
+   ["Observe longer","Low risk · improves reliability","observe"],
+   ["Test prediction","Spend 1 AP · high information","test"],
+   ["Commit early","Fast · raises risk if wrong","commit"]]},
+ {id:"avoid",title:"Avoidance Loop",summary:"The patient gets immediate relief after withdrawing, then the behavior returns.",choices:[
+   ["Track relief cycle","Identify maintaining process","track"],
+   ["Ground first","Reduce arousal before testing","ground"],
+   ["Approach trial","High information · timing-sensitive","approach"]]},
+ {id:"conflict",title:"Response Conflict",summary:"Two action tendencies compete and performance degrades under pressure.",choices:[
+   ["Reduce load","Lower control demand","reduce"],
+   ["Add distractor","Stress-test inhibition","stress"],
+   ["Switch rule","Test flexibility","switch"]]},
+ {id:"social",title:"Social Prediction Error",summary:"The patient expects rejection from an ambiguous interaction.",choices:[
+   ["Clarify cue","Raise evidence precision","clarify"],
+   ["Reflect expectation","Build rapport and evidence","reflect"],
+   ["Challenge belief","Fast but resistance-sensitive","challenge"]]},
+ {id:"memory",title:"Context Fragment",summary:"A fragment is vivid but its source/context is uncertain.",choices:[
+   ["Source check","Verify context","source"],
+   ["Link archive","Spend AP for stronger evidence","archive"],
+   ["Use as clue","Fast, but reliability may be low","use"]]}
+];
 
 const FLOOR_LOOP_STEPS=["Observe","Assess","Formulate","Predict","Intervene","Outcome","Revise","Stabilize"];
 const FLOOR_INTERVENTIONS=[
@@ -833,7 +948,13 @@ const DUNGEON_ROOM_TYPES = [
  {id:"rest",glyph:"○",name:"Quiet Room",weight:12,desc:"Recover AP or reduce risk.",risk:0},
  {id:"cache",glyph:"$",name:"Relic Cache",weight:9,desc:"Contains relics or research material.",risk:4},
  {id:"anchor",glyph:"◎",name:"Anchor Room",weight:7,desc:"Primary floor objective and high-value clue.",risk:8},
- {id:"bossgate",glyph:"♛",name:"Boss Gate",weight:5,desc:"Opens only after floor objective progress.",risk:12}
+ {id:"bossgate",glyph:"♛",name:"Boss Gate",weight:5,desc:"Opens only after floor objective progress.",risk:12},
+ {id:"junction",glyph:"╬",name:"Decision Junction",weight:12,desc:"Choose one of two route bonuses.",risk:2},
+ {id:"trial",glyph:"Δ",name:"Behavioral Trial",weight:10,desc:"Run a short functional test for high-quality evidence.",risk:5},
+ {id:"echo",glyph:"≈",name:"Echo Chamber",weight:9,desc:"Repeats the last intervention pattern; useful or dangerous.",risk:6},
+ {id:"sanctuary",glyph:"✦",name:"Sanctuary Node",weight:7,desc:"Restore AP and reduce risk once.",risk:0},
+ {id:"switch",glyph:"⌘",name:"Ward Switch",weight:8,desc:"Changes locks and reveals nearby rooms.",risk:3},
+ {id:"shortcut",glyph:"↯",name:"Shortcut",weight:6,desc:"Trade risk for faster objective progress.",risk:7}
 ];
 function weightedRoomType(rng=Math.random){
   const total=DUNGEON_ROOM_TYPES.reduce((a,b)=>a+b.weight,0);
@@ -935,8 +1056,8 @@ const S = {
   unlocks:{reflect:false,reframe:false,fieldnotes:false,triage:false,deepmap:false},
   archiveLens:false, echoStabilizer:false, oracleRelay:false,
   fmEvent:"ambiguity", fmTrace:[],
-  run:{ap:10,risk:0,evidence:0,depth:1,banked:0,active:true,anchorFound:false,roomsEntered:0,locksOpened:0,hazardsCleared:0,path:[],objectiveDone:false},
-  build:null, skillPoints:1, sitTurns:8, boss:null, lastTactic:null, tacticRepeat:0, wardTokens:0, modelStreak:0, rewardMultiplier:1, resonancePot:0, soundOn:true, jackpotState:{symbols:["Ψ","◈","⌘"],message:"Commit a hypothesis in Psyche to drive the engine."}, treatmentLog:[], treatmentUses:{}, nextAnalyzeBonus:0, challengeShield:false, floorCase:null
+  run:{ap:10,risk:0,evidence:0,depth:1,banked:0,active:true,anchorFound:false,roomsEntered:0,locksOpened:0,hazardsCleared:0,path:[],objectiveDone:false,keys:0,switches:0,trials:0,shortcuts:0,helpSeen:false},
+  build:null, skillPoints:1, sitTurns:8, boss:null, lastTactic:null, tacticRepeat:0, wardTokens:0, modelStreak:0, rewardMultiplier:1, resonancePot:0, soundOn:true, jackpotState:{symbols:["Ψ","◈","⌘"],message:"Commit a hypothesis in Psyche to drive the engine."}, treatmentLog:[], treatmentUses:{}, nextAnalyzeBonus:0, challengeShield:false, floorCase:null, floorRegion:null, roomDepth:0, clueChain:[], routeMods:[], activeSubevent:null, miniboss:null
 };
 
 const $ = id => document.getElementById(id);
@@ -1070,7 +1191,7 @@ function animateJackpot(finalSymbols,message,level=0){
       reels.forEach((x,i)=>{x.classList.remove("spin");x.textContent=finalSymbols[i]});
       if($("jackpot-banner"))$("jackpot-banner").innerHTML=message;
       if($("jackpot-shell")){$("jackpot-shell").classList.remove("cascade-flash");void $("jackpot-shell").offsetWidth;$("jackpot-shell").classList.add("cascade-flash");}
-      jackpotSound(level);paintRewardHUD();
+      jackpotSound(level);paintRewardHUD();setupDungeonCommands();
     }
   },55);
 }
@@ -1253,7 +1374,7 @@ function analyzeRoom(){
 function retreatRun(){
   S.run.banked+=S.run.evidence;
   S.run.evidence=0; S.run.risk=Math.max(0,S.run.risk-25); S.run.ap=10+(S.build==="investigator"?1:0);
-  S.run.depth++; S.floorCase=null; S.run.anchorFound=false;S.run.objectiveDone=false;S.run.path=[];S.floor=null; carveFloor(); toast("Evidence banked · deeper floor generated"); paintRunHUD(); paintDungeon();paintRouteLog();paintDungeonStatus();paintEncounter();
+  S.run.depth++; S.floorCase=null; S.floorRegion=null; S.activeSubevent=null; S.miniboss=null; S.clueChain=[]; S.run.anchorFound=false;S.run.objectiveDone=false;S.run.path=[];S.floor=null; carveFloor(); toast("Evidence banked · deeper floor generated"); paintRunHUD(); paintDungeon();paintRouteLog();paintDungeonStatus();paintEncounter();
 }
 function paintBuilds(){
  if(!$("build-grid"))return;
@@ -1859,7 +1980,7 @@ function carveFloor(seed){
   if(rooms[1]) rooms[1].roomType=DUNGEON_ROOM_TYPES.find(x=>x.id==="evidence");
   if(rooms[2]) rooms[2].roomType=DUNGEON_ROOM_TYPES.find(x=>x.id==="anchor");
   if(rooms[rooms.length-1]) rooms[rooms.length-1].roomType=DUNGEON_ROOM_TYPES.find(x=>x.id==="bossgate");
-  S.run.anchorFound=false; S.run.objectiveDone=false; S.run.path=[]; S.run.roomsEntered=0;
+  S.run.anchorFound=false; S.run.objectiveDone=false; S.run.path=[]; S.run.roomsEntered=0; S.floorRegion=null; S.activeSubevent=null; S.miniboss=null; S.clueChain=[]; chooseRegion();
   S.floor={W,H,grid,rooms};
   S.at=rooms[0];
   $("dseed").textContent="SEED "+seed.toString(16).toUpperCase();
@@ -1888,7 +2009,7 @@ function paintDungeon(){
     ctx.font=Math.max(7,th*1.1)+"px monospace";
     const hidden=!rm.revealed;
     const glyph=rm.kind==="foyer"?"◆":hidden?"?":(rm.roomType?.glyph||"?");
-    const lab=rm.kind==="foyer"?"FOYER":`${glyph} ${hidden?"UNKNOWN":rm.roomType?.name||"ROOM"}`;
+    const shortName=rm.roomType?.name?.replace("Evidence Vault","Evidence").replace("Affective Hazard","Hazard").replace("Sealed Archive","Archive").replace("Cognitive Anomaly","Anomaly").replace("Behavioral Trial","Trial").replace("Decision Junction","Junction").replace("Sanctuary Node","Sanctuary"); const lab=rm.kind==="foyer"?"FOYER":`${glyph} ${hidden?"UNKNOWN":shortName||"ROOM"}`;
     if(hidden) ctx.globalAlpha=.45;
     ctx.fillText(lab, rm.x*tw+3, rm.y*th+th*1.6);
     ctx.globalAlpha=1;
@@ -1958,6 +2079,7 @@ function stepDone(i,c){
 }
 function setCaseStep(n){if(!S.floorCase)return;S.floorCase.step=Math.max(0,Math.min(7,n));paintFloorLoop();}
 function paintFloorLoop(){
+ paintCommandCenter();
  if(!$("loop-steps"))return;
  const c=S.floorCase,p=floorCasePatient();
  $("loop-steps").innerHTML=FLOOR_LOOP_STEPS.map((s,i)=>`<div class="loop-step ${stepDone(i,c||{})?"done":""} ${c&&c.step===i?"on":""}">${i+1}<br>${s}</div>`).join("");
@@ -2071,6 +2193,206 @@ function reviseFloorModel(mode){
  paintFloorLoop();
 }
 
+
+
+function chooseRegion(){
+ const idx=Math.min(FLOOR_REGIONS.length-1,Math.max(0,(S.run.depth-1)%FLOOR_REGIONS.length));
+ S.floorRegion=FLOOR_REGIONS[idx];
+ S.routeMods=[S.floorRegion.bonus,`Depth ${S.run.depth}`,S.build?`${S.build.toUpperCase()} BUILD`:"NO BUILD"];
+}
+function ensureRegion(){if(!S.floorRegion)chooseRegion();}
+function makeRoomDepth(rm){
+ if(!rm)return;
+ if(rm.depthLevel==null)rm.depthLevel=0;
+ if(!rm.layers)rm.layers=ROOM_LAYERS.map(x=>({...x,done:false}));
+}
+function paintRegion(){
+ ensureRegion();
+ if($("region-banner"))$("region-banner").innerHTML=`<b>${S.floorRegion.name}</b><span>${S.floorRegion.desc}</span>`;
+ if($("route-mods"))$("route-mods").innerHTML=S.routeMods.map(x=>`<span>${x}</span>`).join("");
+}
+function paintRoomDepth(){
+ const rm=S.at;if(!$("room-layers"))return;
+ if(!rm){$("room-layers").innerHTML='<div class="layer">Select a room.</div>';return}
+ makeRoomDepth(rm);
+ $("depth-meter").innerHTML=ROOM_LAYERS.map((x,i)=>`<span class="${i<=rm.depthLevel?"on":""}"></span>`).join("");
+ $("room-layers").innerHTML=rm.layers.map((x,i)=>`<div class="layer ${x.done?"done":""} ${i===rm.depthLevel?"active":""}"><b>${i+1}. ${x.name}</b><br>${x.desc}</div>`).join("");
+}
+function roomDetailData(rm){
+ const p=rm?.who;
+ return [
+  ["Region",S.floorRegion?.name||"Unknown"],
+  ["Room type",rm?.roomType?.name||"Unknown"],
+  ["Patient",p?p.name:"Unassigned"],
+  ["Case stage",p?`${p.stage+1}/${p.arc.length}`:"—"],
+  ["Risk",`${S.run.risk}%`],
+  ["AP",`${S.run.ap}`],
+  ["Evidence",`${S.run.evidence}`],
+  ["Room layer",rm?`${(rm.depthLevel||0)+1}/5`:"—"]
+ ];
+}
+function paintRoomDetail(){
+ if(!$("room-detail-grid"))return;
+ $("room-detail-grid").innerHTML=roomDetailData(S.at).map(x=>`<div class="detail-card"><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");
+}
+function addClue(text,reliability=60,kind="open"){
+ S.clueChain.unshift({text,reliability,kind});S.clueChain=S.clueChain.slice(0,8);paintClueChain();
+}
+function paintClueChain(){
+ if(!$("clue-chain"))return;
+ $("clue-chain").innerHTML=S.clueChain.map(c=>`<div class="clue ${c.kind==="verified"?"verified":c.kind==="false"?"false":""}">${c.kind.toUpperCase()} · ${Math.round(c.reliability)}%<br>${c.text}</div>`).join("")||'<div class="clue">No linked clues yet.</div>';
+}
+function pickSubevent(rm){
+ if(!rm)return null;
+ const p=rm.who;
+ let pool=SUBEVENTS;
+ if(p){
+  const map={threat:"avoid",memory:"memory",control:"conflict",social:"social",reward:"ambiguous"};
+  const pref=map[p.hidden.primary];
+  const hit=SUBEVENTS.find(x=>x.id===pref);
+  if(hit&&Math.random()<.7)return hit;
+ }
+ return pool[Math.floor(Math.random()*pool.length)];
+}
+function startSubevent(rm){
+ S.activeSubevent=pickSubevent(rm);
+ paintSubevent();
+}
+function paintSubevent(){
+ if(!$("subevent-summary"))return;
+ const e=S.activeSubevent;
+ if(!e){$("subevent-summary").textContent="Tap a room. The game will surface one clear next decision.";$("subevent-choices").innerHTML="";return}
+ $("subevent-summary").innerHTML=`<b>${e.title}</b><br>${e.summary}`;
+ $("subevent-choices").innerHTML=e.choices.map(c=>`<button class="mini panel" data-subchoice="${c[2]}"><b>${c[0]}</b><span>${c[1]}</span></button>`).join("");
+ $("subevent-choices").querySelectorAll("[data-subchoice]").forEach(b=>b.onclick=()=>resolveSubevent(b.dataset.subchoice));
+}
+function resolveSubevent(action){
+ const rm=S.at,p=rm?.who;if(!rm||!S.activeSubevent)return;
+ let txt="",rel=60;
+ if(["test","archive","stress"].includes(action)){if(!spendAP(1,"subevent"))return;rel=82;S.run.risk=clamp(S.run.risk+4)}
+ if(["observe","track","clarify","source","reduce"].includes(action)){rel=72;S.run.risk=clamp(S.run.risk-2)}
+ if(["commit","approach","challenge"].includes(action)){rel=55;S.run.risk=clamp(S.run.risk+7)}
+ if(action==="ground"&&p){p.model.arousal=clamp(p.model.arousal-10);txt="Grounding reduced activation before further testing."}
+ else if(action==="switch"&&p){p.model.controlDemand=clamp(p.model.controlDemand-7);txt="Rule-switch trial generated flexibility evidence."}
+ else if(action==="reflect"&&p){p.rapport=clamp(p.rapport+5);txt="Reflection increased rapport and exposed expectation data."}
+ else txt=`${S.activeSubevent.title} · ${action} produced a new trace.`;
+ if(p)addEvidence(p,txt,p.hidden.maint,rel);
+ addClue(txt,rel,rel>=75?"verified":"open");
+ rm.layers[rm.depthLevel].done=true;
+ if(rm.depthLevel<4){rm.depthLevel++;startSubevent(rm)}else{startMiniBoss(rm)}
+ gainXP(2,"room layer resolved");paintRoomDepth();paintRoomDetail();paintCommandCenter();paintRegion();paintRoomDepth();paintRoomDetail();paintClueChain();
+}
+function startMiniBoss(rm){
+ if(!rm||S.miniboss)return;
+ const p=rm.who||S.sel;if(!p)return;
+ const defs=[
+  {name:"THE LOOP",rule:"Repeating the same intervention strengthens diminishing returns.",weak:"Vary sequence"},
+  {name:"THE FALSE CERTAINTY",rule:"Low-reliability clues look convincing.",weak:"Verify evidence"},
+  {name:"THE CLOSED DOOR",rule:"Avoidance lowers immediate risk but blocks progression.",weak:"Regulate then approach"},
+  {name:"THE OVERLOAD",rule:"High control demand makes complex actions weaker.",weak:"Reduce load first"}
+ ];
+ S.miniboss={...defs[(S.run.depth+rm.x+rm.y)%defs.length],hp:40,room:rm,patient:p};
+ if($("subevent-summary"))$("subevent-summary").innerHTML=`<div class="miniboss"><h4>${S.miniboss.name}</h4><p>${S.miniboss.rule}<br>Weakness: ${S.miniboss.weak}</p></div>`;
+ if($("subevent-choices"))$("subevent-choices").innerHTML=`<button class="mini panel" data-miniboss="careful">Use Correct Sequence</button><button class="mini panel" data-miniboss="force">Force Through</button>`;
+ document.querySelectorAll("[data-miniboss]").forEach(b=>b.onclick=()=>resolveMiniBoss(b.dataset.miniboss));
+}
+function resolveMiniBoss(mode){
+ const b=S.miniboss;if(!b)return;
+ if(!spendAP(2,"mini-boss"))return;
+ let dmg=mode==="careful"?22:10;
+ if(mode==="force"){S.run.risk=clamp(S.run.risk+10);b.patient.resistance=clamp(b.patient.resistance+6)}
+ b.hp-=dmg;
+ addClue(`${b.name} response · ${mode} · ${dmg} stability damage`,mode==="careful"?88:50,mode==="careful"?"verified":"open");
+ if(b.hp<=0){
+  gainXP(8,"mini-boss");gainInsight(b.patient,3,"mini-boss solved");S.wardTokens+=3;toast(`${b.name} resolved · +3 Ward Tokens`);
+  S.miniboss=null;S.activeSubevent=null;b.room.searched=true;
+ }else toast(`${b.name} · ${b.hp} stability remaining`);
+ paintSubevent();paintRewardHUD();paintCommandCenter();
+}
+function deepenRoom(){
+ const rm=S.at;if(!rm)return;
+ makeRoomDepth(rm);
+ if(!S.activeSubevent)startSubevent(rm);
+ else paintSubevent();
+ paintRoomDepth();paintRoomDetail();paintRegion();paintClueChain();
+}
+function easyNextDecision(){
+ const rm=S.at;
+ if(!rm){toast("Tap a room first");return}
+ if(S.miniboss){toast("Choose one mini-boss option below");$("subevent-panel")?.scrollIntoView({behavior:"smooth",block:"center"});return}
+ if(S.activeSubevent){toast("Choose one room decision below");$("subevent-panel")?.scrollIntoView({behavior:"smooth",block:"center"});return}
+ if(S.floorCase){recommendedAction();return}
+ if(!rm.searched){searchRoom();return}
+ deepenRoom();
+}
+
+function dungeonProgress(){
+ const c=S.floorCase;
+ let n=0,total=8;
+ if(c){for(let i=0;i<8;i++)if(stepDone(i,c))n++;}
+ if(S.run.anchorFound)n++;total++;
+ if(S.run.objectiveDone)n++;total++;
+ return Math.round(n/total*100);
+}
+function paintCommandCenter(){
+ if(!$("floor-progress-fill"))return;
+ $("floor-progress-fill").style.width=dungeonProgress()+"%";
+ $("path-history").innerHTML=(S.run.path||[]).slice(-10).map((x,i)=>`<span>${i+1} · ${x}</span>`).join("")||"<span>FOYER</span>";
+ const rm=S.at,c=S.floorCase;
+ let next="Enter a patient room";
+ if(rm&&c){
+   const names=["Record observation","Choose assessment","Build formulation","Lock prediction","Choose intervention","Compare outcome","Revise model","Stabilize case"];
+   next=names[c.step]||"Continue";
+ }else if(rm&&!c) next=rm.searched?"Choose another room":"Search this room";
+ if($("cmd-next"))$("cmd-next").textContent="▶ "+next;
+}
+function recommendedAction(){
+ const rm=S.at,c=S.floorCase;
+ if(!rm){toast("Choose a revealed room on the map");return}
+ if(c){
+   if(c.step===0){floorLoopAction("observe");return}
+   if(c.step===1){toast("Choose the leading function in Case Loop");return}
+   if(c.step===2){toast("Build and lock the functional chain");return}
+   if(c.step===3){toast("Predict the outcome before treatment");return}
+   if(c.step===4){toast("Choose an intervention based on mechanism match");return}
+   if(c.step===5){floorLoopAction("compare");return}
+   if(c.step===6){toast("Maintain, revise, or seek evidence");return}
+   if(c.step===7){floorLoopAction("stabilize");return}
+ }
+ if(!rm.searched)searchRoom();else analyzeRoom();
+}
+function dungeonHelp(){
+ const msg=`DUNGEON QUICK GUIDE
+1. Tap a room.
+2. Use Recommended if unsure.
+3. Patient rooms start the 8-step Case Loop.
+4. Search/Analyze improves evidence.
+5. Match mechanism → intervention.
+6. Stabilize the case, find Anchor, then push Boss Gate or Bank/Retreat.
+AP is your action budget; Risk makes deeper runs more dangerous.`;
+ alert(msg);S.run.helpSeen=true;
+}
+function setupDungeonCommands(){
+ if($("cmd-next"))$("cmd-next").onclick=easyNextDecision;
+ if($("cmd-search"))$("cmd-search").onclick=()=>S.at?searchRoom():toast("Select a room first");
+ if($("cmd-analyze"))$("cmd-analyze").onclick=()=>S.at?analyzeRoom():toast("Select a room first");
+ if($("cmd-case"))$("cmd-case").onclick=()=>{if(S.floorCase){paintFloorLoop();$("loop-workspace")?.scrollIntoView({behavior:"smooth",block:"center"})}else toast("Enter a patient room first")};
+ if($("cmd-retreat"))$("cmd-retreat").onclick=()=>retreatRun();
+ if($("cmd-help"))$("cmd-help").onclick=dungeonHelp;
+ paintCommandCenter();
+}
+function resolveComplexRoom(rm){
+ if(!rm||rm._complexDone)return;
+ const t=rm.roomType?.id;
+ if(t==="junction"){rm._complexDone=true;S.run.ap=Math.min(14,S.run.ap+1);S.run.risk=clamp(S.run.risk-3);toast("Decision Junction · efficient route +1 AP")}
+ if(t==="trial"){rm._complexDone=true;S.run.trials++;if(rm.who)addEvidence(rm.who,"Behavioral Trial · response under controlled uncertainty",rm.who.hidden.primary,88);S.run.risk=clamp(S.run.risk+3);gainXP(5,"behavioral trial")}
+ if(t==="sanctuary"){rm._complexDone=true;S.run.ap=Math.min(14,S.run.ap+3);S.run.risk=clamp(S.run.risk-12);S.stab=clamp(S.stab+5);toast("Sanctuary Node · +3 AP · risk reduced")}
+ if(t==="switch"){rm._complexDone=true;S.run.switches++;let opened=0;for(const x of S.floor.rooms){if(x.locked&&opened<2){x.locked=false;x.revealed=true;opened++}}toast(`Ward Switch · ${opened} locks released`)}
+ if(t==="shortcut"){rm._complexDone=true;S.run.shortcuts++;S.run.risk=clamp(S.run.risk+8);S.run.ap=Math.min(14,S.run.ap+2);if(Math.random()<.5)S.run.anchorFound=true;toast("Shortcut taken · +2 AP · risk +8")}
+ if(t==="echo"){rm._complexDone=true;const p=rm.who||S.sel;if(p&&S.floorCase?.sequence?.length){const last=S.floorCase.sequence.at(-1);S.floorCase.mastery[last]=(S.floorCase.mastery[last]||0)+1;toast("Echo Chamber · last intervention familiarity increased")}}
+ paintCommandCenter();
+}
+
 function roomCanEnter(rm){
   if(!rm)return false;
   if(rm.kind==="foyer")return true;
@@ -2100,7 +2422,7 @@ function enterRoom(rm){
   }
   revealRoom(rm);
   S.at=rm;if(rm.who&&!rm.who.sealed){S.sel=rm.who;if(!S.floorCase||S.floorCase.patient!==rm.who)newFloorCase(rm.who,rm);}
-  resolveRoomEntry(rm); paintDungeon(); paintRunHUD(); paintRouteLog(); paintEncounter(); paintDungeonStatus();
+  resolveRoomEntry(rm); resolveComplexRoom(rm); deepenRoom(); paintDungeon(); paintRunHUD(); paintRouteLog(); paintEncounter(); paintDungeonStatus(); paintCommandCenter();
 }
 function resolveRoomEntry(rm){
   const t=rm.roomType?.id;
@@ -2158,7 +2480,7 @@ function paintEncounter(){
   if(t.id==="locked"&&rm.locked)acts.push(`<button class="mini panel" data-enc="force">Force archive · 3 AP</button>`);
   if(t.id==="anomaly"&&!rm.searched)acts.push(`<button class="mini panel" data-enc="anomaly">Interpret anomaly · 2 AP</button>`);
   if(t.id==="anchor"&&!rm.searched)acts.push(`<button class="mini panel" data-enc="anchor">Extract anchor · 2 AP</button>`);
-  acts.push(`<button class="mini panel" data-enc="analyze">Analyze room</button>`);
+  acts.push(`<button class="mini panel" data-enc="analyze">Analyze room</button>`); acts.push(`<button class="mini panel" data-enc="deepen">Go Deeper</button>`);
   $("encounter-actions").innerHTML=acts.join("");
   $("encounter-actions").querySelectorAll("[data-enc]").forEach(b=>b.onclick=()=>{
     const a=b.dataset.enc;
@@ -2166,7 +2488,7 @@ function paintEncounter(){
     if(a==="hazard")clearHazard();
     if(a==="force")forceLock();
     if(a==="anchor")lootAnchor();
-    if(a==="analyze")analyzeRoom();
+    if(a==="analyze")analyzeRoom(); if(a==="deepen")deepenRoom();
     if(a==="anomaly"){
       if(!spendAP(2,"anomaly"))return;
       rm.searched=true;
