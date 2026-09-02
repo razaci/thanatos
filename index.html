@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD · Roguelike Five Systems Edition</title>
+  <title>THANATOS WARD · Deep Dungeon Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -185,7 +185,7 @@
       .hud-h{font-size:7px}
       .meta{font-size:7px;margin:4px 0 2px}
       .radar{width:66px;height:66px;top:6px;right:6px}
-      .screen{padding:72px 7px 68px}
+      .screen{padding:14px 7px 68px}
       .dock{bottom:max(5px,env(safe-area-inset-bottom));width:calc(100vw - 10px);display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
       .slot{width:auto;height:48px;min-width:0;padding:4px 2px;font-size:5.6px;letter-spacing:.04em;justify-content:center;gap:2px}
       .slot .g{font-size:13px;margin:0}
@@ -246,24 +246,38 @@
     .commit-result{padding:8px;margin-top:7px;font:9px/1.4 "Share Tech Mono";border:1px solid #5ab4ff33}
     @media(max-width:560px){.runbar{grid-template-columns:repeat(4,1fr)}.runstat{padding:5px 2px}.runstat b{font-size:12px}.buildgrid{grid-template-columns:1fr}.tactic-grid{grid-template-columns:repeat(4,1fr)}}
 
+
+    /* === DEEP DUNGEON EDITION === */
+    .dungeon-shell{display:grid;grid-template-columns:1fr;gap:8px}
+    @media(min-width:900px){.dungeon-shell{grid-template-columns:minmax(0,1.5fr) minmax(280px,.7fr)}}
+    .dungeon-side{display:grid;gap:8px;align-content:start}
+    .dungeon-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+    .legend-item{padding:6px;border:1px solid #4b759133;background:#061019;font:7px/1.25 "Share Tech Mono";color:#8fb0c9;text-align:center}
+    .legend-item b{display:block;color:#d8f2ff;font-size:10px;margin-bottom:2px}
+    .objective-board{padding:9px}
+    .objective-board h3,.route-box h3,.encounter-box h3{font-size:9px;letter-spacing:.15em;color:#9eeaff;text-transform:uppercase;margin-bottom:5px}
+    .route-list{display:grid;gap:4px}
+    .route-node{padding:6px;border-left:2px solid #5ab4ff55;background:#071019;font:8px/1.35 "Share Tech Mono";color:#94adc2}
+    .encounter-box{padding:9px}
+    .encounter-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;margin-top:7px}
+    .encounter-actions button{min-height:40px}
+    .door-tag{font-size:7px;color:#e8c36a}
+    .hazard{color:#ff9a88}
+    .loot{color:#9fffc8}
+    .lock{color:#d2adff}
+    .dungeon-status{display:flex;flex-wrap:wrap;gap:5px}
+    .dungeon-status span{padding:4px 6px;border:1px solid #5ab4ff33;font-size:7px;letter-spacing:.09em;text-transform:uppercase}
+    .room-path{font:8px/1.4 "Share Tech Mono";color:#8eb3ca}
+    .big-dungeon{min-height:52vh}
+    @media(max-width:560px){.big-dungeon{min-height:48vh}.dungeon-legend{grid-template-columns:repeat(2,1fr)}}
+
   </style>
 </head>
 <body>
+<canvas id="radar" style="display:none" aria-hidden="true"></canvas>
+
   <div class="world"></div>
   <div class="scan"></div>
-
-  <section class="panel hud" id="hud">
-    <div class="hud-h">Clinician <span class="val">θ</span></div>
-    <div class="meta"><span>Trauma</span><span class="val" id="tr">00%</span></div>
-    <div class="track"><div class="fill t" id="tf"></div></div>
-    <div class="meta"><span>Stabilizers</span><span class="val" id="sr">100%</span></div>
-    <div class="track"><div class="fill s" id="sf"></div></div>
-    <div class="hud-xp">
-      <div class="rankline"><span id="rank-name">Rank I · Observer</span><span id="xp-num">0 XP</span></div>
-      <div class="progressbar"><span id="xp-fill" style="width:0%"></span></div>
-    </div>
-  </section>
-  <section class="panel radar"><div class="disk" id="disk"><div class="sweep"></div><span class="blip you"></span></div></section>
 
   <nav class="dock">
     <button class="slot" data-go="ward"><span class="g">▣</span>Ward</button>
@@ -384,7 +398,7 @@
   </section>
 
   <section class="screen" id="screen-dungeon">
-    <div class="inner">
+    <div class="inner"><div class="dungeon-shell"><div>
       <div class="bar">
         <span class="pip panel" id="dseed">SEED —</span>
         <button class="mini panel" id="dgen">Carve floor</button>
@@ -407,6 +421,33 @@
         <button class="mini panel" id="begin-sit-room">Begin Sit</button>
       </div>
     </div>
+      <div class="dungeon-side">
+        <div class="panel objective-board">
+          <h3>Floor Objective</h3>
+          <div id="floor-objective">Locate the Anchor room and extract one verified fragment.</div>
+          <div class="dungeon-status" id="dungeon-status" style="margin-top:7px"></div>
+        </div>
+        <div class="panel route-box" style="padding:9px">
+          <h3>Route Log</h3>
+          <div class="route-list" id="route-log"></div>
+        </div>
+        <div class="panel encounter-box" id="encounter-box">
+          <h3>Room Encounter</h3>
+          <div id="encounter-text">Enter a room to reveal its interaction.</div>
+          <div class="encounter-actions" id="encounter-actions"></div>
+        </div>
+        <div class="panel" style="padding:9px">
+          <div class="dungeon-legend">
+            <div class="legend-item"><b>?</b>Unknown</div>
+            <div class="legend-item"><b>◈</b>Evidence</div>
+            <div class="legend-item"><b>☠</b>Hazard</div>
+            <div class="legend-item"><b>⚿</b>Locked</div>
+            <div class="legend-item"><b>Ψ</b>Anomaly</div>
+            <div class="legend-item"><b>♛</b>Boss Gate</div>
+          </div>
+        </div>
+      </div>
+</div></div>
   </section>
 
   <section class="screen" id="screen-dossier"><div class="inner" id="psy"></div></section>
@@ -663,6 +704,24 @@ const RESEARCH = [
   {id:"deepmap",name:"Deep Mapping",cost:18,desc:"Psyche dossiers expose more history and cross-links."}
 ];
 
+
+const DUNGEON_ROOM_TYPES = [
+ {id:"evidence",glyph:"◈",name:"Evidence Vault",weight:22,desc:"Recover a case-linked fragment.",risk:2},
+ {id:"hazard",glyph:"☠",name:"Affective Hazard",weight:18,desc:"Raises run risk unless stabilized.",risk:9},
+ {id:"locked",glyph:"⚿",name:"Sealed Archive",weight:13,desc:"Requires Archive Key or extra AP.",risk:3},
+ {id:"anomaly",glyph:"Ψ",name:"Cognitive Anomaly",weight:14,desc:"Changes computational state or reveals a false lead.",risk:6},
+ {id:"rest",glyph:"○",name:"Quiet Room",weight:12,desc:"Recover AP or reduce risk.",risk:0},
+ {id:"cache",glyph:"$",name:"Relic Cache",weight:9,desc:"Contains relics or research material.",risk:4},
+ {id:"anchor",glyph:"◎",name:"Anchor Room",weight:7,desc:"Primary floor objective and high-value clue.",risk:8},
+ {id:"bossgate",glyph:"♛",name:"Boss Gate",weight:5,desc:"Opens only after floor objective progress.",risk:12}
+];
+function weightedRoomType(rng=Math.random){
+  const total=DUNGEON_ROOM_TYPES.reduce((a,b)=>a+b.weight,0);
+  let n=rng()*total;
+  for(const t of DUNGEON_ROOM_TYPES){n-=t.weight;if(n<=0)return t;}
+  return DUNGEON_ROOM_TYPES[0];
+}
+
 const ROOM_THEMES = [
   {id:"memory",label:"MEMORY VAULT",tags:["defense","shadow"],frag:"A sensory fragment returns without a timestamp."},
   {id:"persona",label:"MASK CHAMBER",tags:["persona","superego"],frag:"A practiced identity answers before the person does."},
@@ -753,22 +812,25 @@ const S = {
   unlocks:{reflect:false,reframe:false,fieldnotes:false,triage:false,deepmap:false},
   archiveLens:false, echoStabilizer:false, oracleRelay:false,
   fmEvent:"ambiguity", fmTrace:[],
-  run:{ap:10,risk:0,evidence:0,depth:1,banked:0,active:true},
+  run:{ap:10,risk:0,evidence:0,depth:1,banked:0,active:true,anchorFound:false,roomsEntered:0,locksOpened:0,hazardsCleared:0,path:[],objectiveDone:false},
   build:null, skillPoints:1, sitTurns:8, boss:null, lastTactic:null, tacticRepeat:0
 };
 
 const $ = id => document.getElementById(id);
 function toast(m){ const e=$("toast"); e.textContent=m; e.classList.add("show"); setTimeout(()=>e.classList.remove("show"),1400); }
 function hud(){
-  $("tf").style.width=S.trauma+"%"; $("tr").textContent=String(S.trauma).padStart(2,"0")+"%";
-  $("sf").style.width=S.stab+"%"; $("sr").textContent=Math.round(S.stab)+"%";
+  const tf=$("tf"),tr=$("tr"),sf=$("sf"),sr=$("sr"),rn=$("rank-name"),xn=$("xp-num"),xf=$("xp-fill");
+  if(tf) tf.style.width=S.trauma+"%";
+  if(tr) tr.textContent=Math.round(S.trauma)+"%";
+  if(sf) sf.style.width=S.stab+"%";
+  if(sr) sr.textContent=Math.round(S.stab)+"%";
   const thresholds=[0,40,100,180,280,400];
   S.rank=Math.min(5,thresholds.filter(x=>S.xp>=x).length);
   const rankNames=["","Observer","Interviewer","Mapper","Archivist","Warden"];
-  $("rank-name").textContent=`Rank ${["","I","II","III","IV","V"][S.rank]} · ${rankNames[S.rank]}`;
-  $("xp-num").textContent=S.xp+" XP";
+  if(rn) rn.textContent=`Rank ${["","I","II","III","IV","V"][S.rank]} · ${rankNames[S.rank]}`;
+  if(xn) xn.textContent=S.xp+" XP";
   const lo=thresholds[S.rank-1]||0, hi=thresholds[S.rank]||Math.max(lo+100,S.xp+100);
-  $("xp-fill").style.width=Math.min(100,Math.round((S.xp-lo)/(hi-lo)*100))+"%";
+  if(xf) xf.style.width=Math.min(100,Math.round((S.xp-lo)/(hi-lo)*100))+"%";
 }
 
 function go(name){
@@ -915,7 +977,7 @@ function analyzeRoom(){
 function retreatRun(){
   S.run.banked+=S.run.evidence;
   S.run.evidence=0; S.run.risk=Math.max(0,S.run.risk-25); S.run.ap=10+(S.build==="investigator"?1:0);
-  S.run.depth++; S.floor=null; carveFloor(); toast("Evidence banked · deeper floor generated"); paintRunHUD(); paintDungeon();
+  S.run.depth++; S.run.anchorFound=false;S.run.objectiveDone=false;S.run.path=[];S.floor=null; carveFloor(); toast("Evidence banked · deeper floor generated"); paintRunHUD(); paintDungeon();paintRouteLog();paintDungeonStatus();paintEncounter();
 }
 function paintBuilds(){
  if(!$("build-grid"))return;
@@ -1110,6 +1172,8 @@ function paintBrainMap(){
 }
 
 function paintRadar(){
+  const rc=$("radar");
+  if(!rc || !rc.getContext || rc.clientWidth===0 || rc.clientHeight===0) return;
   const disk=$("disk");
   disk.querySelectorAll(".blip:not(.you)").forEach(n=>n.remove());
   S.P.filter(p=>!p.archived).forEach((p,i)=>{
@@ -1462,7 +1526,7 @@ function carveFloor(seed){
       const rh=4+Math.floor(R()*Math.max(1,h-6));
       const rx=x+1+Math.floor(R()*Math.max(1,w-rw-2));
       const ry=y+1+Math.floor(R()*Math.max(1,h-rh-2));
-      rooms.push({x:rx,y:ry,w:rw,h:rh,cx:rx+(rw>>1),cy:ry+(rh>>1),who:null,kind:"cell",theme:null,searched:false,fragment:null});
+      rooms.push({x:rx,y:ry,w:rw,h:rh,cx:rx+(rw>>1),cy:ry+(rh>>1),who:null,kind:"cell",theme:null,searched:false,fragment:null,revealed:false,visited:false,roomType:null,locked:false,hazardCleared:false});
       return;
     }
     if(w>=h){
@@ -1494,12 +1558,20 @@ function carveFloor(seed){
     if(a!==b) hall(a,b);
   }
   rooms[0].kind="foyer"; rooms[0].who=null; rooms[0].theme={id:"foyer",label:"FOYER",tags:[],frag:"The ward map waits."};
+  rooms[0].revealed=true; rooms[0].visited=true; rooms[0].roomType={id:"foyer",glyph:"◆",name:"Foyer",desc:"Entry point.",risk:0};
   const live=S.P.slice();
   for(let i=1;i<rooms.length;i++){
     rooms[i].who=live[(i-1)%live.length]||null;
     rooms[i].kind=rooms[i].who?"cell":"empty";
     rooms[i].theme=ROOM_THEMES[(i-1)%ROOM_THEMES.length];
+    rooms[i].roomType=weightedRoomType();
+    rooms[i].locked=rooms[i].roomType.id==="locked";
   }
+  // Guarantee important room types each floor.
+  if(rooms[1]) rooms[1].roomType=DUNGEON_ROOM_TYPES.find(x=>x.id==="evidence");
+  if(rooms[2]) rooms[2].roomType=DUNGEON_ROOM_TYPES.find(x=>x.id==="anchor");
+  if(rooms[rooms.length-1]) rooms[rooms.length-1].roomType=DUNGEON_ROOM_TYPES.find(x=>x.id==="bossgate");
+  S.run.anchorFound=false; S.run.objectiveDone=false; S.run.path=[]; S.run.roomsEntered=0;
   S.floor={W,H,grid,rooms};
   S.at=rooms[0];
   $("dseed").textContent="SEED "+seed.toString(16).toUpperCase();
@@ -1507,7 +1579,7 @@ function carveFloor(seed){
 
 function paintDungeon(){
   if(!S.floor) carveFloor();
-  paintRunHUD();
+  paintRunHUD(); paintRouteLog(); paintDungeonStatus(); paintEncounter();
   const {W,H,grid,rooms}=S.floor;
   const c=$("dmap"), ctx=c.getContext("2d");
   const tw=c.width/W, th=c.height/H;
@@ -1526,8 +1598,12 @@ function paintDungeon(){
     ctx.strokeRect(rm.x*tw+0.5, rm.y*th+0.5, rm.w*tw-1, rm.h*th-1);
     ctx.fillStyle=dead?"#ff8a96":"#d7e8ff";
     ctx.font=Math.max(7,th*1.1)+"px monospace";
-    const lab=rm.kind==="foyer"?"FOYER":(p?(dead?"X":p.type+" "+(rm.searched?"✓":"?")):(rm.searched?"✓":"?"));
+    const hidden=!rm.revealed;
+    const glyph=rm.kind==="foyer"?"◆":hidden?"?":(rm.roomType?.glyph||"?");
+    const lab=rm.kind==="foyer"?"FOYER":`${glyph} ${hidden?"UNKNOWN":rm.roomType?.name||"ROOM"}`;
+    if(hidden) ctx.globalAlpha=.45;
     ctx.fillText(lab, rm.x*tw+3, rm.y*th+th*1.6);
+    ctx.globalAlpha=1;
   });
   if(S.at){
     ctx.fillStyle="#fff";
@@ -1551,9 +1627,120 @@ function paintDungeon(){
 }
 
 
+
+function roomCanEnter(rm){
+  if(!rm)return false;
+  if(rm.kind==="foyer")return true;
+  if(rm.locked && !rm.visited){
+    const hasKey=S.inv.includes("key");
+    if(!hasKey && S.run.ap<3)return false;
+  }
+  if(rm.roomType?.id==="bossgate" && !S.run.objectiveDone)return false;
+  return true;
+}
+function revealRoom(rm){
+  if(!rm)return;
+  rm.revealed=true;
+  if(!rm.visited){
+    rm.visited=true; S.run.roomsEntered++; S.run.path.push(rm.roomType?.name||"Room");
+    S.run.risk=clamp(S.run.risk+(rm.roomType?.risk||0));
+    if(rm.roomType?.id==="anchor"){S.run.anchorFound=true;}
+  }
+}
+function enterRoom(rm){
+  if(!rm)return;
+  if(!roomCanEnter(rm)){toast(rm.roomType?.id==="bossgate"?"Boss Gate locked · finish objective":"Sealed Archive · need key or 3 AP");return}
+  if(rm.locked && !rm.visited){
+    const keyIndex=S.inv.indexOf("key");
+    if(keyIndex>=0){S.inv[keyIndex]=null;S.run.locksOpened++;toast("Archive Key consumed");}
+    else if(!spendAP(3,"force archive"))return;
+  }
+  revealRoom(rm);
+  S.at=rm;if(rm.who&&!rm.who.sealed)S.sel=rm.who;
+  resolveRoomEntry(rm); paintDungeon(); paintRunHUD(); paintRouteLog(); paintEncounter(); paintDungeonStatus();
+}
+function resolveRoomEntry(rm){
+  const t=rm.roomType?.id;
+  if(t==="hazard"&&!rm.hazardCleared){
+    S.run.risk=clamp(S.run.risk+8);S.stab=clamp(S.stab-5);
+    fmTrace(`HAZARD · ${rm.theme?.label||"room"} · arousal/risk increased`);
+  }
+  if(t==="rest"&&!rm.searched){
+    S.run.ap=Math.min(14,S.run.ap+(S.build==="regulator"?3:2));S.run.risk=clamp(S.run.risk-8);rm.searched=true;
+    toast("Quiet Room · AP restored");
+  }
+  if(t==="cache"&&!rm.searched){
+    addItem(Math.random()<.5?"mirror":"veil");rm.searched=true;gainXP(3,"relic cache");
+  }
+  if(t==="bossgate"&&S.run.objectiveDone){startBoss();go("session");}
+}
+function clearHazard(){
+  const rm=S.at;if(!rm||rm.roomType?.id!=="hazard"||rm.hazardCleared)return;
+  if(!spendAP(2,"stabilize hazard"))return;
+  rm.hazardCleared=true;S.run.hazardsCleared++;S.run.risk=clamp(S.run.risk-10);S.stab=clamp(S.stab+4);gainXP(4,"hazard cleared");
+  toast("Hazard stabilized");paintEncounter();paintDungeonStatus();
+}
+function forceLock(){
+  const rm=S.at;if(!rm||rm.roomType?.id!=="locked"||!rm.locked)return;
+  if(!spendAP(3,"force lock"))return;
+  rm.locked=false;S.run.locksOpened++;revealRoom(rm);gainXP(3,"archive forced");paintEncounter();paintDungeon();
+}
+function lootAnchor(){
+  const rm=S.at;if(!rm||rm.roomType?.id!=="anchor"||rm.searched)return;
+  if(!spendAP(2,"extract anchor"))return;
+  rm.searched=true;S.run.anchorFound=true;S.run.objectiveDone=true;
+  if(rm.who)addEvidence(rm.who,`Anchor fragment · ${rm.theme?.frag||"high-value context"}`,rm.who.hidden.primary,88);
+  addItem("key");gainXP(8,"floor objective");toast("Floor objective complete · Boss Gate unlocked");
+  paintEncounter();paintDungeonStatus();paintDungeon();
+}
+function paintRouteLog(){
+  if(!$("route-log"))return;
+  $("route-log").innerHTML=(S.run.path||[]).slice(-8).reverse().map((x,i)=>`<div class="route-node">${i===0?"CURRENT":"VISITED"} · ${x}</div>`).join("")||`<div class="route-node">No rooms entered.</div>`;
+}
+function paintDungeonStatus(){
+  if(!$("dungeon-status"))return;
+  const objective=S.run.objectiveDone?"COMPLETE":S.run.anchorFound?"ANCHOR FOUND":"SEARCHING";
+  $("dungeon-status").innerHTML=`<span>Objective ${objective}</span><span>Rooms ${S.run.roomsEntered}</span><span>Hazards ${S.run.hazardsCleared}</span><span>Locks ${S.run.locksOpened}</span>`;
+  if($("floor-objective"))$("floor-objective").textContent=S.run.objectiveDone?"Anchor extracted. Reach the Boss Gate or retreat and bank evidence.":"Locate the Anchor room, extract its fragment, then decide whether to push to the Boss Gate.";
+}
+function paintEncounter(){
+  if(!$("encounter-box"))return;
+  const rm=S.at;
+  if(!rm){$("encounter-text").textContent="Enter a room to reveal its interaction.";$("encounter-actions").innerHTML="";return}
+  const t=rm.roomType||{name:"Unknown",desc:""};
+  $("encounter-text").innerHTML=`<b>${t.glyph||"?"} ${t.name||"Room"}</b><br>${t.desc||""}<br><span class="room-path">${rm.theme?.label||""} · ${rm.who?rm.who.name:"No assigned patient"}</span>`;
+  const acts=[];
+  if(t.id==="evidence"&&!rm.searched)acts.push(`<button class="mini panel" data-enc="search">Extract clue · 1 AP</button>`);
+  if(t.id==="hazard"&&!rm.hazardCleared)acts.push(`<button class="mini panel" data-enc="hazard">Stabilize · 2 AP</button>`);
+  if(t.id==="locked"&&rm.locked)acts.push(`<button class="mini panel" data-enc="force">Force archive · 3 AP</button>`);
+  if(t.id==="anomaly"&&!rm.searched)acts.push(`<button class="mini panel" data-enc="anomaly">Interpret anomaly · 2 AP</button>`);
+  if(t.id==="anchor"&&!rm.searched)acts.push(`<button class="mini panel" data-enc="anchor">Extract anchor · 2 AP</button>`);
+  acts.push(`<button class="mini panel" data-enc="analyze">Analyze room</button>`);
+  $("encounter-actions").innerHTML=acts.join("");
+  $("encounter-actions").querySelectorAll("[data-enc]").forEach(b=>b.onclick=()=>{
+    const a=b.dataset.enc;
+    if(a==="search")searchRoom();
+    if(a==="hazard")clearHazard();
+    if(a==="force")forceLock();
+    if(a==="anchor")lootAnchor();
+    if(a==="analyze")analyzeRoom();
+    if(a==="anomaly"){
+      if(!spendAP(2,"anomaly"))return;
+      rm.searched=true;
+      if(rm.who){
+        const falseLead=Math.random()<.35;
+        addEvidence(rm.who, falseLead?"Anomaly produced a plausible false lead":"Anomaly revealed a contradictory pattern", falseLead?"reward":rm.who.hidden.maint, falseLead?42:76);
+        rm.who.model.uncertainty=clamp(rm.who.model.uncertainty+(falseLead?8:-6));
+      }
+      gainXP(4,"anomaly interpreted");paintEncounter();
+    }
+  });
+}
+
 function searchRoom(){
   const rm=S.at;
   if(!rm||rm.kind==="foyer"){ toast("Nothing to search"); return; }
+  if(!rm.revealed) revealRoom(rm);
   if(rm.searched){ toast("Already searched"); return; }
   if(!spendAP(1,"search"))return;
   rm.searched=true; S.roomsSearched++;
@@ -1614,6 +1801,7 @@ $("dmap").onclick=e=>{
     S.sel=hit.who; S.incoming=[];
     toast("Entered "+hit.who.name.split(" ")[0]);
   } else if(hit.who && hit.who.sealed) toast("Sealed");
+  if(rm) enterRoom(rm);
 };
 
 $("dgen").onclick=()=>{ carveFloor(); paintDungeon(); toast("New floor"); };
