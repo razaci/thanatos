@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD · Deep Dungeon Expanded Edition</title>
+  <title>THANATOS WARD · Floor Playable Fixed Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -358,6 +358,38 @@
 .easy-summary{padding:7px;border:1px solid #7dd6ff33;background:#061119;font:8px/1.45 "Share Tech Mono";color:#a5c5d8}
 @media(max-width:560px){.detail-grid{grid-template-columns:1fr}}
 
+
+/* === SEQUENTIAL FLOOR + WORKING HYPOTHESIS ENGINE === */
+.seq-shell{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:8px}
+.seq-main{display:grid;gap:8px}
+.seq-room{padding:10px;border:1px solid #5f809455;background:#050b10}
+.seq-room h2{font:12px "Share Tech Mono";letter-spacing:.14em;color:#d9f2ff;margin:0 0 5px}
+.seq-room .room-sub{font:8px/1.45 "Share Tech Mono";color:#8ca7bb}
+.seq-next{padding:8px;border:1px dashed #4c667777;background:#04080b}
+.seq-next b{font:8px "Share Tech Mono";color:#9db6c7}.seq-next.locked{opacity:.62}
+.seq-checklist{display:grid;gap:5px}
+.seq-task{display:grid;grid-template-columns:22px 1fr auto;gap:6px;align-items:center;padding:7px;border:1px solid #3e607344;background:#061019}
+.seq-task.done{border-color:#6fcf9c66;background:#07130e}
+.seq-task .box{width:18px;height:18px;display:grid;place-items:center;border:1px solid #52718666;font:10px "Share Tech Mono"}
+.seq-task.done .box{border-color:#6fcf9c;color:#8cffb7}
+.seq-task b{display:block;font:8px "Share Tech Mono";color:#b7d8eb}.seq-task span{font:7px/1.35 "Share Tech Mono";color:#809aac}
+.seq-task button{min-width:82px}
+.clear-room-btn{width:100%;min-height:52px;font:11px "Share Tech Mono";letter-spacing:.12em;border-color:#e8c36a!important;color:#ffe9a3!important;background:#171104!important}
+.clear-room-btn:disabled{opacity:.4;filter:grayscale(.7)}
+.hyp-engine{padding:9px;border:1px solid #7a6a4055;background:#0b0904}
+.hyp-engine h3{font:9px "Share Tech Mono";color:#ffe29a;letter-spacing:.12em;margin:0 0 6px}
+.hyp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.hyp-grid select{width:100%;background:#03070a;color:#cdeeff;border:1px solid #4f718555;padding:7px;font:8px "Share Tech Mono"}
+.hyp-result-simple{margin-top:6px;padding:7px;border-left:2px solid #e8c36a66;background:#100c04;font:8px/1.45 "Share Tech Mono";color:#bba875}
+.seq-readout{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}
+.seq-readout .detail-card{min-height:54px}
+.seq-nav{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.seq-floor-indicator{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px}
+.seq-floor-indicator span{min-width:24px;height:24px;display:grid;place-items:center;border:1px solid #405f7255;font:7px "Share Tech Mono";color:#678294}
+.seq-floor-indicator span.done{border-color:#65c99b;color:#8fe5bd}.seq-floor-indicator span.current{border-color:#e8c36a;color:#ffe29a;background:#171104}
+@media(max-width:850px){.seq-shell{grid-template-columns:1fr}}
+@media(max-width:560px){.hyp-grid{grid-template-columns:1fr}.seq-readout{grid-template-columns:1fr}.seq-task{grid-template-columns:22px 1fr}.seq-task button{grid-column:2;width:100%}}
+
 </style>
 </head>
 <body>
@@ -484,108 +516,82 @@
     </div>
   </section>
 
-  <section class="screen" id="screen-dungeon">
-    <div class="inner">
-
-<div class="dungeon-command">
-  <div class="command-grid">
-    <button class="mini panel primary" id="cmd-next">▶ Recommended</button>
-    <button class="mini panel" id="cmd-search">⌕ Search</button>
-    <button class="mini panel" id="cmd-analyze">◇ Analyze</button>
-    <button class="mini panel" id="cmd-case">Ψ Case Loop</button>
-    <button class="mini panel" id="cmd-retreat">↩ Bank / Retreat</button>
-    <button class="mini panel" id="cmd-help">? Help</button>
-  </div>
-  <div class="floor-progress"><span id="floor-progress-fill" style="width:0%"></span></div>
-  <div class="path-history" id="path-history"></div>
-</div>
-<div class="dungeon-shell"><div class="dungeon-layout"><div>
-      <div class="bar">
-        <span class="pip panel" id="dseed">SEED —</span>
-        <button class="mini panel" id="dgen">Carve floor</button>
-      </div>
-      <div class="panel dungeon"><canvas id="dmap" width="480" height="320"></canvas></div>
-      <div class="runbar">
-  <div class="panel runstat"><b id="ap-num">10</b><span>Action Points</span></div>
-  <div class="panel runstat"><b id="risk-num">0</b><span>Run Risk</span></div>
-  <div class="panel runstat"><b id="evidence-num">0</b><span>Evidence</span></div>
-  <div class="panel runstat"><b id="floor-num">1</b><span>Depth</span></div>
-</div>
-<div class="panel dinfo" id="dinfo">Tap a room. Foyer sits at gold. Sealed rooms stay dark.</div>
-      <div class="panel dinfo discovery" id="room-discovery">No fragment recovered.</div>
-      <div class="panel fm-head" id="floor-matrix"><h3>FUNCTION TRACE</h3><p>Select a room to map its event across functional levels.</p></div>
-      <div class="room-actions">
-        <button class="mini panel" id="search-room">Search <span class="ap-cost">1 AP</span></button>
-        <button class="mini panel" id="analyze-room">Analyze <span class="ap-cost">2 AP</span></button>
-        <button class="mini panel" id="retreat-run">Retreat / Bank</button>
-        <button class="mini panel" id="open-psyche">Open Psyche</button>
-        <button class="mini panel" id="begin-sit-room">Begin Sit</button>
-      </div>
+  
+<section class="screen" id="screen-dungeon">
+  <div class="inner">
+    <div class="panel" style="padding:8px;margin-bottom:7px">
+      <div class="smallcaps">FLOOR // SEQUENTIAL CASE ROUTE</div>
+      <div class="seq-floor-indicator" id="seq-floor-indicator"></div>
     </div>
-      <div class="dungeon-side">
 
-<div class="panel case-console">
-  <h3>ACTIVE CASE // DIAGNOSTIC → MECHANISM → INTERVENTION</h3>
-  <div class="floor-loop">
-    <div class="loop-steps" id="loop-steps"></div>
-    <div class="obs-card" id="floor-observation">Enter a patient room to begin assessment.</div>
-    <div class="functional-bars" id="functional-bars"></div>
-    <div id="loop-workspace"></div>
-    <div class="outcome" id="floor-outcome">No treatment outcome yet.</div>
-  </div>
-</div>
+    <div class="seq-shell">
+      <div class="seq-main">
+        <div class="panel seq-room">
+          <h2 id="seq-room-name">CURRENT ROOM</h2>
+          <div class="room-sub" id="seq-room-desc">Loading room...</div>
+        </div>
 
-        
-<div class="panel" style="padding:9px" id="region-panel">
-  <div class="region-banner" id="region-banner"><b>FLOOR REGION</b><span>Enter the dungeon to reveal its current district.</span></div>
-  <div class="route-mods" id="route-mods"></div>
-</div>
-<div class="panel" style="padding:9px" id="room-depth-panel">
-  <div class="section-title">ROOM DEPTH</div>
-  <div class="depth-meter" id="depth-meter"></div>
-  <div class="layer-stack" id="room-layers"></div>
-</div>
-<div class="panel" style="padding:9px" id="room-detail-panel">
-  <div class="section-title">ROOM DETAIL</div>
-  <div class="detail-grid" id="room-detail-grid"></div>
-</div>
-<div class="panel" style="padding:9px" id="clue-chain-panel">
-  <div class="section-title">CLUE CHAIN</div>
-  <div class="clue-chain" id="clue-chain"></div>
-</div>
-<div class="panel" style="padding:9px" id="subevent-panel">
-  <div class="section-title">CURRENT SUB-EVENT</div>
-  <div class="easy-summary" id="subevent-summary">Tap a room. The game will surface one clear next decision.</div>
-  <div class="choice-list" id="subevent-choices"></div>
-</div>
-
-<div class="panel objective-board">
-          <h3>Floor Objective</h3>
-          <div id="floor-objective">Locate the Anchor room and extract one verified fragment.</div>
-          <div class="dungeon-status" id="dungeon-status" style="margin-top:7px"></div>
-        </div>
-        <div class="panel route-box" style="padding:9px">
-          <h3>Route Log</h3>
-          <div class="route-list" id="route-log"></div>
-        </div>
-        <div class="panel encounter-box" id="encounter-box">
-          <h3>Room Encounter</h3>
-          <div id="encounter-text">Enter a room to reveal its interaction.</div>
-          <div class="encounter-actions" id="encounter-actions"></div>
-        </div>
         <div class="panel" style="padding:9px">
-          <div class="dungeon-legend">
-            <div class="legend-item"><b>?</b>Unknown</div>
-            <div class="legend-item"><b>◈</b>Evidence</div>
-            <div class="legend-item"><b>☠</b>Hazard</div>
-            <div class="legend-item"><b>⚿</b>Locked</div>
-            <div class="legend-item"><b>Ψ</b>Anomaly</div>
-            <div class="legend-item"><b>♛</b>Boss Gate</div>
+          <div class="section-title">DIAGNOSTIC READOUT</div>
+          <div class="seq-readout" id="seq-readout"></div>
+        </div>
+
+        <div class="panel" style="padding:9px">
+          <div class="section-title">ROOM CHECKLIST</div><div class="easy-summary" id="seq-objective" style="margin-bottom:6px"></div>
+          <div class="seq-checklist" id="seq-checklist"></div>
+        </div>
+
+        <div class="panel hyp-engine">
+          <h3>HYPOTHESIS ENGINE</h3>
+          <div class="hyp-grid">
+            <select id="seq-hyp-primary"></select>
+            <select id="seq-hyp-maint"></select>
+            <select id="seq-hyp-context"></select>
+          </div>
+          <button class="mini panel" id="seq-commit-hyp" style="width:100%;margin-top:6px">Commit Hypothesis</button>
+          <div class="hyp-result-simple" id="seq-hyp-result">Collect evidence, then commit a working model.</div>
+        </div>
+
+        <button class="mini panel clear-room-btn" id="clear-room-btn" disabled>CLEAR ROOM</button>
+
+        <div class="panel seq-next locked" id="seq-next-room">
+          <b>NEXT ROOM LOCKED</b><br>
+          <span id="seq-next-desc">Complete the current room checklist to unlock it.</span>
+        </div>
+      </div>
+
+      <div class="dungeon-side">
+        <div class="panel" style="padding:9px">
+          <div class="section-title">CURRENT CASE</div>
+          <div class="easy-summary" id="seq-case-summary"></div>
+        </div>
+
+        <div class="panel" style="padding:9px">
+          <div class="section-title">EVIDENCE</div>
+          <div class="clue-chain" id="seq-evidence"></div>
+        </div>
+
+        <div class="panel" style="padding:9px">
+          <div class="section-title">ROOM ACTIONS</div>
+          <div class="choice-list" id="seq-actions"></div>
+        </div>
+
+        <div class="panel" style="padding:9px">
+          <div class="section-title">HELP</div>
+          <div class="dungeon-help">
+            <b>How to play:</b><br>
+            1. Complete the room checklist.<br>
+            2. Commit a hypothesis after evidence is collected.<br>
+            3. Apply the required intervention/test.<br>
+            4. Press <b>Clear Room</b>.<br>
+            5. The next room unlocks automatically.
           </div>
         </div>
       </div>
-</div></div></div>
-  </section>
+    </div>
+  </div>
+</section>
+
 
   <section class="screen" id="screen-dossier"><div class="inner" id="psy"></div></section>
 
@@ -687,6 +693,23 @@ const ITEMS = {
 
 
 
+
+
+const SEQ_ROOM_TEMPLATES=[
+ {name:"Observation Room",desc:"Record what is actually happening before interpreting it.",task:"Observe",action:"observe"},
+ {name:"Evidence Room",desc:"Collect a reliable clue and separate signal from assumption.",task:"Collect Evidence",action:"evidence"},
+ {name:"Mechanism Room",desc:"Identify the dominant functional process and maintaining process.",task:"Formulate",action:"formulate"},
+ {name:"Prediction Room",desc:"Predict how the patient should respond before acting.",task:"Predict",action:"predict"},
+ {name:"Intervention Room",desc:"Choose an intervention matched to the working mechanism.",task:"Intervene",action:"intervene"},
+ {name:"Outcome Room",desc:"Compare expected and actual response, then revise if necessary.",task:"Review Outcome",action:"outcome"},
+ {name:"Stabilization Room",desc:"Bring the case into a stable range and complete the floor.",task:"Stabilize",action:"stabilize"}
+];
+
+const SEQ_OPTIONS={
+ primary:["threat","reward","control","memory","social","uncertainty"],
+ maint:["avoidance","habit","uncertainty","interference","social"],
+ context:["social","performance","memory","ambiguity","loss"]
+};
 
 const FLOOR_REGIONS=[
  {id:"intake",name:"INTAKE RING",desc:"Low-risk observation rooms, orientation spaces, basic evidence and introductory patient behavior.",risk:0,bonus:"Observation reliability +10"},
@@ -1057,7 +1080,7 @@ const S = {
   archiveLens:false, echoStabilizer:false, oracleRelay:false,
   fmEvent:"ambiguity", fmTrace:[],
   run:{ap:10,risk:0,evidence:0,depth:1,banked:0,active:true,anchorFound:false,roomsEntered:0,locksOpened:0,hazardsCleared:0,path:[],objectiveDone:false,keys:0,switches:0,trials:0,shortcuts:0,helpSeen:false},
-  build:null, skillPoints:1, sitTurns:8, boss:null, lastTactic:null, tacticRepeat:0, wardTokens:0, modelStreak:0, rewardMultiplier:1, resonancePot:0, soundOn:true, jackpotState:{symbols:["Ψ","◈","⌘"],message:"Commit a hypothesis in Psyche to drive the engine."}, treatmentLog:[], treatmentUses:{}, nextAnalyzeBonus:0, challengeShield:false, floorCase:null, floorRegion:null, roomDepth:0, clueChain:[], routeMods:[], activeSubevent:null, miniboss:null
+  build:null, skillPoints:1, sitTurns:8, boss:null, lastTactic:null, tacticRepeat:0, wardTokens:0, modelStreak:0, rewardMultiplier:1, resonancePot:0, soundOn:true, jackpotState:{symbols:["Ψ","◈","⌘"],message:"Commit a hypothesis in Psyche to drive the engine."}, treatmentLog:[], treatmentUses:{}, nextAnalyzeBonus:0, challengeShield:false, floorCase:null, floorRegion:null, roomDepth:0, clueChain:[], routeMods:[], activeSubevent:null, miniboss:null, seqFloor:{room:0,cleared:[],tasks:{},hypothesisCommitted:false,hypothesisScore:0,interventionDone:false,outcomeReviewed:false}
 };
 
 const $ = id => document.getElementById(id);
@@ -1087,7 +1110,7 @@ function go(name){
   if(name==="dossier") paintPsyche();
   if(name==="session") paintSession();
   if(name==="sanctum") paintSanctum();
-  if(name==="dungeon"){ if(!S.floor) carveFloor(); paintDungeon(); }
+  if(name==="dungeon"){ ensureSeqState(); paintSeqFloor(); }
 }
 
 function liveList(){ return S.P.filter(p=>!p.sealed && !p.archived && p.life>0); }
@@ -2393,6 +2416,243 @@ function resolveComplexRoom(rm){
  paintCommandCenter();
 }
 
+
+function seqPatient(){
+ return S.sel||S.P?.[0]||null;
+}
+function ensureSeqState(){
+ if(!S.seqFloor)S.seqFloor={room:0,cleared:[],tasks:{},hypothesisCommitted:false,hypothesisScore:0,interventionDone:false,outcomeReviewed:false};
+ if(!S.seqFloor.tasks)S.seqFloor.tasks={};
+ if(!S.sel&&S.P?.length)S.sel=S.P[0];
+}
+function seqRoom(){
+ ensureSeqState();
+ return SEQ_ROOM_TEMPLATES[Math.min(S.seqFloor.room,SEQ_ROOM_TEMPLATES.length-1)];
+}
+function seqTaskState(i=S.seqFloor.room){
+ if(!S.seqFloor.tasks[i])S.seqFloor.tasks[i]={observe:false,evidence:false,formulate:false,predict:false,intervene:false,outcome:false,stabilize:false};
+ return S.seqFloor.tasks[i];
+}
+function fillSeqHypOptions(){
+ const maps=[["seq-hyp-primary",SEQ_OPTIONS.primary],["seq-hyp-maint",SEQ_OPTIONS.maint],["seq-hyp-context",SEQ_OPTIONS.context]];
+ maps.forEach(([id,arr])=>{
+   const el=$(id);if(!el)return;
+   const cur=el.value;
+   el.innerHTML=arr.map(x=>`<option value="${x}">${x.toUpperCase()}</option>`).join("");
+   if(arr.includes(cur))el.value=cur;
+ });
+}
+function seqReadout(p){
+ if(!p)return [];
+ const f=functionalState(p);
+ return [
+  ["Patient",p.name],
+  ["Rapport",Math.round(p.rapport)],
+  ["Resistance",Math.round(p.resistance)],
+  ["Threat",f.threat],
+  ["Avoidance",f.avoidance],
+  ["Control",f.control],
+  ["Context",f.context],
+  ["Reward",f.reward],
+  ["Uncertainty",f.uncertainty],
+  ["Evidence",p.evidence?.length||0]
+ ];
+}
+function seqEvidenceText(p){
+ const ev=(p?.evidence||[]).slice(-6).reverse();
+ if(!ev.length)return '<div class="clue">No evidence yet.</div>';
+ return ev.map(e=>`<div class="clue ${e.reliability>=75?"verified":""}">${Math.round(e.reliability||50)}% · ${e.text}</div>`).join("");
+}
+function seqRequiredComplete(){
+ const i=S.seqFloor.room,t=seqTaskState(i);
+ if(i===0)return t.observe;
+ if(i===1)return t.evidence;
+ if(i===2)return t.formulate&&S.seqFloor.hypothesisCommitted;
+ if(i===3)return t.predict&&S.seqFloor.hypothesisCommitted;
+ if(i===4)return t.intervene&&S.seqFloor.hypothesisCommitted;
+ if(i===5)return t.outcome&&S.seqFloor.interventionDone;
+ if(i===6)return t.stabilize;
+ return false;
+}
+function paintSeqFloor(){
+ ensureSeqState();fillSeqHypOptions();
+ const p=seqPatient(),r=seqRoom(),i=S.seqFloor.room,t=seqTaskState(i);
+ if($("seq-room-name"))$("seq-room-name").textContent=`ROOM ${i+1} // ${r.name}`;
+ if($("seq-room-desc"))$("seq-room-desc").textContent=r.desc;
+ if($("seq-floor-indicator"))$("seq-floor-indicator").innerHTML=SEQ_ROOM_TEMPLATES.map((x,n)=>`<span class="${S.seqFloor.cleared.includes(n)?"done":n===i?"current":""}">${n+1}</span>`).join("");
+ if($("seq-readout"))$("seq-readout").innerHTML=seqReadout(p).map(x=>`<div class="detail-card"><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");
+ if($("seq-evidence"))$("seq-evidence").innerHTML=seqEvidenceText(p);
+ if($("seq-case-summary"))$("seq-case-summary").innerHTML=p?`<b>${p.name}</b><br>${p.arc?.[p.stage]||"Active case"}<br><span class="val">Room ${i+1} of ${SEQ_ROOM_TEMPLATES.length}</span>`:"No patient selected.";
+ if($("seq-checklist"))$("seq-checklist").innerHTML=seqChecklistHTML(i,t);
+ if($("seq-objective")){
+   const labels=["Record one observation","Collect one reliable clue","Build + commit the hypothesis","Lock the treatment prediction","Apply one intervention","Review the outcome","Stabilize and clear the floor"];
+   $("seq-objective").innerHTML=`<b>DO THIS NOW:</b> ${labels[i]} · AP ${S.run.ap}`;
+ }
+ if($("seq-actions"))$("seq-actions").innerHTML=seqActionsHTML(i,t);
+ bindSeqActions();
+ const ready=seqRequiredComplete();
+ if($("clear-room-btn"))$("clear-room-btn").disabled=!ready;
+ const next=SEQ_ROOM_TEMPLATES[i+1];
+ if($("seq-next-room")){
+   $("seq-next-room").classList.toggle("locked",!ready);
+   $("seq-next-room").innerHTML=next?`<b>${ready?"NEXT ROOM READY":"NEXT ROOM LOCKED"}</b><br><span>${next.name} · ${next.desc}</span>`:`<b>FLOOR COMPLETE</b><br><span>Clear the final room to finish this floor.</span>`;
+ }
+}
+function seqChecklistHTML(i,t){
+ const items=[];
+ if(i===0)items.push(["Observe patient","Record one structured observation",t.observe,"observe"]);
+ if(i===1)items.push(["Collect evidence","Obtain at least one reliable clue",t.evidence,"evidence"]);
+ if(i===2){items.push(["Build formulation","Choose dominant + maintaining process",t.formulate,"formulate"]);items.push(["Commit hypothesis","Run the hypothesis engine",S.seqFloor.hypothesisCommitted,"hypothesis"]);}
+ if(i===3)items.push(["Predict response","Record expected change before intervention",t.predict,"predict"]);
+ if(i===4)items.push(["Apply intervention","Choose a mechanism-matched intervention",t.intervene,"intervene"]);
+ if(i===5)items.push(["Review outcome","Compare expected vs actual result",t.outcome,"outcome"]);
+ if(i===6)items.push(["Stabilize case","Bring case to stable range",t.stabilize,"stabilize"]);
+ return items.map(x=>`<div class="seq-task ${x[2]?"done":""}"><div class="box">${x[2]?"✓":"·"}</div><div><b>${x[0]}</b><span>${x[1]}</span></div><button class="mini panel" data-seq="${x[3]}" ${x[2]?"disabled":""}>${x[2]?"DONE":"DO"}</button></div>`).join("");
+}
+function seqActionsHTML(i,t){
+ const p=seqPatient();
+ if(i===0)return `<button class="mini panel" data-seq="observe"><b>Record Observation</b><span>1 AP · creates initial evidence</span></button>`;
+ if(i===1)return `<button class="mini panel" data-seq="evidence"><b>Collect Reliable Evidence</b><span>1 AP · improves evidence precision</span></button>`;
+ if(i===2)return `<button class="mini panel" data-seq="formulate"><b>Open Hypothesis Engine</b><span>Choose the three fields below, then Commit Hypothesis.</span></button>`;
+ if(i===3)return `<button class="mini panel" data-seq="predict"><b>Lock Prediction</b><span>Predict a modest reduction in threat/avoidance.</span></button>`;
+ if(i===4){
+   const ranked=[...FLOOR_INTERVENTIONS].sort((a,b)=>{
+     const sa=(a.targets.includes(p.hidden.primary)?2:0)+(a.targets.includes(p.hidden.maint)?2:0);
+     const sb=(b.targets.includes(p.hidden.primary)?2:0)+(b.targets.includes(p.hidden.maint)?2:0);
+     return sb-sa;
+   });
+   return ranked.slice(0,6).map((x,n)=>`<button class="mini panel" data-seq-intervene="${x.id}"><b>${n===0?"★ RECOMMENDED · ":""}${x.name}</b><span>${x.desc}</span></button>`).join("");
+ }
+ if(i===5)return `<button class="mini panel" data-seq="outcome"><b>Compare Outcome</b><span>Use prediction error to update the case model.</span></button>`;
+ if(i===6)return `<button class="mini panel" data-seq="stabilize"><b>Stabilize Patient</b><span>Final functional check for this floor.</span></button>`;
+ return "";
+}
+function bindSeqActions(){
+ document.querySelectorAll("[data-seq]").forEach(b=>b.onclick=()=>seqAction(b.dataset.seq));
+ document.querySelectorAll("[data-seq-intervene]").forEach(b=>b.onclick=()=>seqIntervene(b.dataset.seqIntervene));
+ if($("seq-commit-hyp"))$("seq-commit-hyp").onclick=seqCommitHypothesis;
+ if($("clear-room-btn"))$("clear-room-btn").onclick=clearSeqRoom;
+}
+function seqAction(a){
+ ensureSeqState();
+ const p=seqPatient(),i=S.seqFloor.room,t=seqTaskState(i);
+ if(!p)return;
+ if(a==="observe"){
+   if(!spendAP(1,"observation"))return;
+   addEvidence(p,`Room ${i+1} structured observation: behavior changed under ${p.hidden.context} context.`,p.hidden.primary,70);
+   p.model.evidencePrecision=clamp(p.model.evidencePrecision+4);t.observe=true;toast("Observation recorded");
+ }
+ if(a==="evidence"){
+   if(!spendAP(1,"evidence"))return;
+   const rel=78+Math.random()*12;
+   addEvidence(p,`Verified clue supports ${p.hidden.maint} as a maintaining process.`,p.hidden.maint,rel);
+   p.model.evidencePrecision=clamp(p.model.evidencePrecision+7);t.evidence=true;toast("Reliable evidence collected");
+ }
+ if(a==="formulate"){
+   t.formulate=true;
+   $("seq-hyp-primary")?.scrollIntoView({behavior:"smooth",block:"center"});
+   toast("Choose the three hypothesis fields, then Commit Hypothesis");
+ }
+ if(a==="predict"){
+   if(!S.seqFloor.hypothesisCommitted){toast("Commit a hypothesis first");return}
+   S.floorCase=S.floorCase||{patient:p,prediction:{threat:-10,rapport:4,avoidance:-8},sequence:[],mastery:{}};
+   S.floorCase.prediction={threat:-10,rapport:4,avoidance:-8};
+   t.predict=true;toast("Prediction locked");
+ }
+ if(a==="outcome"){
+   if(!S.seqFloor.interventionDone){toast("Apply an intervention first");return}
+   p.model.uncertainty=clamp(p.model.uncertainty-4);
+   p.model.evidencePrecision=clamp(p.model.evidencePrecision+3);
+   t.outcome=true;S.seqFloor.outcomeReviewed=true;gainInsight(p,2,"outcome review");toast("Outcome reviewed · model updated");
+ }
+ if(a==="stabilize"){
+   const f=functionalState(p);
+   if(f.threat<75&&f.avoidance<80){
+     t.stabilize=true;gainInsight(p,4,"room stabilization");S.wardTokens+=4;toast("Case stabilized · room ready to clear");
+   }else{
+     p.model.threatEstimate=clamp(p.model.threatEstimate-8);
+     p.model.habitStrength=clamp(p.model.habitStrength-6);
+     toast("Stabilization applied · press again if needed");
+   }
+ }
+ paintSeqFloor();paintRewardHUD();
+}
+function seqCommitHypothesis(){
+ ensureSeqState();
+ const p=seqPatient(),t=seqTaskState(S.seqFloor.room);
+ if(!p)return;
+ if(!t.formulate)t.formulate=true;
+ const guess={
+   primary:$("seq-hyp-primary").value,
+   maint:$("seq-hyp-maint").value,
+   context:$("seq-hyp-context").value
+ };
+ const checks=[guess.primary===p.hidden.primary,guess.maint===p.hidden.maint,guess.context===p.hidden.context];
+ const hits=checks.filter(Boolean).length;
+ S.seqFloor.hypothesisCommitted=true;S.seqFloor.hypothesisScore=hits;
+ p.hypothesis=guess;
+ const reward=hypothesisReward(p,hits);
+ if(hits===3){
+   p.treatmentReady=true;
+   p.model.uncertainty=clamp(p.model.uncertainty-10);
+   gainInsight(p,6,"sequential hypothesis");
+ }else if(hits===2){
+   p.model.uncertainty=clamp(p.model.uncertainty-3);
+   addEvidence(p,"Hypothesis engine: one dimension remains inconsistent.",p.hidden.primary,80);
+ }else{
+   p.model.predictionError=fmClamp(p.model.predictionError+6);
+   addEvidence(p,"Hypothesis engine generated corrective evidence after a weak fit.",p.hidden.maint,72);
+ }
+ if($("seq-hyp-result"))$("seq-hyp-result").innerHTML=`Model fit <b>${Math.round(hits/3*100)}%</b> · ${hits}/3 matched.<br>${reward}`;
+ toast(`Hypothesis committed · ${hits}/3 match`);
+ paintSeqFloor();paintRewardHUD();
+}
+function seqIntervene(id){
+ ensureSeqState();
+ const p=seqPatient(),t=seqTaskState(S.seqFloor.room);
+ if(!S.seqFloor.hypothesisCommitted){toast("Commit a hypothesis first");return}
+ if(!spendAP(2,"intervention"))return;
+ const tool=FLOOR_INTERVENTIONS.find(x=>x.id===id);if(!tool)return;
+ let score=0;
+ if(tool.targets.includes(p.hidden.primary))score+=45;
+ if(tool.targets.includes(p.hidden.maint))score+=35;
+ if(p.rapport>=50)score+=10;
+ if(p.model.evidencePrecision>=55)score+=10;
+ const effect=Math.max(.25,score/100);
+ if(tool.targets.includes("threat"))p.model.threatEstimate=clamp(p.model.threatEstimate-Math.round(14*effect));
+ if(tool.targets.includes("avoidance"))p.model.habitStrength=clamp(p.model.habitStrength-Math.round(12*effect));
+ if(tool.targets.includes("uncertainty"))p.model.uncertainty=clamp(p.model.uncertainty-Math.round(12*effect));
+ if(tool.targets.includes("control"))p.model.controlDemand=clamp(p.model.controlDemand-Math.round(10*effect));
+ if(tool.targets.includes("reward"))p.model.expectedValue=clamp(p.model.expectedValue+Math.round(10*effect));
+ if(id==="ground")p.model.arousal=clamp(p.model.arousal-Math.round(12*effect));
+ if(id==="motivate")p.rapport=clamp(p.rapport+Math.round(8*effect));
+ t.intervene=true;S.seqFloor.interventionDone=true;
+ gainXP(4,"sequential intervention");
+ toast(`${tool.name} applied · mechanism match ${score}%`);
+ paintSeqFloor();
+}
+function clearSeqRoom(){
+ ensureSeqState();
+ if(!seqRequiredComplete()){toast("Complete the checklist first");return}
+ const i=S.seqFloor.room;
+ if(!S.seqFloor.cleared.includes(i))S.seqFloor.cleared.push(i);
+ gainXP(6,"room cleared");S.run.evidence+=1; S.run.ap=Math.max(S.run.ap,3);
+ if(i<SEQ_ROOM_TEMPLATES.length-1){
+   S.seqFloor.room++;
+   /* Preserve cross-room clinical state: hypothesis feeds Prediction/Intervention, intervention feeds Outcome. */
+   toast(`Room ${i+1} cleared · Room ${i+2} unlocked`);
+ }else{
+   S.run.objectiveDone=true;S.run.anchorFound=true;
+   S.wardTokens+=8;gainXP(20,"floor complete");
+   animateJackpot(["♛","Ψ","♛"],`<span class="cure">FLOOR COMPLETE</span> · +8 Ward Tokens · next depth unlocked`,3);
+   S.run.depth++;
+   S.seqFloor={room:0,cleared:[],tasks:{},hypothesisCommitted:false,hypothesisScore:0,interventionDone:false,outcomeReviewed:false};
+   chooseRegion();
+   toast(`Floor complete · Depth ${S.run.depth} opened`);
+ }
+ paintSeqFloor();paintRunHUD();paintRewardHUD();
+}
+
 function roomCanEnter(rm){
   if(!rm)return false;
   if(rm.kind==="foyer")return true;
@@ -2553,29 +2813,17 @@ function goRoomSit(){
   else toast("No active case here");
 }
 
-$("dmap").onclick=e=>{
+if($("dmap")) $("dmap").onclick=e=>{
   if(!S.floor) return;
-  const r=e.target.getBoundingClientRect();
-  const x=Math.floor((e.clientX-r.left)/r.width*S.floor.W);
-  const y=Math.floor((e.clientY-r.top)/r.height*S.floor.H);
-  const hit=S.floor.rooms.find(rm=>x>=rm.x&&x<rm.x+rm.w&&y>=rm.y&&y<rm.y+rm.h);
-  if(!hit) return;
-  S.at=hit;
-  paintDungeon();
-  if(hit.who && !hit.who.sealed){
-    S.sel=hit.who; S.incoming=[];
-    toast("Entered "+hit.who.name.split(" ")[0]);
-  } else if(hit.who && hit.who.sealed) toast("Sealed");
-  if(rm) enterRoom(rm);
 };
 
-$("dgen").onclick=()=>{ carveFloor(); paintDungeon(); toast("New floor"); };
+if($("dgen")) $("dgen").onclick=()=>{ carveFloor(); paintDungeon(); toast("New floor"); };
 
 hud();
 paintBrainMap();
 paintFunctionMatrix();
 paintContextMatrix();
-$("enter").onclick=()=>{ pulse(); feed(); carveFloor(); gainXP(2,"ward entered"); go("dungeon"); };
+$("enter").onclick=()=>{ pulse(); feed(); ensureSeqState(); if(!S.sel&&S.P?.length)S.sel=S.P[0]; gainXP(2,"ward entered"); go("dungeon"); };
 $("nshift").onclick=()=>{
   S.P=roster(); S.sel=null; S.trauma=0; S.stab=100; S.shift++;
   S.floor=null; feed(); carveFloor(); gainXP(20,"new shift"); go("session");
@@ -2588,17 +2836,23 @@ document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
   t.classList.add("on"); $("pane-"+t.dataset.pane).classList.add("on");
 });
 
-$("search-room").onclick=searchRoom;
-$("analyze-room").onclick=analyzeRoom;
-$("retreat-run").onclick=retreatRun;
-$("open-psyche").onclick=goRoomPsyche;
-$("begin-sit-room").onclick=goRoomSit;
+if($("search-room")) $("search-room").onclick=searchRoom;
+if($("analyze-room")) $("analyze-room").onclick=analyzeRoom;
+if($("retreat-run")) $("retreat-run").onclick=retreatRun;
+if($("open-psyche")) $("open-psyche").onclick=goRoomPsyche;
+if($("begin-sit-room")) $("begin-sit-room").onclick=goRoomSit;
 document.querySelectorAll("[data-sit-action]").forEach(b=>b.onclick=()=>sitAction(b.dataset.sitAction));
 
 document.querySelectorAll(".dock .slot").forEach(b=>b.onclick=()=>{
   if(b.dataset.go==="session"){ feed(); go("session"); return; }
   if(b.dataset.go==="dossier"){ feed(); go("dossier"); return; }
   go(b.dataset.go);
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  try{ensureSeqState();paintSeqFloor();}
+  catch(e){console.error("Sequential floor init",e);}
 });
 </script>
 </body>
