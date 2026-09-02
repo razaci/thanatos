@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD · Expanded Campaign Edition</title>
+  <title>THANATOS WARD · Roguelike Five Systems Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -199,6 +199,53 @@
       .brain-box svg{width:180px}
     }
 
+
+    /* === FUNCTION MATRIX EDITION === */
+    .fm-shell{display:grid;gap:8px}
+    .fm-head{padding:10px;border-color:#8edcff55}
+    .fm-head h3{font-size:11px;letter-spacing:.17em;color:#a6ebff;text-transform:uppercase;margin-bottom:5px}
+    .fm-head p{font:10px/1.45 "Share Tech Mono",monospace;color:#9fb4c9}
+    .fm-layers{display:grid;grid-template-columns:1fr;gap:6px}
+    @media(min-width:760px){.fm-layers{grid-template-columns:repeat(2,1fr)}}
+    .fm-layer{padding:9px;min-height:95px;text-align:left}
+    .fm-layer .n{font-size:7px;letter-spacing:.14em;color:#7098bc;text-transform:uppercase}
+    .fm-layer b{display:block;color:#e0f5ff;font-size:10px;margin:4px 0}
+    .fm-layer p{font:10px/1.4 "Share Tech Mono",monospace;color:#9db8cf}
+    .fm-vars{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}
+    @media(min-width:700px){.fm-vars{grid-template-columns:repeat(4,1fr)}}
+    .fm-var{padding:7px;border:1px solid #5ab4ff2d;background:#050b11}
+    .fm-var b{display:block;font-size:8px;color:#8edcff;text-transform:uppercase}
+    .fm-var span{font:14px "Share Tech Mono",monospace;color:#fff}
+    .fm-var small{display:block;font:7px/1.3 "Share Tech Mono",monospace;color:#66829e;margin-top:3px}
+    .fm-codex{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:6px}
+    .fm-term{padding:8px;cursor:pointer;text-align:left}
+    .fm-term b{display:block;font-size:9px;color:#b6ecff;margin-bottom:3px}
+    .fm-term span{font:8px/1.4 "Share Tech Mono",monospace;color:#88a4bb}
+    .fm-term.on{border-color:#e8c36a88;background:#171207}
+    .fm-equation{padding:8px;font:9px/1.5 "Share Tech Mono",monospace;color:#9ad7ff;background:#020609;border:1px dashed #4da6d04d;white-space:normal}
+    .fm-feed{max-height:170px;overflow:auto;display:grid;gap:4px}
+    .fm-feed div{padding:6px;border-left:2px solid #5ab4ff55;background:#071019;font:9px/1.4 "Share Tech Mono",monospace;color:#9cb8cf}
+    .fm-choice{display:flex;gap:5px;flex-wrap:wrap}
+
+
+    /* === FIVE SYSTEMS GAMEPLAY OVERHAUL === */
+    .runbar{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:7px 0}
+    .runstat{padding:7px;text-align:center}.runstat b{display:block;font:15px "Share Tech Mono";color:#fff}.runstat span{font-size:6px;letter-spacing:.12em;color:#7794ae;text-transform:uppercase}
+    .hypo{padding:10px}.hypo select{width:100%;margin:4px 0 8px;background:#050b11;color:#bcecff;border:1px solid #477a9955;padding:8px;font:10px "Share Tech Mono"}
+    .evidence{display:grid;gap:5px}.evi{padding:7px;border:1px solid #5ab4ff33;font:9px/1.4 "Share Tech Mono";background:#061019}
+    .evi b{color:#e8c36a}.evi .rel{float:right;color:#7ee8c5}
+    .bossbox{padding:10px;border-color:#d15b7a88;background:linear-gradient(180deg,#210812,#080307)}
+    .bossbox h3{color:#ff9ab6;font-size:12px;letter-spacing:.16em}.boss-hp{height:8px;border:1px solid #ff6f9944;background:#050104;margin:6px 0}.boss-hp span{display:block;height:100%;background:linear-gradient(90deg,#6b1830,#ff6f99)}
+    .boss-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;margin-top:7px}
+    .buildgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.buildcard{padding:9px;min-height:115px}.buildcard h3{font-size:9px;color:#9eeaff}.buildcard p{font:9px/1.35 "Share Tech Mono";color:#8fa9c2}
+    .skillline{font:8px/1.5 "Share Tech Mono";color:#a8c2d8;margin-top:5px}
+    .ap-cost{color:#e8c36a;font-size:7px}.fog{filter:brightness(.45);opacity:.75}
+    .session-clock{font:9px "Share Tech Mono";color:#e8c36a;text-align:right;margin:4px 0}
+    .tactic-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:7px 0}
+    .tactic-grid button{min-height:43px;font-size:6.5px}
+    .commit-result{padding:8px;margin-top:7px;font:9px/1.4 "Share Tech Mono";border:1px solid #5ab4ff33}
+    @media(max-width:560px){.runbar{grid-template-columns:repeat(4,1fr)}.runstat{padding:5px 2px}.runstat b{font-size:12px}.buildgrid{grid-template-columns:1fr}.tactic-grid{grid-template-columns:repeat(4,1fr)}}
+
   </style>
 </head>
 <body>
@@ -261,6 +308,7 @@
             <button class="tab" data-pane="cases">Cases</button>
             <button class="tab" data-pane="research">Research</button>
             <button class="tab" data-pane="brain">Brain Map</button>
+            <button class="tab" data-pane="matrix">Function Matrix</button>
           </div>
           <div class="pane on panel" id="pane-bio" style="padding:12px">
             <form class="bio" id="bio-form">
@@ -292,8 +340,36 @@
               <strong>WARD RESEARCH TREE</strong>
               <p>Unlock persistent clinician upgrades with Insight earned from rooms, dossiers, and successful Sit choices.</p>
             </div>
+            <div class="section-title">Clinician Build</div>
+            <div class="buildgrid" id="build-grid"></div>
             <div class="subgrid" id="research-tree" style="margin-top:8px"></div>
           </div>
+
+          <div class="pane" id="pane-matrix">
+            <div class="fm-shell">
+              <div class="panel fm-head">
+                <h3>FUNCTION MATRIX // MULTI-LEVEL EXPLANATION</h3>
+                <p>One fictional event can be viewed simultaneously as lived experience, psychological construct, cognitive function, computational model, distributed network concept, and gameplay consequence. Values below are game variables, not biological measurements.</p>
+              </div>
+              <div class="fm-choice">
+                <button class="mini panel" data-fm-event="ambiguity">Ambiguous Signal</button>
+                <button class="mini panel" data-fm-event="threat">Threat Cue</button>
+                <button class="mini panel" data-fm-event="reward">Unexpected Reward</button>
+                <button class="mini panel" data-fm-event="memory">Memory Intrusion</button>
+                <button class="mini panel" data-fm-event="conflict">Response Conflict</button>
+                <button class="mini panel" data-fm-event="social">Social Rupture</button>
+              </div>
+              <div class="fm-layers" id="fm-layers"></div>
+              <div class="panel fm-head"><h3>Computational State</h3><div class="fm-vars" id="fm-vars"></div></div>
+              <div class="panel fm-head">
+                <h3>Functional Terminology Codex</h3>
+                <div class="fm-codex" id="fm-codex"></div>
+                <div class="fm-equation" id="fm-definition" style="margin-top:7px">Select a term to unfold plain language → functional definition → game implementation.</div>
+              </div>
+              <div class="panel fm-head"><h3>Event Trace</h3><div class="fm-feed" id="fm-feed"></div></div>
+            </div>
+          </div>
+
           <div class="pane" id="pane-brain">
             <div class="panel brainlesson">
               <strong>EDUCATIONAL COGNITIVE MAP</strong>
@@ -314,10 +390,19 @@
         <button class="mini panel" id="dgen">Carve floor</button>
       </div>
       <div class="panel dungeon"><canvas id="dmap" width="480" height="320"></canvas></div>
-      <div class="panel dinfo" id="dinfo">Tap a room. Foyer sits at gold. Sealed rooms stay dark.</div>
+      <div class="runbar">
+  <div class="panel runstat"><b id="ap-num">10</b><span>Action Points</span></div>
+  <div class="panel runstat"><b id="risk-num">0</b><span>Run Risk</span></div>
+  <div class="panel runstat"><b id="evidence-num">0</b><span>Evidence</span></div>
+  <div class="panel runstat"><b id="floor-num">1</b><span>Depth</span></div>
+</div>
+<div class="panel dinfo" id="dinfo">Tap a room. Foyer sits at gold. Sealed rooms stay dark.</div>
       <div class="panel dinfo discovery" id="room-discovery">No fragment recovered.</div>
+      <div class="panel fm-head" id="floor-matrix"><h3>FUNCTION TRACE</h3><p>Select a room to map its event across functional levels.</p></div>
       <div class="room-actions">
-        <button class="mini panel" id="search-room">Search room</button>
+        <button class="mini panel" id="search-room">Search <span class="ap-cost">1 AP</span></button>
+        <button class="mini panel" id="analyze-room">Analyze <span class="ap-cost">2 AP</span></button>
+        <button class="mini panel" id="retreat-run">Retreat / Bank</button>
         <button class="mini panel" id="open-psyche">Open Psyche</button>
         <button class="mini panel" id="begin-sit-room">Begin Sit</button>
       </div>
@@ -346,14 +431,22 @@
         <div class="meterrow"><span>Resistance</span><div class="track"><div class="fill t" id="resist-fill"></div></div><span class="resist" id="resist-num">50</span></div>
         <div class="meterrow"><span>Insight</span><div class="track"><div class="fill l" id="insight-fill"></div></div><span class="insight" id="insight-num">0</span></div>
       </div>
-      <div class="session-tools">
+      <div class="session-clock">SESSION CLOCK · <span id="sit-turns">8</span> turns</div>
+      <div class="tactic-grid">
         <button class="mini panel" data-sit-action="ask">Ask</button>
         <button class="mini panel" data-sit-action="reflect">Reflect</button>
+        <button class="mini panel" data-sit-action="probe">Probe</button>
         <button class="mini panel" data-sit-action="challenge">Challenge</button>
+        <button class="mini panel" data-sit-action="ground">Ground</button>
+        <button class="mini panel" data-sit-action="silence">Silence</button>
+        <button class="mini panel" data-sit-action="reframe">Reframe</button>
+        <button class="mini panel" data-sit-action="withdraw">Withdraw</button>
       </div>
+      <div class="panel bossbox" id="boss-box" style="display:none"></div>
       <div class="incoming" id="in"></div>
       <div class="jack" id="hand"></div>
       <div class="panel log" id="log"></div>
+      <div class="panel fm-head" id="sit-matrix"><h3>FUNCTION TRACE</h3><p>Session actions will update the model here.</p></div>
     </div>
   </section>
 
@@ -438,6 +531,119 @@ const Q = [
 ];
 
 
+
+
+const HIDDEN_MODELS=[
+ {primary:"threat",maint:"avoidance",context:"social"},
+ {primary:"control",maint:"habit",context:"performance"},
+ {primary:"social",maint:"uncertainty",context:"social"},
+ {primary:"memory",maint:"interference",context:"memory"},
+ {primary:"control",maint:"uncertainty",context:"ambiguity"},
+ {primary:"social",maint:"avoidance",context:"performance"},
+ {primary:"threat",maint:"habit",context:"ambiguity"},
+ {primary:"memory",maint:"avoidance",context:"loss"}
+];
+const BUILDS={
+ investigator:{name:"Investigator",desc:"Evidence, analysis, hidden-room inference.",skills:["Analyze costs −1 AP","Evidence reliability +15","Hypothesis XP bonus"]},
+ regulator:{name:"Regulator",desc:"Stabilization, grounding, rapport and crisis control.",skills:["Ground restores more","Lower run-risk growth","Sit starts with +1 turn"]},
+ interpreter:{name:"Interpreter",desc:"Pattern recognition, contradiction and model revision.",skills:["Probe stronger","Commit gives partial feedback","Prediction error grants insight"]}
+};
+const BOSSES=[
+ {id:"witness",name:"THE PERFECT WITNESS",concept:"Cognitive flexibility",rule:"Repeating the same tactic strengthens it. Change strategy after feedback.",hp:70},
+ {id:"oracle",name:"THE ORACLE",concept:"Habit / action selection",rule:"Repeated choices become predictable. Vary your actions to break its model.",hp:75},
+ {id:"door",name:"THE EMPTY DOOR",concept:"Avoidance reinforcement",rule:"Withdrawal gives immediate relief but heals the boss. Approach with regulated arousal.",hp:80}
+];
+
+const FUNCTION_TERMS = [
+  {id:"attention",plain:"What gets priority?",term:"Selective attention",def:"Processes that regulate access to capacity-limited systems under competition.",impl:"salienceWeight competes with distractionLoad to determine which cue enters the active event model."},
+  {id:"wm",plain:"Keeping something in mind",term:"Working memory · active maintenance",def:"Temporary maintenance of goal-relevant information despite interference.",impl:"workingMemoryLoad rises when multiple unresolved clues must remain active; overload increases interference."},
+  {id:"update",plain:"Changing the current model",term:"Working memory · flexible updating",def:"Replacing or revising active goal/task representations when new information becomes relevant.",impl:"evidencePrecision and predictionError determine how much priorBelief changes after a clue."},
+  {id:"inhibit",plain:"Stopping the first response",term:"Response inhibition / suppression",def:"Selection or suppression of competing responses in service of context-sensitive goals.",impl:"controlDemand rises when habitStrength favors one action but the current goal favors another."},
+  {id:"monitor",plain:"Noticing a mismatch",term:"Performance monitoring",def:"Tracking behavior and outcomes for discrepancies relevant to current goals.",impl:"predictionError = |expectedOutcome − observedOutcome|; large errors generate a trace and can trigger updating."},
+  {id:"memory",plain:"Placing an event in context",term:"Declarative / episodic memory",def:"Encoding, storage, consolidation, and retrieval of facts and events, including contextual relations.",impl:"contextStrength determines whether a recovered fragment is linked to a case arc or remains an isolated clue."},
+  {id:"threat",plain:"Preparing for possible danger",term:"Acute / potential threat processing",def:"Defensive motivational processes recruited by immediate or uncertain aversive contexts.",impl:"threatEstimate raises arousal and vigilance; uncertainty keeps threat active longer even without confirmed danger."},
+  {id:"reward",plain:"Was that outcome better than expected?",term:"Reward prediction error",def:"A discrepancy between expected and obtained reward that can drive value learning.",impl:"rewardPE = actualReward − expectedReward; positive values increase roomValue, negative values decrease it."},
+  {id:"value",plain:"Is this choice worth it?",term:"Reward valuation / effort valuation",def:"Computations that integrate expected benefit, probability, delay, and effort cost.",impl:"choiceValue = expectedReward × rewardProbability − effortCost − threatCost."},
+  {id:"habit",plain:"The old action starts itself",term:"Habit / action selection",def:"Repeated responses can become cue-elicited and less dependent on continuous outcome evaluation.",impl:"habitStrength increases when the same response succeeds repeatedly; high controlDemand is needed to override it."},
+  {id:"intero",plain:"What is the body signaling?",term:"Interoceptive inference",def:"Game abstraction for sensing and interpreting internal bodily signals in context.",impl:"bodySignal contributes to arousal but interpretation depends on context; the same signal can bias threat, effort, or urgency."},
+  {id:"social",plain:"What does this interaction mean?",term:"Social communication / affiliation",def:"Processes supporting perception and interpretation of social signals, relationships, and interpersonal actions.",impl:"rapport and socialPrediction interact; unexpected rejection or acceptance produces socialPredictionError."}
+];
+
+const FM_EVENTS = {
+  ambiguity:{
+    label:"AMBIGUOUS SIGNAL",
+    layers:[
+      ["Experience","Something happened, but its meaning is unclear."],
+      ["Psychological construct","Uncertainty / appraisal"],
+      ["Cognitive function","Attention + perception + flexible updating"],
+      ["Computational variable","priorBelief vs evidencePrecision"],
+      ["Network concept","Distributed frontoparietal, sensory, memory, and salience interactions"],
+      ["Gameplay consequence","A weak clue may be absorbed by the current theory; repeated independent clues force revision."]
+    ],
+    delta:{uncertainty:12,attentionLoad:8,predictionError:5}
+  },
+  threat:{
+    label:"THREAT CUE",
+    layers:[
+      ["Experience","The body and attention orient toward possible danger."],
+      ["Psychological construct","Threat appraisal / vigilance"],
+      ["Cognitive function","Selective attention + response selection"],
+      ["Computational variable","threatEstimate × uncertainty"],
+      ["Network concept","Distributed sensory, salience, autonomic, memory, and regulatory circuits"],
+      ["Gameplay consequence","Threat raises arousal, narrows options, and makes premature Challenge actions riskier."]
+    ],
+    delta:{threatEstimate:14,arousal:12,attentionLoad:10}
+  },
+  reward:{
+    label:"UNEXPECTED REWARD",
+    layers:[
+      ["Experience","The outcome is better than expected."],
+      ["Psychological construct","Reward learning"],
+      ["Cognitive function","Outcome monitoring + value updating"],
+      ["Computational variable","rewardPredictionError = actual − expected"],
+      ["Network concept","Cortico-striatal and broader valuation/learning systems"],
+      ["Gameplay consequence","The chosen action gains estimated value and becomes more likely to repeat."]
+    ],
+    delta:{rewardPE:18,expectedValue:9,habitStrength:4}
+  },
+  memory:{
+    label:"MEMORY INTRUSION",
+    layers:[
+      ["Experience","A fragment arrives before its context."],
+      ["Psychological construct","Retrieval without stable narrative placement"],
+      ["Cognitive function","Declarative memory + working-memory binding"],
+      ["Computational variable","contextStrength and sourceConfidence"],
+      ["Network concept","Hippocampal–cortical memory interactions with attention and affective systems"],
+      ["Gameplay consequence","The fragment is initially ambiguous; linking two independent clues raises context strength."]
+    ],
+    delta:{memoryLoad:15,uncertainty:8,contextStrength:5}
+  },
+  conflict:{
+    label:"RESPONSE CONFLICT",
+    layers:[
+      ["Experience","Two incompatible actions feel available at once."],
+      ["Psychological construct","Goal conflict"],
+      ["Cognitive function","Cognitive control + inhibition + performance monitoring"],
+      ["Computational variable","controlDemand = habitStrength + conflict − goalStrength"],
+      ["Network concept","Distributed frontal, cingulo-opercular/frontoparietal, and action-selection loops"],
+      ["Gameplay consequence","High resistance and habit strength make Challenge costly unless rapport/control resources are sufficient."]
+    ],
+    delta:{controlDemand:14,attentionLoad:6,uncertainty:4}
+  },
+  social:{
+    label:"SOCIAL RUPTURE",
+    layers:[
+      ["Experience","An expected interpersonal response does not occur."],
+      ["Psychological construct","Affiliation / social prediction"],
+      ["Cognitive function","Social communication + memory + appraisal"],
+      ["Computational variable","socialPredictionError"],
+      ["Network concept","Distributed social-perceptual, memory, valuation, and regulatory systems"],
+      ["Gameplay consequence","Rapport may fall, resistance may rise, and later interpretation becomes weighted toward prior social expectations."]
+    ],
+    delta:{socialPE:15,uncertainty:7,arousal:5}
+  }
+};
+
 const BRAIN_NODES = [
   {id:"pfc",name:"Prefrontal systems",text:"Game lesson: planning, working with goals, inhibition, and flexible rule use rely on distributed frontal networks."},
   {id:"hip",name:"Hippocampal systems",text:"Game lesson: forming and retrieving episodic/contextual memories depends on hippocampal interactions with wider cortical networks."},
@@ -512,7 +718,29 @@ function roster(){
   discoveries:[],
   notes:[],
   arc:CASE_ARCS[p.id]||[],
-  flags:{}
+  flags:{},
+  hidden:{...HIDDEN_MODELS[i%HIDDEN_MODELS.length]},
+  evidence:[],
+  defenseChain:["persona","rationalization","avoidance","withdrawal"].slice(0,2+(i%3)),
+  defenseBroken:0,
+  hypothesis:null,
+  model:{
+    priorBelief:45+(i%5)*7,
+    evidencePrecision:35+(i%4)*8,
+    uncertainty:40+(i%3)*9,
+    predictionError:0,
+    attentionLoad:25+(i%4)*6,
+    memoryLoad:20+(i%3)*8,
+    controlDemand:28+(i%4)*7,
+    arousal:30+(i%3)*10,
+    threatEstimate:25+(i%4)*8,
+    expectedValue:45,
+    rewardPE:0,
+    habitStrength:20+(i%5)*7,
+    contextStrength:25+(i%4)*8,
+    socialPE:0,
+    bodySignal:30+(i%4)*6
+  }
 }));
 }
 
@@ -523,7 +751,10 @@ const S = {
   floor:null, seed:1, at:null,
   xp:0, rank:1, insightBank:0, shift:1, roomsSearched:0, casesAdvanced:0,
   unlocks:{reflect:false,reframe:false,fieldnotes:false,triage:false,deepmap:false},
-  archiveLens:false, echoStabilizer:false, oracleRelay:false
+  archiveLens:false, echoStabilizer:false, oracleRelay:false,
+  fmEvent:"ambiguity", fmTrace:[],
+  run:{ap:10,risk:0,evidence:0,depth:1,banked:0,active:true},
+  build:null, skillPoints:1, sitTurns:8, boss:null, lastTactic:null, tacticRepeat:0
 };
 
 const $ = id => document.getElementById(id);
@@ -648,9 +879,181 @@ function paintWard(){
   paintInv();
   $("typelist").innerHTML=JUNG.map(j=>`<div class="panel tp"><b>${j.id}</b> ${j.name}<br><span class="val">${j.shadow}</span></div>`).join("");
   $("alltypes").innerHTML=JUNG.map(j=>`<div class="panel tp"><b>${j.id}</b> ${j.name}</div>`).join("");
-  paintRadar(); paintQuiz(); paintCases(); paintResearch(); paintBrainMap();
+  paintRadar(); paintQuiz(); paintCases(); paintResearch(); paintBrainMap(); paintFunctionMatrix(); paintContextMatrix();
 }
 
+
+
+
+function spendAP(n,why){
+  if(S.run.ap<n){toast("Not enough AP");return false}
+  S.run.ap-=n; S.run.risk=clamp(S.run.risk+n*3); paintRunHUD(); return true;
+}
+function paintRunHUD(){
+  if(!$("ap-num"))return;
+  $("ap-num").textContent=S.run.ap;$("risk-num").textContent=Math.round(S.run.risk)+"%";
+  $("evidence-num").textContent=S.run.evidence;$("floor-num").textContent=S.run.depth;
+}
+function addEvidence(p,text,support,reliability){
+  if(!p)return;
+  const rel=clamp(reliability+(S.build==="investigator"?15:0),20,99);
+  p.evidence.unshift({text,support,reliability:rel});
+  p.evidence=p.evidence.slice(0,10); S.run.evidence++; paintRunHUD();
+}
+function analyzeRoom(){
+  const rm=S.at;if(!rm||rm.kind==="foyer"){toast("Select a case room");return}
+  const cost=S.build==="investigator"?1:2;if(!spendAP(cost,"analyze"))return;
+  const p=rm.who;if(!p){toast("No patient signal");return}
+  const h=p.hidden;
+  const candidates=[h.primary,h.maint,h.context,"reward","control","memory","social","threat"];
+  const support=candidates[Math.floor(Math.random()*Math.min(3,candidates.length))];
+  addEvidence(p,`Analysis ${S.run.depth}.${S.roomsSearched} · ${rm.theme.label} pattern`,support,58+Math.random()*30);
+  p.model.evidencePrecision=fmClamp(p.model.evidencePrecision+5);
+  fmTrace(`ANALYZE · ${p.name} · evidence favors ${support}`);
+  gainXP(2,"analysis"); paintPsyche(); paintContextMatrix();
+}
+function retreatRun(){
+  S.run.banked+=S.run.evidence;
+  S.run.evidence=0; S.run.risk=Math.max(0,S.run.risk-25); S.run.ap=10+(S.build==="investigator"?1:0);
+  S.run.depth++; S.floor=null; carveFloor(); toast("Evidence banked · deeper floor generated"); paintRunHUD(); paintDungeon();
+}
+function paintBuilds(){
+ if(!$("build-grid"))return;
+ $("build-grid").innerHTML=Object.entries(BUILDS).map(([id,b])=>`<div class="panel buildcard ${S.build&&S.build!==id?"locked":""}">
+ <h3>${b.name}${S.build===id?" · ACTIVE":""}</h3><p>${b.desc}</p><div class="skillline">${b.skills.join("<br>")}</div>
+ <button class="mini panel" data-build="${id}" ${S.build?"disabled":""}>${S.build===id?"Selected":"Choose"}</button></div>`).join("");
+ $("build-grid").querySelectorAll("[data-build]").forEach(x=>x.onclick=()=>{if(S.build)return;S.build=x.dataset.build;gainXP(10,"clinician path");paintBuilds();});
+}
+function commitHypothesis(){
+ const p=S.sel;if(!p)return;
+ const guess={primary:$("hyp-primary").value,maint:$("hyp-maint").value,context:$("hyp-context").value};
+ p.hypothesis=guess;
+ let hits=(guess.primary===p.hidden.primary)+(guess.maint===p.hidden.maint)+(guess.context===p.hidden.context);
+ let score=Math.round(hits/3*100);
+ let msg=`Model fit ${score}% · ${hits}/3 constructs matched.`;
+ if(S.build==="interpreter"&&hits<3) msg+=` Partial signal: dominant process ${guess.primary===p.hidden.primary?"SUPPORTED":"NOT SUPPORTED"}.`;
+ $("hyp-result").innerHTML=msg+(hits===3?`<br><span class="good">MODEL COHERENT · case insight gained</span>`:`<br>Gather more independent evidence and revise.`);
+ if(hits===3){gainInsight(p,8,"hypothesis convergence");gainXP(S.build==="investigator"?18:12,"model solved");advanceCase(p,"Hidden model inferred");}
+ else {p.model.uncertainty=clamp(p.model.uncertainty+4);}
+}
+function paintEvidence(p){
+ if(!$("evidence-board"))return;
+ $("evidence-board").innerHTML=(p.evidence||[]).map(e=>`<div class="evi"><span class="rel">${Math.round(e.reliability)}% REL</span><b>${e.support.toUpperCase()}</b><br>${e.text}</div>`).join("")||`<div class="evi">No evidence yet. Search and Analyze rooms.</div>`;
+ if($("commit-hyp")) $("commit-hyp").onclick=commitHypothesis;
+}
+function startBoss(){
+ const base=BOSSES[(S.run.depth-1)%BOSSES.length];
+ S.boss={...base,hp:base.hp,last:null,repeat:0};
+ paintBoss(); toast("PSYCHOLOGICAL BOSS · "+base.name);
+}
+function paintBoss(){
+ if(!$("boss-box"))return;
+ if(!S.boss){$("boss-box").style.display="none";return}
+ const b=S.boss;$("boss-box").style.display="block";
+ $("boss-box").innerHTML=`<h3>${b.name}</h3><p>${b.concept} · ${b.rule}</p><div class="boss-hp"><span style="width:${b.hp}%"></span></div><div class="smallcaps">SYSTEM INTEGRITY ${Math.round(b.hp)}%</div>`;
+}
+function bossTactic(kind,p,useful){
+ if(!S.boss)return;
+ const b=S.boss;
+ if(b.last===kind)b.repeat++;else b.repeat=0;
+ let dmg=useful?9:3;
+ if(b.id==="witness"){dmg=b.repeat?1:12;}
+ if(b.id==="oracle"){dmg=b.repeat?0:10+Math.min(6,Object.keys({[kind]:1}).length);}
+ if(b.id==="door"){
+   if(kind==="withdraw"){b.hp=clamp(b.hp+12);S.trauma=clamp(S.trauma-8);fmTrace("NEGATIVE REINFORCEMENT · immediate relief / future threat strengthened");paintBoss();return}
+   dmg=(kind==="ground"||p.model.arousal<55)?11:4;
+ }
+ b.hp=Math.max(0,b.hp-dmg);b.last=kind;
+ if(b.hp<=0){gainXP(25,"boss resolved");gainInsight(p,8,"functional boss solved");addItem("key");S.boss=null;toast("BOSS RESOLVED");}
+ paintBoss();
+}
+
+function fmPatient(){ return (S.sel && !S.sel.sealed)?S.sel:liveList()[0]||S.P[0]; }
+function fmClamp(n){ return Math.max(0,Math.min(100,Math.round(n))); }
+function fmTrace(text){
+  S.fmTrace.unshift(text);
+  S.fmTrace=S.fmTrace.slice(0,12);
+  if($("fm-feed")) $("fm-feed").innerHTML=S.fmTrace.map(x=>`<div>${x}</div>`).join("")||"<div>No events traced yet.</div>";
+}
+function fmApply(eventId,p=fmPatient(),scale=1){
+  const e=FM_EVENTS[eventId]||FM_EVENTS.ambiguity;
+  S.fmEvent=eventId;
+  if(p&&p.model){
+    Object.entries(e.delta||{}).forEach(([k,v])=>{
+      if(k==="rewardPE"||k==="socialPE"||k==="predictionError") p.model[k]=fmClamp((p.model[k]||0)+v*scale);
+      else p.model[k]=fmClamp((p.model[k]||0)+v*scale);
+    });
+    // Derived teaching variables. These are game abstractions, not biological estimates.
+    p.model.predictionError=fmClamp(Math.abs(p.model.priorBelief-p.model.evidencePrecision));
+    p.model.controlDemand=fmClamp(p.model.controlDemand + Math.max(0,p.resistance-50)*.12 + Math.max(0,p.model.habitStrength-40)*.08);
+  }
+  fmTrace(`${e.label} · ${p?p.name:"ward"} · event mapped across six levels`);
+  paintFunctionMatrix();
+  paintContextMatrix();
+}
+function fmUpdateBelief(p){
+  if(!p||!p.model)return;
+  const m=p.model;
+  const learningRate=Math.max(.05,Math.min(.65,(m.evidencePrecision/100)*(1-m.uncertainty/140)));
+  const target=m.evidencePrecision;
+  const old=m.priorBelief;
+  m.priorBelief=fmClamp(old + (target-old)*learningRate);
+  m.predictionError=fmClamp(Math.abs(target-m.priorBelief));
+  m.uncertainty=fmClamp(m.uncertainty-4*learningRate);
+}
+function fmVarsHTML(p){
+  if(!p||!p.model)return "<div class='note'>No active model.</div>";
+  const m=p.model;
+  const vars=[
+    ["Prior belief",m.priorBelief,"Current expectation weight"],
+    ["Evidence precision",m.evidencePrecision,"Game confidence assigned to current evidence"],
+    ["Prediction error",m.predictionError,"Mismatch between expectation and evidence"],
+    ["Uncertainty",m.uncertainty,"Unresolved ambiguity"],
+    ["Attention load",m.attentionLoad,"Competition for selective processing"],
+    ["Working-memory load",m.memoryLoad,"Active clue burden"],
+    ["Control demand",m.controlDemand,"Need to override default response"],
+    ["Arousal",m.arousal,"Game regulatory activation"],
+    ["Threat estimate",m.threatEstimate,"Estimated aversive relevance"],
+    ["Expected value",m.expectedValue,"Predicted utility"],
+    ["Reward PE",m.rewardPE,"Reward outcome mismatch"],
+    ["Habit strength",m.habitStrength,"Cue-response automaticity"],
+    ["Context strength",m.contextStrength,"How well fragments are placed in context"],
+    ["Social PE",m.socialPE,"Interpersonal expectation mismatch"],
+    ["Body signal",m.bodySignal,"Fictional interoceptive cue intensity"]
+  ];
+  return vars.map(v=>`<div class="fm-var"><b>${v[0]}</b><span>${Math.round(v[1])}</span><small>${v[2]}</small></div>`).join("");
+}
+function paintFunctionMatrix(){
+  if(!$("fm-layers"))return;
+  const p=fmPatient(), e=FM_EVENTS[S.fmEvent]||FM_EVENTS.ambiguity;
+  $("fm-layers").innerHTML=e.layers.map((x,i)=>`<div class="panel fm-layer"><span class="n">Level ${i+1}</span><b>${x[0]}</b><p>${x[1]}</p></div>`).join("");
+  $("fm-vars").innerHTML=fmVarsHTML(p);
+  $("fm-feed").innerHTML=S.fmTrace.map(x=>`<div>${x}</div>`).join("")||"<div>No events traced yet.</div>";
+  $("fm-codex").innerHTML=FUNCTION_TERMS.map(t=>`<button class="panel fm-term" data-term="${t.id}"><b>${t.term}</b><span>${t.plain}</span></button>`).join("");
+  $("fm-codex").querySelectorAll("[data-term]").forEach(b=>b.onclick=()=>{
+    const t=FUNCTION_TERMS.find(x=>x.id===b.dataset.term);
+    $("fm-codex").querySelectorAll(".fm-term").forEach(x=>x.classList.toggle("on",x===b));
+    $("fm-definition").innerHTML=`<b>${t.plain}</b> → ${t.term}<br>${t.def}<br><br><b>GAME IMPLEMENTATION</b> · ${t.impl}`;
+  });
+  document.querySelectorAll("[data-fm-event]").forEach(b=>b.onclick=()=>fmApply(b.dataset.fmEvent,p,.35));
+}
+function contextEventForRoom(rm){
+  const id=rm?.theme?.id||"ambiguity";
+  return id==="memory"?"memory":id==="threat"?"threat":id==="choice"?"conflict":id==="attachment"?"social":"ambiguity";
+}
+function paintContextMatrix(){
+  const p=fmPatient();
+  if($("floor-matrix")){
+    const rm=S.at, ev=FM_EVENTS[contextEventForRoom(rm)]||FM_EVENTS.ambiguity;
+    $("floor-matrix").innerHTML=`<h3>${ev.label} // FUNCTION TRACE</h3><p>${ev.layers[1][1]} → ${ev.layers[2][1]} → ${ev.layers[3][1]}<br><span class="val">${ev.layers[5][1]}</span></p>`;
+  }
+  if($("sit-matrix")&&S.sel){
+    const m=S.sel.model;
+    $("sit-matrix").innerHTML=`<h3>SIT // LIVE FUNCTION STATE</h3>
+      <p>Prediction error <span class="val">${m.predictionError}</span> · control demand <span class="val">${m.controlDemand}</span> · arousal <span class="val">${m.arousal}</span> · context <span class="val">${m.contextStrength}</span><br>
+      These are fictional computational game variables—not clinical or neural measurements.</p>`;
+  }
+}
 
 function paintCases(){
   if(!$("caseboard")) return;
@@ -678,6 +1081,7 @@ function paintCases(){
 
 function paintResearch(){
   if(!$("research-tree")) return;
+  paintBuilds();
   $("research-tree").innerHTML=RESEARCH.map(r=>{
     const on=S.unlocks[r.id], ready=S.insightBank>=r.cost;
     return `<div class="panel research-card ${on?"":"objective"} ${on?"done":""}">
@@ -798,6 +1202,27 @@ function paintPsyche(){
         </div>
         <div class="panel psy-panel" style="padding:10px"><h3>Recovered Fragments</h3><div class="archive-list">${discoveries}</div></div>
         <div class="panel psy-panel" style="padding:10px"><h3>Clinician Notes</h3><div class="psy-list">${notes}</div></div>
+        <div class="panel psy-panel hypo" style="grid-column:1/-1"><h3>Hidden Model Hypothesis</h3>
+          <p class="note">Build a theory from evidence. The patient's hidden fictional model is not shown until you commit.</p>
+          <label class="smallcaps">Dominant process</label><select id="hyp-primary">
+            <option value="threat">Threat processing</option><option value="reward">Reward learning</option><option value="control">Cognitive control</option><option value="memory">Contextual memory</option><option value="social">Social prediction</option>
+          </select>
+          <label class="smallcaps">Maintaining process</label><select id="hyp-maint">
+            <option value="avoidance">Avoidance reinforcement</option><option value="habit">Habit strength</option><option value="uncertainty">Uncertainty</option><option value="interference">Interference</option><option value="social">Social expectation</option>
+          </select>
+          <label class="smallcaps">Context</label><select id="hyp-context">
+            <option value="social">Social evaluation</option><option value="memory">Memory cue</option><option value="performance">Performance demand</option><option value="loss">Loss cue</option><option value="ambiguity">Ambiguity</option>
+          </select>
+          <button class="mini panel" id="commit-hyp">Commit Hypothesis</button>
+          <div class="commit-result" id="hyp-result">Uncommitted. Gather Floor evidence first.</div>
+          <div class="section-title">Evidence Board</div><div class="evidence" id="evidence-board"></div>
+        </div>
+        <div class="panel psy-panel" style="padding:10px;grid-column:1/-1"><h3>Function Matrix State</h3>
+          <div class="fm-vars">${fmVarsHTML(p)}</div>
+          <div class="fm-equation" style="margin-top:7px">
+            Teaching model: belief update is weighted by evidence precision and uncertainty; control demand rises when habitual/default responses compete with current goals.
+          </div>
+        </div>
       </div>
       <div class="chips">${Object.keys(L).map(k=>`<button class="chip" data-k="${k}">${k}</button>`).join("")}
       <button class="chip" id="sit2">Sit</button><button class="chip" id="floor2">Floor</button></div>
@@ -806,6 +1231,7 @@ function paintPsyche(){
   $("psy").querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>$("mxo").textContent=L[b.dataset.k]);
   $("sit2").onclick=()=>go("session");
   $("floor2").onclick=()=>go("dungeon");
+  paintEvidence(p);
 }
 
 function dealHand(){
@@ -819,6 +1245,16 @@ function dealHand(){
 function paintIn(){
   $("in").innerHTML=S.incoming.map((c,i)=>`<article class="panel card trauma ${i===0?"live":""}">
     <div class="k">${i===0?"LIVE ×"+(c.amp||1):"WAIT"}</div><div class="b">${c.text}</div></article>`).join("");
+  const c=S.incoming[0];
+  if(c&&S.sel){
+    const tags=c.tags||[];
+    const ev=tags.includes("shadow")||tags.includes("id")?"threat":
+             tags.includes("oral")||tags.includes("anima")?"social":
+             tags.includes("ego")||tags.includes("superego")?"conflict":
+             tags.includes("defense")?"memory":"ambiguity";
+    S.fmEvent=ev;
+    paintContextMatrix();
+  }
 }
 function paintLife(){
   if(!S.sel) return;
@@ -872,12 +1308,19 @@ function play(id){
     p.resistance=clamp(p.resistance-(t.id==="reframe"?6:3));
     gainInsight(p, t.id==="reflect"||t.id==="reframe"?3:2, t.name+" matched live material");
     gainXP(3,"effective Sit");
+    p.model.rewardPE=fmClamp(p.model.rewardPE+8);
+    p.model.expectedValue=fmClamp(p.model.expectedValue+4);
+    p.model.habitStrength=fmClamp(p.model.habitStrength+2);
+    fmApply("reward",p,.18);
     log(`<span class="good">${t.role} ×${amp}</span>`);
   } else {
     S.trauma=Math.min(100,S.trauma+8);
     p.life=Math.max(0,p.life-7);
     addItem(drop);
     p.resistance=clamp(p.resistance+5); p.rapport=clamp(p.rapport-3);
+    p.model.predictionError=fmClamp(p.model.predictionError+10);
+    p.model.uncertainty=fmClamp(p.model.uncertainty+5);
+    fmTrace(`TREATMENT MISS · ${p.name} · prediction error increased`);
     log(`<span class="bad">${t.role} miss</span> · resistance rises · relic still drops`);
   }
   hud(); paintIn(); paintLife();
@@ -887,10 +1330,15 @@ function play(id){
 
 function sitAction(kind){
   const p=S.sel; if(!p||p.sealed)return;
+  if(S.sitTurns<=0){log(`<span class="bad">SESSION CLOCK EXPIRED</span>`);return}
+  S.sitTurns--; if($("sit-turns"))$("sit-turns").textContent=S.sitTurns;
   const live=S.incoming[0];
   const tags=live?.tags||[];
   if(kind==="ask"){
     const useful=!!live;
+    fmApply(live?.tags?.includes("shadow")?"threat":"ambiguity",p,.25);
+    p.model.evidencePrecision=fmClamp(p.model.evidencePrecision+3);
+    p.model.uncertainty=fmClamp(p.model.uncertainty-2);
     p.rapport=clamp(p.rapport+(useful?3:1));
     p.resistance=clamp(p.resistance-(useful?2:0));
     if(useful) gainInsight(p,1,"question opened context");
@@ -898,6 +1346,9 @@ function sitAction(kind){
   }
   if(kind==="reflect"){
     const useful=tags.some(t=>["persona","anima","shadow","defense","oral"].includes(t));
+    fmApply(tags.includes("oral")||tags.includes("anima")?"social":"memory",p,.22);
+    p.model.contextStrength=fmClamp(p.model.contextStrength+(useful?5:1));
+    p.model.arousal=fmClamp(p.model.arousal-(useful?4:1));
     p.rapport=clamp(p.rapport+(useful?7:2));
     p.resistance=clamp(p.resistance-(useful?4:0));
     if(useful){
@@ -906,8 +1357,33 @@ function sitAction(kind){
     }
     log(`<span class="${useful?"good":"bad"}">REFLECT</span> · ${useful?"the material lands":"timing is weak"}`);
   }
+  if(kind==="probe"){
+    const useful=p.rapport>=45&&p.resistance<75;
+    p.model.predictionError=fmClamp(p.model.predictionError+(useful?7:2)); p.resistance=clamp(p.resistance+(useful?-3:5));
+    if(useful){gainInsight(p,S.build==="interpreter"?3:2,"contradiction probed");addEvidence(p,"Sit contradiction exposed",p.hidden.primary,70);}
+    log(`<span class="${useful?"good":"bad"}">PROBE</span> · ${useful?"contradiction becomes evidence":"defense hardens"}`);
+  }
+  if(kind==="ground"){
+    const amt=S.build==="regulator"?14:9;p.model.arousal=clamp(p.model.arousal-amt);S.trauma=clamp(S.trauma-5);p.rapport=clamp(p.rapport+2);
+    log(`<span class="good">GROUND</span> · arousal −${amt}`);
+  }
+  if(kind==="silence"){
+    const useful=Math.random()<.62;p.rapport=clamp(p.rapport+2);
+    if(useful){gainInsight(p,2,"spontaneous material");addEvidence(p,"Spontaneous association during silence",p.hidden.context,62);}
+    log(`<span class="${useful?"good":"bad"}">SILENCE</span> · ${useful?"new material emerges":"the clock moves"}`);
+  }
+  if(kind==="reframe"){
+    const useful=p.rapport>=55;p.model.priorBelief=fmClamp(p.model.priorBelief+(useful?-6:3));p.resistance=clamp(p.resistance+(useful?-5:4));
+    log(`<span class="${useful?"good":"bad"}">REFRAME</span> · ${useful?"interpretation loosens":"reframe rejected"}`);
+  }
+  if(kind==="withdraw"){
+    p.rapport=clamp(p.rapport+1);p.model.arousal=clamp(p.model.arousal-6);S.trauma=clamp(S.trauma-3);
+    log(`<span class="good">WITHDRAW</span> · immediate pressure falls`);
+  }
   if(kind==="challenge"){
     const useful=tags.some(t=>["ego","superego","defense"].includes(t)) && p.rapport>=55;
+    fmApply("conflict",p,.3);
+    p.model.controlDemand=fmClamp(p.model.controlDemand+(useful?-4:7));
     if(useful){
       p.resistance=clamp(p.resistance-8); gainInsight(p,3,"challenge tolerated");
       S.trauma=clamp(S.trauma-5); log(`<span class="good">CHALLENGE</span> · contradiction held`);
@@ -920,7 +1396,10 @@ function sitAction(kind){
     p.insight-=12; advanceCase(p,"Sit threshold reached");
     if(Math.random()<.45) addItem("thread");
   }
-  hud(); paintLife(); paintCases();
+  const usefulNow=(kind==="ground"||kind==="ask"||p.rapport>=50);
+  bossTactic(kind,p,usefulNow);
+  fmUpdateBelief(p);
+  hud(); paintLife(); paintCases(); paintFunctionMatrix(); paintContextMatrix();
 }
 
 function seal(p){
@@ -936,8 +1415,12 @@ function paintSession(){
   if(S.tick) clearInterval(S.tick);
   S.incoming=[]; $("log").innerHTML="";
   S.sel.sessions++;
+  S.sitTurns=8+(S.build==="regulator"?1:0); if($("sit-turns"))$("sit-turns").textContent=S.sitTurns;
+  if(S.run.depth>=2 && !S.boss && (S.sel.sessions%2===0 || S.run.risk>=45)) startBoss(); else paintBoss();
   dealHand(); paintIn(); paintLife();
   log(`<span class="good">Sit opened</span> · rapport ${Math.round(S.sel.rapport)} · resistance ${Math.round(S.sel.resistance)}`);
+  fmTrace(`SIT OPENED · ${S.sel.name} · current model loaded`);
+  paintContextMatrix();
   S.tick=setInterval(()=>{
     if(S.screen!=="session"||!S.sel||S.sel.sealed) return;
     S.sel.life=Math.max(0,S.sel.life-(S.veil?0.2:0.4));
@@ -956,6 +1439,7 @@ function pulse(){
       if(p.archived||p.sealed) return;
       if(S.sel&&S.sel.id===p.id&&S.screen==="session") return;
       p.life=Math.max(0,p.life-(S.unlocks.triage?0.08:0.2));
+      if(S.run.risk>70 && Math.random()<.006){S.run.risk=clamp(S.run.risk+2);S.stab=clamp(S.stab-1);}
       if(p.life<=0) p.sealed=true;
     });
     hud(); if(S.screen==="ward") paintWard();
@@ -1023,6 +1507,7 @@ function carveFloor(seed){
 
 function paintDungeon(){
   if(!S.floor) carveFloor();
+  paintRunHUD();
   const {W,H,grid,rooms}=S.floor;
   const c=$("dmap"), ctx=c.getContext("2d");
   const tw=c.width/W, th=c.height/H;
@@ -1070,6 +1555,7 @@ function searchRoom(){
   const rm=S.at;
   if(!rm||rm.kind==="foyer"){ toast("Nothing to search"); return; }
   if(rm.searched){ toast("Already searched"); return; }
+  if(!spendAP(1,"search"))return;
   rm.searched=true; S.roomsSearched++;
   const p=rm.who;
   let chance=S.unlocks.fieldnotes?.82:.62;
@@ -1087,6 +1573,13 @@ function searchRoom(){
       p.discoveries.unshift(rm.fragment); p.discoveries=p.discoveries.slice(0,8);
       p.notes.unshift("Floor fragment · "+rm.fragment); p.notes=p.notes.slice(0,6);
       p.insight=clamp(p.insight+3);
+      p.model.evidencePrecision=fmClamp(p.model.evidencePrecision+6);
+      p.model.contextStrength=fmClamp(p.model.contextStrength+7);
+      p.model.memoryLoad=fmClamp(p.model.memoryLoad+4);
+      const supports=[p.hidden.primary,p.hidden.maint,p.hidden.context];
+      addEvidence(p,rm.fragment,supports[Math.floor(Math.random()*supports.length)],55+Math.random()*35);
+      fmApply(contextEventForRoom(rm),p,.45);
+      fmUpdateBelief(p);
       if(p.discoveries.length>=2 && p.stage<Math.max(0,p.arc.length-1)) advanceCase(p,"Floor evidence linked");
     }
     const relic=Math.random()<.45?"mirror":Math.random()<.5?"thread":"key";
@@ -1127,6 +1620,8 @@ $("dgen").onclick=()=>{ carveFloor(); paintDungeon(); toast("New floor"); };
 
 hud();
 paintBrainMap();
+paintFunctionMatrix();
+paintContextMatrix();
 $("enter").onclick=()=>{ pulse(); feed(); carveFloor(); gainXP(2,"ward entered"); go("dungeon"); };
 $("nshift").onclick=()=>{
   S.P=roster(); S.sel=null; S.trauma=0; S.stab=100; S.shift++;
@@ -1141,6 +1636,8 @@ document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
 });
 
 $("search-room").onclick=searchRoom;
+$("analyze-room").onclick=analyzeRoom;
+$("retreat-run").onclick=retreatRun;
 $("open-psyche").onclick=goRoomPsyche;
 $("begin-sit-room").onclick=goRoomSit;
 document.querySelectorAll("[data-sit-action]").forEach(b=>b.onclick=()=>sitAction(b.dataset.sitAction));
