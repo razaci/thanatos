@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD · Jackpot Sanctum Edition</title>
+  <title>THANATOS WARD · Ultimate Floor Loop Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -298,7 +298,29 @@
     .cascade-flash{animation:cascadeFlash .55s ease}@keyframes cascadeFlash{0%{box-shadow:0 0 0 transparent}35%{box-shadow:0 0 30px #e8c36a88}100%{box-shadow:0 0 0 transparent}}
     @media(max-width:560px){.sanctum-tabs{grid-template-columns:repeat(2,1fr)}.reward-strip,.treatment-state{grid-template-columns:repeat(2,1fr)}}
 
-  </style>
+  
+/* === ULTIMATE FLOOR LOOP === */
+.floor-loop{display:grid;gap:7px;margin:8px 0}
+.loop-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.loop-step{padding:6px;text-align:center;border:1px solid #41667e44;background:#050c11;font:7px/1.25 "Share Tech Mono";color:#718da3}
+.loop-step.on{border-color:#e8c36a;color:#ffe39a;background:#171104}.loop-step.done{border-color:#65c99b55;color:#8fe5bd}
+.case-console{padding:10px}.case-console h3{font-size:10px;letter-spacing:.14em;color:#a9eaff;text-transform:uppercase}
+.obs-card{padding:8px;background:#071019;border-left:2px solid #6bbcff55;font:9px/1.45 "Share Tech Mono";color:#a7bdcf}
+.model-bars{display:grid;gap:5px}.model-row{display:grid;grid-template-columns:105px 1fr 35px;gap:5px;align-items:center;font:7px "Share Tech Mono";color:#92abc0}
+.model-track{height:6px;border:1px solid #47677d44;background:#020507}.model-track span{display:block;height:100%;background:linear-gradient(90deg,#224d67,#73d4ff)}
+.form-chain{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}.form-chain select{min-width:0;background:#04090d;color:#bfeaff;border:1px solid #47758d55;padding:6px;font:7px "Share Tech Mono"}
+.intervention-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:5px}
+.intervention{padding:7px;text-align:left}.intervention b{display:block;font-size:8px;color:#c9efff}.intervention span{font:7px/1.3 "Share Tech Mono";color:#7f9aaf}
+.intervention.used{opacity:.55}.prediction-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.prediction-grid label{font:7px "Share Tech Mono";color:#819db2}.prediction-grid input{width:100%;background:#020609;color:#d7f3ff;border:1px solid #4d718755;padding:6px}
+.outcome{padding:9px;font:9px/1.5 "Share Tech Mono";border:1px solid #e8c36a33;background:#0b0904}
+.combo{color:#ffe393;font-weight:bold}.rupture{color:#ff8f9e;font-weight:bold}.cure{color:#91ffc5;font-weight:bold}
+.functional-bars{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}
+.fbar{padding:6px;border:1px solid #496a7e33;background:#050b10}.fbar b{font-size:7px;color:#9ab7cb}.fbar .track{height:6px;margin-top:4px}
+.floor-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+@media(max-width:560px){.loop-steps{grid-template-columns:repeat(4,1fr)}.form-chain{grid-template-columns:1fr}.prediction-grid{grid-template-columns:repeat(3,1fr)}}
+
+</style>
 </head>
 <body>
 <canvas id="radar" style="display:none" aria-hidden="true"></canvas>
@@ -449,6 +471,18 @@
       </div>
     </div>
       <div class="dungeon-side">
+
+<div class="panel case-console">
+  <h3>ACTIVE CASE // DIAGNOSTIC → MECHANISM → INTERVENTION</h3>
+  <div class="floor-loop">
+    <div class="loop-steps" id="loop-steps"></div>
+    <div class="obs-card" id="floor-observation">Enter a patient room to begin assessment.</div>
+    <div class="functional-bars" id="functional-bars"></div>
+    <div id="loop-workspace"></div>
+    <div class="outcome" id="floor-outcome">No treatment outcome yet.</div>
+  </div>
+</div>
+
         <div class="panel objective-board">
           <h3>Floor Objective</h3>
           <div id="floor-objective">Locate the Anchor room and extract one verified fragment.</div>
@@ -575,6 +609,19 @@ const ITEMS = {
   key:   { name:"Archive Key", glyph:"⚿", desc:"Opens sealed case notes and deeper room events.", stat:"ARCHIVE RELIC" }
 };
 
+
+
+const FLOOR_LOOP_STEPS=["Observe","Assess","Formulate","Predict","Intervene","Outcome","Revise","Stabilize"];
+const FLOOR_INTERVENTIONS=[
+ {id:"ground",name:"Ground",targets:["threat","arousal"],desc:"Reduce activation before higher-demand work."},
+ {id:"anchor",name:"Attention Anchor",targets:["interference","uncertainty"],desc:"Reduce competing signals and improve evidence use."},
+ {id:"reappraise",name:"Reappraise",targets:["uncertainty","threat"],desc:"Test an interpretation against stronger evidence."},
+ {id:"values",name:"Values Action",targets:["avoidance","reward"],desc:"Increase approach value despite difficult internal signals."},
+ {id:"motivate",name:"Motivational Interview",targets:["social","avoidance"],desc:"Use rapport and ambivalence as information."},
+ {id:"problem",name:"Problem Solve",targets:["control","interference"],desc:"Structure choices and reduce control demand."},
+ {id:"context",name:"Context Rebind",targets:["memory","uncertainty"],desc:"Link fragments to source and context."},
+ {id:"exposure",name:"Approach Trial",targets:["avoidance","threat"],desc:"Fictional graded approach test; high risk if arousal/rapport are poor."}
+];
 
 const PSYCH_TOOLS = [
  {id:"cbt",name:"Cognitive Reappraisal Lab",basis:"CBT-style cognitive work",desc:"Compare an interpretation with available evidence and construct an alternative model.",cost:3,effect:"uncertainty",mechanic:"Lowers uncertainty when evidence precision is high; weak evidence can make the attempt less useful."},
@@ -889,7 +936,7 @@ const S = {
   archiveLens:false, echoStabilizer:false, oracleRelay:false,
   fmEvent:"ambiguity", fmTrace:[],
   run:{ap:10,risk:0,evidence:0,depth:1,banked:0,active:true,anchorFound:false,roomsEntered:0,locksOpened:0,hazardsCleared:0,path:[],objectiveDone:false},
-  build:null, skillPoints:1, sitTurns:8, boss:null, lastTactic:null, tacticRepeat:0, wardTokens:0, modelStreak:0, rewardMultiplier:1, resonancePot:0, soundOn:true, jackpotState:{symbols:["Ψ","◈","⌘"],message:"Commit a hypothesis in Psyche to drive the engine."}, treatmentLog:[], treatmentUses:{}, nextAnalyzeBonus:0, challengeShield:false
+  build:null, skillPoints:1, sitTurns:8, boss:null, lastTactic:null, tacticRepeat:0, wardTokens:0, modelStreak:0, rewardMultiplier:1, resonancePot:0, soundOn:true, jackpotState:{symbols:["Ψ","◈","⌘"],message:"Commit a hypothesis in Psyche to drive the engine."}, treatmentLog:[], treatmentUses:{}, nextAnalyzeBonus:0, challengeShield:false, floorCase:null
 };
 
 const $ = id => document.getElementById(id);
@@ -1206,7 +1253,7 @@ function analyzeRoom(){
 function retreatRun(){
   S.run.banked+=S.run.evidence;
   S.run.evidence=0; S.run.risk=Math.max(0,S.run.risk-25); S.run.ap=10+(S.build==="investigator"?1:0);
-  S.run.depth++; S.run.anchorFound=false;S.run.objectiveDone=false;S.run.path=[];S.floor=null; carveFloor(); toast("Evidence banked · deeper floor generated"); paintRunHUD(); paintDungeon();paintRouteLog();paintDungeonStatus();paintEncounter();
+  S.run.depth++; S.floorCase=null; S.run.anchorFound=false;S.run.objectiveDone=false;S.run.path=[];S.floor=null; carveFloor(); toast("Evidence banked · deeper floor generated"); paintRunHUD(); paintDungeon();paintRouteLog();paintDungeonStatus();paintEncounter();
 }
 function paintBuilds(){
  if(!$("build-grid"))return;
@@ -1820,7 +1867,7 @@ function carveFloor(seed){
 
 function paintDungeon(){
   if(!S.floor) carveFloor();
-  paintRunHUD(); paintRouteLog(); paintDungeonStatus(); paintEncounter();
+  paintRunHUD(); paintRouteLog(); paintDungeonStatus(); paintEncounter(); paintFloorLoop();
   const {W,H,grid,rooms}=S.floor;
   const c=$("dmap"), ctx=c.getContext("2d");
   const tw=c.width/W, th=c.height/H;
@@ -1869,6 +1916,161 @@ function paintDungeon(){
 
 
 
+
+function functionalState(p){
+ return {
+  threat:Math.round(p.model.threatEstimate),
+  avoidance:Math.round(Math.max(15,p.model.habitStrength+(p.hidden.maint==="avoidance"?25:0))),
+  control:Math.round(100-p.model.controlDemand),
+  context:Math.round(p.model.contextStrength),
+  reward:Math.round(p.model.expectedValue),
+  uncertainty:Math.round(p.model.uncertainty)
+ };
+}
+function newFloorCase(p,rm){
+ if(!p)return;
+ const obs=[
+  `${p.name} pauses at ${rm?.theme?.label||"the threshold"}; behavior changes when uncertainty rises.`,
+  `${p.name} repeats a response after it produces immediate relief.`,
+  `A contradictory cue appears, but ${p.name}'s first interpretation remains dominant.`,
+  `Attention narrows around one signal while competing context is ignored.`,
+  `${p.name}'s action changes when social evaluation becomes salient.`
+ ];
+ S.floorCase={
+  patient:p,room:rm,step:0,observation:obs[Math.floor(Math.random()*obs.length)],
+  assessed:false,formulated:false,predicted:false,intervened:false,revised:false,stabilized:false,
+  assessment:null,formulation:null,prediction:{threat:-10,rapport:5,avoidance:-8},lastOutcome:null,
+  sequence:[],mastery:{}
+ };
+ paintFloorLoop();
+}
+function floorCasePatient(){return S.floorCase?.patient||S.sel}
+function paintFunctionalBars(p){
+ if(!$("functional-bars")||!p)return;
+ const f=functionalState(p);
+ $("functional-bars").innerHTML=Object.entries(f).map(([k,v])=>`<div class="fbar"><b>${k.toUpperCase()} · ${v}</b><div class="track"><div class="fill" style="width:${v}%"></div></div></div>`).join("");
+}
+function stepDone(i,c){
+ if(i===0)return !!c;
+ if(i===1)return c.assessed;if(i===2)return c.formulated;if(i===3)return c.predicted;
+ if(i===4)return c.intervened;if(i===5)return !!c.lastOutcome;if(i===6)return c.revised;if(i===7)return c.stabilized;
+ return false;
+}
+function setCaseStep(n){if(!S.floorCase)return;S.floorCase.step=Math.max(0,Math.min(7,n));paintFloorLoop();}
+function paintFloorLoop(){
+ if(!$("loop-steps"))return;
+ const c=S.floorCase,p=floorCasePatient();
+ $("loop-steps").innerHTML=FLOOR_LOOP_STEPS.map((s,i)=>`<div class="loop-step ${stepDone(i,c||{})?"done":""} ${c&&c.step===i?"on":""}">${i+1}<br>${s}</div>`).join("");
+ if(!c||!p){$("floor-observation").textContent="Enter a patient room to begin assessment.";$("loop-workspace").innerHTML="";return}
+ $("floor-observation").innerHTML=`<b>OBSERVATION</b> · ${c.observation}<br><span class="val">Observation ≠ interpretation. Build the model from evidence.</span>`;
+ paintFunctionalBars(p);
+ const w=$("loop-workspace");let h="";
+ if(c.step===0){
+  h=`<div class="floor-actions"><button class="mini panel" data-loop="observe">Record Observation · 1 AP</button><button class="mini panel" data-loop="evidence">Search Evidence</button><button class="mini panel" data-loop="analyze">Analyze</button></div>`;
+ }else if(c.step===1){
+  h=`<div class="section-title">ASSESS DOMINANT FUNCTION</div><div class="intervention-grid">${["threat","reward","control","memory","social","uncertainty"].map(x=>`<button class="mini panel intervention" data-assess="${x}"><b>${x.toUpperCase()}</b><span>Select as current leading process</span></button>`).join("")}</div>`;
+ }else if(c.step===2){
+  h=`<div class="section-title">BUILD FUNCTIONAL CHAIN</div><div class="form-chain">
+   <select id="fc-trigger"><option>uncertainty cue</option><option>social evaluation</option><option>memory cue</option><option>loss cue</option><option>performance demand</option></select>
+   <select id="fc-construct"><option value="threat">threat</option><option value="social">social prediction</option><option value="memory">contextual memory</option><option value="control">cognitive control</option><option value="reward">reward valuation</option></select>
+   <select id="fc-maint"><option value="avoidance">avoidance</option><option value="habit">habit</option><option value="uncertainty">uncertainty</option><option value="interference">interference</option><option value="social">social expectation</option></select>
+   <select id="fc-beh"><option>withdraw</option><option>check</option><option>freeze</option><option>repeat</option><option>approach</option></select>
+   <select id="fc-cons"><option>immediate relief</option><option>social safety</option><option>uncertainty persists</option><option>reward gained</option></select>
+  </div><button class="mini panel" data-loop="formulate">Lock Formulation</button>`;
+ }else if(c.step===3){
+  h=`<div class="section-title">PREDICT TREATMENT EFFECT</div><div class="prediction-grid">
+   <label>Threat Δ<input id="pred-threat" type="number" value="-10"></label>
+   <label>Rapport Δ<input id="pred-rapport" type="number" value="5"></label>
+   <label>Avoidance Δ<input id="pred-avoid" type="number" value="-8"></label>
+  </div><button class="mini panel" data-loop="predict">Lock Prediction</button>`;
+ }else if(c.step===4){
+  h=`<div class="section-title">SELECT INTERVENTION</div><div class="intervention-grid">${FLOOR_INTERVENTIONS.map(t=>`<button class="mini panel intervention ${(c.mastery[t.id]||0)>1?"used":""}" data-intervene="${t.id}"><b>${t.name}</b><span>${t.desc}<br>Targets: ${t.targets.join(" · ")}</span></button>`).join("")}</div>`;
+ }else if(c.step===5){
+  h=`<button class="mini panel" data-loop="compare">Compare Prediction → Outcome</button>`;
+ }else if(c.step===6){
+  h=`<div class="floor-actions"><button class="mini panel" data-revise="maintain">Maintain Model</button><button class="mini panel" data-revise="revise">Revise Model</button><button class="mini panel" data-revise="evidence">Seek More Evidence</button></div>`;
+ }else{
+  h=`<button class="mini panel" data-loop="stabilize">Stabilize Case / Unlock Route</button>`;
+ }
+ w.innerHTML=h;bindFloorLoop();
+}
+function bindFloorLoop(){
+ document.querySelectorAll("[data-loop]").forEach(b=>b.onclick=()=>floorLoopAction(b.dataset.loop));
+ document.querySelectorAll("[data-assess]").forEach(b=>b.onclick=()=>{const c=S.floorCase;c.assessment=b.dataset.assess;c.assessed=true;gainXP(2,"functional assessment");setCaseStep(2)});
+ document.querySelectorAll("[data-intervene]").forEach(b=>b.onclick=()=>runFloorIntervention(b.dataset.intervene));
+ document.querySelectorAll("[data-revise]").forEach(b=>b.onclick=()=>reviseFloorModel(b.dataset.revise));
+}
+function floorLoopAction(a){
+ const c=S.floorCase,p=c?.patient;if(!c||!p)return;
+ if(a==="observe"){if(!spendAP(1,"observe"))return;c.step=1;addEvidence(p,"Structured observation · "+c.observation,p.hidden.primary,62);gainXP(2,"observation")}
+ if(a==="evidence"){searchRoom();return}
+ if(a==="analyze"){analyzeRoom();return}
+ if(a==="formulate"){
+  c.formulation={trigger:$("fc-trigger").value,construct:$("fc-construct").value,maint:$("fc-maint").value,behavior:$("fc-beh").value,consequence:$("fc-cons").value};
+  c.formulated=true;c.step=3;gainXP(3,"case formulation");
+ }
+ if(a==="predict"){
+  c.prediction={threat:+$("pred-threat").value||0,rapport:+$("pred-rapport").value||0,avoidance:+$("pred-avoid").value||0};
+  c.predicted=true;c.step=4;gainXP(2,"outcome prediction");
+ }
+ if(a==="compare"){c.step=6;}
+ if(a==="stabilize"){
+  const f=functionalState(p),stable=f.threat<65&&f.avoidance<70&&p.rapport>=45;
+  if(stable){c.stabilized=true;gainXP(12,"case stabilized");gainInsight(p,5,"floor treatment loop");S.wardTokens+=5;S.run.objectiveDone=true;animateJackpot(["Ψ","♛","Ψ"],`<span class="cure">CASE STABILIZED</span> · +5 Ward Tokens · route unlocked`,2);toast("Case stabilized · route unlocked")}
+  else{toast("Functional state not stable yet · revise and treat again");c.step=4}
+ }
+ paintFloorLoop();paintDungeonStatus();paintRewardHUD();
+}
+function interventionMatch(c,p,t){
+ let score=0;
+ if(t.targets.includes(p.hidden.primary))score+=30;
+ if(t.targets.includes(p.hidden.maint))score+=30;
+ if(c.assessment===p.hidden.primary)score+=15;
+ if(c.formulation?.maint===p.hidden.maint)score+=15;
+ if(p.rapport>=55)score+=5;
+ if(p.model.evidencePrecision>=55)score+=5;
+ return Math.min(100,score);
+}
+function runFloorIntervention(id){
+ const c=S.floorCase,p=c?.patient,t=FLOOR_INTERVENTIONS.find(x=>x.id===id);if(!c||!p||!t)return;
+ if(!spendAP(2,"intervention"))return;
+ c.mastery[id]=(c.mastery[id]||0)+1;c.sequence.push(id);c.sequence=c.sequence.slice(-5);
+ const match=interventionMatch(c,p,t);
+ let diminishing=Math.max(.35,1-(c.mastery[id]-1)*.22);
+ let combo=1,comboName="";
+ const q=c.sequence.join(">");
+ if(/ground>anchor>reappraise$/.test(q)){combo=1.5;comboName="REGULATE → ATTEND → REAPPRAISE";}
+ if(/motivate>values>exposure$/.test(q)){combo=1.6;comboName="MOTIVATION → VALUES → APPROACH";}
+ if(/context>anchor>problem$/.test(q)){combo=1.45;comboName="CONTEXT → ATTEND → SOLVE";}
+ const premature=id==="exposure"&&(p.model.arousal>75||p.rapport<45);
+ const effect=(match/100)*diminishing*combo*(premature?.35:1);
+ const before=functionalState(p);
+ p.model.threatEstimate=clamp(p.model.threatEstimate-(t.targets.includes("threat")?Math.round(18*effect):Math.round(3*effect)));
+ p.model.uncertainty=clamp(p.model.uncertainty-(t.targets.includes("uncertainty")?Math.round(17*effect):Math.round(2*effect)));
+ p.model.controlDemand=clamp(p.model.controlDemand-(t.targets.includes("control")?Math.round(16*effect):0));
+ p.model.contextStrength=clamp(p.model.contextStrength+(t.targets.includes("memory")?Math.round(15*effect):0));
+ p.model.expectedValue=clamp(p.model.expectedValue+(t.targets.includes("reward")||t.targets.includes("avoidance")?Math.round(13*effect):0));
+ p.model.habitStrength=clamp(p.model.habitStrength-(t.targets.includes("avoidance")?Math.round(14*effect):0));
+ p.rapport=clamp(p.rapport+(id==="motivate"?Math.round(12*effect):Math.round(2*effect)));
+ if(id==="ground")p.model.arousal=clamp(p.model.arousal-Math.round(18*effect));
+ if(premature){p.resistance=clamp(p.resistance+12);p.rapport=clamp(p.rapport-8);S.run.risk=clamp(S.run.risk+8);}
+ const after=functionalState(p);
+ const actual={threat:after.threat-before.threat,rapport:Math.round(p.rapport)-(Math.round(p.rapport)-(id==="motivate"?Math.round(12*effect):Math.round(2*effect))),avoidance:after.avoidance-before.avoidance};
+ const err=Math.round((Math.abs((c.prediction.threat||0)-actual.threat)+Math.abs((c.prediction.avoidance||0)-actual.avoidance))/2);
+ c.lastOutcome={tool:t.name,match,effect,diminishing,combo,comboName,premature,actual,error:err};c.intervened=true;c.step=5;
+ if(match>=70){S.wardTokens+=Math.round(2*combo);gainXP(5,"mechanism match");}
+ if(comboName)audioTone(880,.12,"triangle",.04);
+ if($("floor-outcome"))$("floor-outcome").innerHTML=`${comboName?`<span class="combo">COMBO · ${comboName} ×${combo.toFixed(2)}</span><br>`:""}${premature?`<span class="rupture">RUPTURE RISK · approach trial was poorly timed</span><br>`:""}<b>${t.name}</b> · mechanism match ${match}% · diminishing return ×${diminishing.toFixed(2)}<br>Actual threat Δ ${actual.threat} · avoidance Δ ${actual.avoidance} · prediction error ${err}`;
+ paintFloorLoop();paintCases();paintRewardHUD();
+}
+function reviseFloorModel(mode){
+ const c=S.floorCase,p=c?.patient;if(!c||!p)return;
+ if(mode==="revise"){p.model.uncertainty=clamp(p.model.uncertainty-4);p.model.evidencePrecision=clamp(p.model.evidencePrecision+4);gainInsight(p,2,"model revision");c.revised=true;c.step=7;fmTrace(`MODEL REVISED · prediction error ${c.lastOutcome?.error||0}`)}
+ if(mode==="maintain"){if((c.lastOutcome?.error||0)>12){p.model.uncertainty=clamp(p.model.uncertainty+6);toast("High prediction error ignored · uncertainty rises")}c.revised=true;c.step=7}
+ if(mode==="evidence"){c.step=0;c.observation="New contradictory evidence requested. Re-observe before another intervention.";addEvidence(p,"Post-treatment discrepancy trace",p.hidden.maint,80)}
+ paintFloorLoop();
+}
+
 function roomCanEnter(rm){
   if(!rm)return false;
   if(rm.kind==="foyer")return true;
@@ -1897,7 +2099,7 @@ function enterRoom(rm){
     else if(!spendAP(3,"force archive"))return;
   }
   revealRoom(rm);
-  S.at=rm;if(rm.who&&!rm.who.sealed)S.sel=rm.who;
+  S.at=rm;if(rm.who&&!rm.who.sealed){S.sel=rm.who;if(!S.floorCase||S.floorCase.patient!==rm.who)newFloorCase(rm.who,rm);}
   resolveRoomEntry(rm); paintDungeon(); paintRunHUD(); paintRouteLog(); paintEncounter(); paintDungeonStatus();
 }
 function resolveRoomEntry(rm){
