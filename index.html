@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD</title>
+  <title>THANATOS WARD · Expanded Campaign Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -135,63 +135,69 @@
     #dmap { width: 100%; height: auto; display: block; image-rendering: pixelated; cursor: pointer; }
     .dinfo { margin-top: 8px; padding: 10px; font-family: "Share Tech Mono", monospace; font-size: 12px; line-height: 1.45; }
 
-    /* INNER LAB expansion — original THANATOS mechanics remain intact */
-    .lab-wrap{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-    @media(max-width:700px){.lab-wrap{grid-template-columns:1fr}}
-    .lab-card{padding:14px;min-height:150px}
-    .lab-card h3{font-size:13px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px;color:#fff}
-    .lab-card p{font-family:"Share Tech Mono",monospace;font-size:11px;line-height:1.45;color:var(--muted);margin-bottom:10px}
-    .lab-result{margin-top:9px;padding:8px;border:1px solid #5ab4ff44;font-family:"Share Tech Mono",monospace;font-size:11px;line-height:1.4;min-height:30px}
-    .meter{height:7px;background:#0007;border:1px solid #fff1;margin:6px 0 9px}.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2ee6ff,#e8d5a3);transition:.3s}
-    .bias-opt{display:block;width:100%;text-align:left;margin:5px 0;padding:8px;border:1px solid #5ab4ff33;font-family:"Share Tech Mono",monospace;font-size:10px}.bias-opt:hover{border-color:var(--hot)}
-    .fragment{border-left:2px solid #5ab4ff66;padding:7px 9px;margin:5px 0;background:#07101a;font-family:"Share Tech Mono",monospace;font-size:10px;line-height:1.35}
-    .lab-note{font-size:8px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:8px}
-  
-    /* =========================
-       NEURO ATLAS — BRAIN SCIENCE
-       ========================= */
-    .neuro-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:10px}
-    @media(max-width:820px){.neuro-grid{grid-template-columns:1fr}}
-    .neuro-map{position:relative;min-height:470px;background:
-      radial-gradient(circle at 50% 48%,rgba(70,180,255,.13),transparent 34%),
-      radial-gradient(circle at 20% 80%,rgba(255,70,100,.08),transparent 30%),#03060b;
-      border:1px solid #5ab4ff44;overflow:hidden}
-    .neuro-map svg{width:100%;height:470px;display:block}
-    .brain-region{cursor:pointer;transition:.18s;fill:#10283a;stroke:#5ab4ff88;stroke-width:1.5}
-    .brain-region:hover,.brain-region.selected{fill:#1e5670;stroke:#b9efff;filter:drop-shadow(0 0 8px #5ab4ff88)}
-    .brain-label{font:9px "Share Tech Mono",monospace;fill:#d7e8ff;pointer-events:none;text-anchor:middle}
-    .brain-node{fill:#8af0ff;stroke:#dffbff;stroke-width:1}
-    .brain-link{stroke:#3b8db8;stroke-width:1;opacity:.45}
-    .brain-link.hot{stroke:#e8c36a;opacity:.9;stroke-width:2}
-    .neuro-readout{padding:12px;min-height:470px}
-    .neuro-title{font-size:18px;letter-spacing:.1em;color:#fff;margin-bottom:4px}
-    .neuro-sub{font:11px "Share Tech Mono",monospace;color:#8fa8bf;line-height:1.5}
-    .fact{margin-top:12px;padding:9px;border-left:2px solid #5ab4ff;background:#08111a;font:11px "Share Tech Mono",monospace;line-height:1.5}
-    .confidence{font-size:8px;letter-spacing:.12em;color:#6fa0bd;text-transform:uppercase;margin-top:6px}
-    .route-panel{margin-top:10px;padding:10px}
-    .route{display:flex;align-items:center;gap:5px;flex-wrap:wrap;font:9px "Share Tech Mono",monospace}
-    .route span{padding:6px 7px;border:1px solid #5ab4ff55;background:#08111a}
-    .route i{color:#e8c36a;font-style:normal}
-    .atlas-tabs{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}
-    .atlas-card{padding:10px}
-    .atlas-card h3{font-size:11px;letter-spacing:.12em;margin-bottom:6px;color:#fff}
-    .atlas-card p,.atlas-card li{font:10px "Share Tech Mono",monospace;line-height:1.5;color:#c2d4e5}
-    .atlas-card ul{padding-left:17px}
-    .state-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
-    @media(max-width:600px){.state-grid{grid-template-columns:1fr 1fr}}
-    .state{padding:8px;border:1px solid #5ab4ff33;background:#071019}
-    .state b{display:block;font-size:10px}.state small{font:9px "Share Tech Mono";color:#7e9ab2}
-    .lab-warning{font:9px "Share Tech Mono",monospace;color:#9eb5c8;border:1px solid #ffffff12;padding:8px;margin-top:8px;line-height:1.45}
-    .neuro-quiz{display:grid;gap:6px;margin-top:8px}
-    .signal-console{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    @media(max-width:650px){.signal-console{grid-template-columns:1fr}}
-    .signal-box{padding:10px}
-    .signal-box .big{font-size:24px;color:#8af0ff;font-family:"Share Tech Mono",monospace}
-    .meter{height:8px;background:#020509;border:1px solid #ffffff12;margin-top:5px;overflow:hidden}
-    .meter>div{height:100%;width:0;background:linear-gradient(90deg,#163c52,#8af0ff);transition:width .35s}
-    .matrix-table{width:100%;border-collapse:collapse;margin-top:8px;font:9px "Share Tech Mono",monospace}
-    .matrix-table th,.matrix-table td{padding:6px;border:1px solid #5ab4ff22;text-align:left}
-    .matrix-table th{color:#8af0ff;background:#071019}
+    /* === FRESH EXPANSION LAYER === */
+    .hud-xp { margin-top:8px; padding-top:7px; border-top:1px solid #5ab4ff22; }
+    .rankline { display:flex; justify-content:space-between; gap:8px; font-size:7px; color:var(--muted); letter-spacing:.12em; text-transform:uppercase; }
+    .subgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:8px; }
+    .casecard,.research-card,.memory-card,.choicebox,.brainlesson { padding:10px; }
+    .casecard strong,.research-card strong,.memory-card strong,.brainlesson strong { display:block; margin-bottom:5px; }
+    .casecard p,.research-card p,.memory-card p,.brainlesson p,.choicebox p { font-family:"Share Tech Mono",monospace; font-size:11px; line-height:1.45; color:#b9cbe0; }
+    .meterrow { display:grid; grid-template-columns:80px 1fr 38px; gap:6px; align-items:center; margin:5px 0; font:10px "Share Tech Mono",monospace; }
+    .meterrow .track{height:7px}
+    .tagrow { display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }
+    .tagx { border:1px solid #5ab4ff44; padding:3px 5px; font-size:7px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+    .section-title { font-size:10px; color:#8fdcff; letter-spacing:.18em; text-transform:uppercase; margin:12px 0 7px; }
+    .progressbar { height:6px; background:#0008; border:1px solid #fff1; margin-top:4px; overflow:hidden; }
+    .progressbar > span { display:block; height:100%; background:linear-gradient(90deg,#1f6b89,#77dcff); }
+    .dossier-grid { display:grid; grid-template-columns:1fr; gap:8px; margin-top:8px; }
+    @media(min-width:760px){ .dossier-grid{grid-template-columns:1fr 1fr;} }
+    .psy-panel { position:relative; z-index:3; }
+    .psy-panel h3 { font-size:10px; letter-spacing:.16em; color:#9fffc8; margin-bottom:6px; text-transform:uppercase; }
+    .psy-list { font:11px/1.5 "Share Tech Mono",monospace; color:#b9e8ce; }
+    .session-tools { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:8px 0; }
+    .session-tools button { min-height:46px; }
+    .rapport { color:#9fffc8; }
+    .resist { color:#ffb38a; }
+    .insight { color:#8adfff; }
+    .discovery { border-color:#e8c36a88; background:linear-gradient(#231b0d,#090704); }
+    .room-actions { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+    .brain-map { display:grid; grid-template-columns:repeat(2,1fr); gap:6px; margin-top:8px; }
+    @media(min-width:700px){ .brain-map{grid-template-columns:repeat(4,1fr);} }
+    .brain-node { padding:9px; border:1px solid #2ee6ff33; background:#071019; text-align:left; min-height:78px; }
+    .brain-node b { display:block; color:#9eeaff; font-size:9px; margin-bottom:4px; text-transform:uppercase; }
+    .brain-node span { font:9px/1.35 "Share Tech Mono",monospace; color:#88a8c8; }
+    .brain-node.on { border-color:#e8c36a; box-shadow:0 0 10px #e8c36a33; }
+    .note { font:10px/1.45 "Share Tech Mono",monospace; color:#8fa9c2; }
+    .campaign { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+    .campaign .pip b{color:#fff}
+    .archive-list { display:grid; gap:6px; }
+    .archive-item { padding:8px; border:1px solid #5ab4ff33; font:10px/1.4 "Share Tech Mono",monospace; }
+    .locked { opacity:.45; filter:grayscale(.4); }
+    .smallcaps { font-size:8px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+    .storyline { border-left:2px solid #5ab4ff44; padding-left:8px; margin:6px 0; }
+    .storyline b { color:#d7e8ff; }
+    .objective { border-color:#e8c36a66; }
+    .objective.done { border-color:#2ee6ff66; opacity:.75; }
+
+    /* Keep all five original sections visible on phones. */
+    @media(max-width:560px){
+      .hud{width:176px;top:6px;left:6px;padding:7px}
+      .hud-h{font-size:7px}
+      .meta{font-size:7px;margin:4px 0 2px}
+      .radar{width:66px;height:66px;top:6px;right:6px}
+      .screen{padding:72px 7px 68px}
+      .dock{bottom:max(5px,env(safe-area-inset-bottom));width:calc(100vw - 10px);display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+      .slot{width:auto;height:48px;min-width:0;padding:4px 2px;font-size:5.6px;letter-spacing:.04em;justify-content:center;gap:2px}
+      .slot .g{font-size:13px;margin:0}
+      .slot:hover,.slot.active{transform:translateY(-2px)}
+      .mini{padding:8px 6px;font-size:7.5px}
+      .incoming{overflow-x:auto;justify-content:flex-start;padding-bottom:3px}
+      .jack{overflow-x:auto;justify-content:flex-start;padding-bottom:8px}
+      .card.treat{min-width:126px;width:126px;min-height:180px}
+      .session-tools{grid-template-columns:1fr 1fr 1fr}
+      .brain-box{min-height:150px}
+      .brain-box svg{width:180px}
+    }
 
   </style>
 </head>
@@ -205,6 +211,10 @@
     <div class="track"><div class="fill t" id="tf"></div></div>
     <div class="meta"><span>Stabilizers</span><span class="val" id="sr">100%</span></div>
     <div class="track"><div class="fill s" id="sf"></div></div>
+    <div class="hud-xp">
+      <div class="rankline"><span id="rank-name">Rank I · Observer</span><span id="xp-num">0 XP</span></div>
+      <div class="progressbar"><span id="xp-fill" style="width:0%"></span></div>
+    </div>
   </section>
   <section class="panel radar"><div class="disk" id="disk"><div class="sweep"></div><span class="blip you"></span></div></section>
 
@@ -213,8 +223,7 @@
     <button class="slot" data-go="dungeon"><span class="g">▤</span>Floor</button>
     <button class="slot" data-go="dossier"><span class="g">◎</span>Psyche</button>
     <button class="slot" data-go="sanctum"><span class="g">✦</span>Sanctum</button>
-    <button class="slot" data-go="session"><span class="g">⌬</span>Sit</button><button class="slot" data-go="neuro"><span class="g">🧠</span>Neuro Atlas</button>
-     <button class="slot" data-go="lab"><span class="g">◌</span>Lab</button>
+    <button class="slot" data-go="session"><span class="g">⌬</span>Sit</button>
   </nav>
   <div class="toast panel" id="toast"></div>
 
@@ -249,6 +258,9 @@
             <button class="tab" data-pane="inv">Inventory</button>
             <button class="tab" data-pane="plsr">PLSR</button>
             <button class="tab" data-pane="types">Types</button>
+            <button class="tab" data-pane="cases">Cases</button>
+            <button class="tab" data-pane="research">Research</button>
+            <button class="tab" data-pane="brain">Brain Map</button>
           </div>
           <div class="pane on panel" id="pane-bio" style="padding:12px">
             <form class="bio" id="bio-form">
@@ -271,6 +283,25 @@
           <div class="pane" id="pane-types">
             <div class="typebox" id="typelist"></div>
           </div>
+          <div class="pane" id="pane-cases">
+            <div class="campaign" id="campaign"></div>
+            <div class="subgrid" id="caseboard"></div>
+          </div>
+          <div class="pane" id="pane-research">
+            <div class="panel research-card">
+              <strong>WARD RESEARCH TREE</strong>
+              <p>Unlock persistent clinician upgrades with Insight earned from rooms, dossiers, and successful Sit choices.</p>
+            </div>
+            <div class="subgrid" id="research-tree" style="margin-top:8px"></div>
+          </div>
+          <div class="pane" id="pane-brain">
+            <div class="panel brainlesson">
+              <strong>EDUCATIONAL COGNITIVE MAP</strong>
+              <p>This is a stylized teaching interface. It does not read neural activity, diagnose conditions, or claim that one region acts alone.</p>
+              <div class="brain-map" id="brain-map"></div>
+              <div class="note" id="brain-note" style="margin-top:8px">Select a node.</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -284,6 +315,12 @@
       </div>
       <div class="panel dungeon"><canvas id="dmap" width="480" height="320"></canvas></div>
       <div class="panel dinfo" id="dinfo">Tap a room. Foyer sits at gold. Sealed rooms stay dark.</div>
+      <div class="panel dinfo discovery" id="room-discovery">No fragment recovered.</div>
+      <div class="room-actions">
+        <button class="mini panel" id="search-room">Search room</button>
+        <button class="mini panel" id="open-psyche">Open Psyche</button>
+        <button class="mini panel" id="begin-sit-room">Begin Sit</button>
+      </div>
     </div>
   </section>
 
@@ -291,118 +328,12 @@
 
   <section class="screen" id="screen-sanctum">
     <div class="inner">
+      <div class="panel brainlesson" style="margin-bottom:8px">
+        <strong>SANCTUM // RELIC ENGINEERING</strong>
+        <p>Recipes now unlock permanent campaign modifiers, new treatment choices, and research momentum.</p>
+        <div class="tagrow" id="sanctum-status"></div>
+      </div>
       <div class="recipes" id="recipes"></div>
-    </div>
-  </section>
-
-  
-  <section class="screen" id="screen-neuro">
-    <div class="inner">
-      <div class="bar">
-        <span class="pip panel">NEURO ATLAS</span>
-        <span class="pip panel" id="neuro-mode">MODE · NETWORK</span>
-        <button class="mini panel" id="neuro-reset">Reset map</button>
-      </div>
-
-      <div class="neuro-grid">
-        <div class="panel neuro-map">
-          <svg viewBox="0 0 760 470" aria-label="Stylized educational brain map">
-            <defs>
-              <radialGradient id="brainGlow"><stop offset="0%" stop-color="#183c55"/><stop offset="100%" stop-color="#071019"/></radialGradient>
-            </defs>
-            <ellipse cx="380" cy="230" rx="315" ry="178" fill="url(#brainGlow)" stroke="#5ab4ff44"/>
-            <path class="brain-link" id="link-pfc-hip" d="M270 180 Q380 145 455 235"/>
-            <path class="brain-link" id="link-hip-amg" d="M455 235 Q505 255 535 225"/>
-            <path class="brain-link" id="link-pfc-tha" d="M270 180 Q345 255 375 300"/>
-            <path class="brain-link" id="link-tha-str" d="M375 300 Q445 315 505 300"/>
-            <path class="brain-link" id="link-hip-tha" d="M455 235 Q415 275 375 300"/>
-            <path class="brain-link" id="link-sens-tha" d="M165 270 Q260 295 375 300"/>
-
-            <path class="brain-region" data-region="pfc" d="M125 145 Q155 70 265 78 Q315 88 305 155 Q295 205 240 208 Q165 205 125 145Z"/>
-            <path class="brain-region" data-region="parietal" d="M270 78 Q390 50 470 105 Q490 145 445 172 Q370 165 305 155 Q315 100 270 78Z"/>
-            <path class="brain-region" data-region="temporal" d="M170 205 Q270 190 360 220 Q370 280 290 315 Q205 320 150 270 Q145 235 170 205Z"/>
-            <path class="brain-region" data-region="occipital" d="M470 105 Q590 120 650 195 Q625 235 560 235 Q525 195 445 172 Q490 145 470 105Z"/>
-            <ellipse class="brain-region" data-region="hippocampus" cx="455" cy="235" rx="47" ry="25"/>
-            <ellipse class="brain-region" data-region="amygdala" cx="535" cy="225" rx="27" ry="20"/>
-            <ellipse class="brain-region" data-region="thalamus" cx="375" cy="300" rx="38" ry="27"/>
-            <ellipse class="brain-region" data-region="striatum" cx="505" cy="300" rx="40" ry="25"/>
-            <path class="brain-region" data-region="cerebellum" d="M535 305 Q620 285 670 330 Q650 395 555 385 Q520 360 535 305Z"/>
-            <path class="brain-region" data-region="brainstem" d="M405 318 Q430 335 445 390 L415 425 L380 390 Q390 345 405 318Z"/>
-
-            <text class="brain-label" x="215" y="140">PREFRONTAL</text>
-            <text class="brain-label" x="370" y="115">PARIETAL</text>
-            <text class="brain-label" x="245" y="255">TEMPORAL</text>
-            <text class="brain-label" x="565" y="180">OCCIPITAL</text>
-            <text class="brain-label" x="455" y="238">HIPPOCAMPUS</text>
-            <text class="brain-label" x="535" y="228">AMYGDALA</text>
-            <text class="brain-label" x="375" y="303">THALAMUS</text>
-            <text class="brain-label" x="505" y="303">STRIATUM</text>
-            <text class="brain-label" x="600" y="345">CEREBELLUM</text>
-            <text class="brain-label" x="412" y="380">BRAINSTEM</text>
-          </svg>
-        </div>
-
-        <div class="panel neuro-readout">
-          <div class="neuro-title" id="neuro-name">Select a brain node</div>
-          <div class="neuro-sub" id="neuro-role">Click a region to open its educational dossier.</div>
-          <div class="fact" id="neuro-fact">This is a stylized teaching map, not a literal fMRI image. Real cognition depends on distributed circuits rather than one region acting alone.</div>
-          <div class="confidence" id="neuro-confidence">EVIDENCE FRAME · SYSTEMS NEUROSCIENCE</div>
-          <div class="route-panel panel">
-            <div class="meta"><span>NETWORK ROUTE</span><span class="val" id="route-task">—</span></div>
-            <div class="route" id="neuro-route"><span>SELECT A TASK</span></div>
-          </div>
-          <div class="atlas-tabs">
-            <button class="mini panel" data-task="attention">Attention</button>
-            <button class="mini panel" data-task="memory">Memory</button>
-            <button class="mini panel" data-task="decision">Decision</button>
-            <button class="mini panel" data-task="threat">Threat</button>
-            <button class="mini panel" data-task="learning">Learning</button>
-          </div>
-          <div class="lab-warning">
-            The numbers in this interface are game telemetry. They do not measure brain activity, diagnose conditions, or reveal a user's actual neural state.
-          </div>
-        </div>
-      </div>
-
-      <div class="atlas-card panel" style="margin-top:10px">
-        <h3>NEURAL SYSTEMS // WHAT THE MAP IS TEACHING</h3>
-        <div class="state-grid">
-          <div class="state"><b>EXECUTIVE CONTROL</b><small>Prefrontal networks contribute to working memory, inhibition and directing attention.</small></div>
-          <div class="state"><b>MEMORY</b><small>Hippocampal circuitry is strongly associated with learning, memory and spatial representations.</small></div>
-          <div class="state"><b>SENSORY RELAY</b><small>The thalamus is a major relay hub and also participates in broader cognitive networks.</small></div>
-          <div class="state"><b>THREAT / SALIENCE</b><small>Amygdala circuits participate in fear learning and threat-related processing.</small></div>
-          <div class="state"><b>ACTION / VALUE</b><small>Striatal and fronto-limbic circuits contribute to action selection and value-guided behavior.</small></div>
-          <div class="state"><b>COORDINATION</b><small>Cerebellar circuits contribute to movement and also interact with broader cognitive systems.</small></div>
-        </div>
-      </div>
-
-      <div class="signal-console" style="margin-top:10px">
-        <div class="signal-box panel">
-          <div class="meta"><span>GAME TELEMETRY</span><span class="val" id="telemetry-score">—</span></div>
-          <div class="big" id="neuro-score">00</div>
-          <div class="meter"><div id="neuro-meter"></div></div>
-          <p class="neuro-sub" style="margin-top:8px">A fictional integration score derived from your INNER LAB activity. It is deliberately not a brain measurement.</p>
-        </div>
-        <div class="signal-box panel">
-          <div class="meta"><span>ACTIVE QUESTION</span><span class="val">01</span></div>
-          <div id="neuro-question" class="neuro-sub">Which system would you expect to be especially relevant when a task requires holding information briefly while using it?</div>
-          <div class="neuro-quiz" id="neuro-quiz"></div>
-        </div>
-      </div>
-
-      <div class="atlas-card panel" style="margin-top:10px">
-        <h3>CONNECTION MATRIX</h3>
-        <table class="matrix-table">
-          <thead><tr><th>System</th><th>Core concept</th><th>Game representation</th></tr></thead>
-          <tbody>
-            <tr><td>Prefrontal ↔ hippocampal</td><td>Control + memory interaction</td><td>Prediction / archive</td></tr>
-            <tr><td>Attention networks</td><td>Selective allocation of processing</td><td>Attention Trial</td></tr>
-            <tr><td>Amygdala ↔ cortical systems</td><td>Threat learning / regulation</td><td>Threat cards</td></tr>
-            <tr><td>Striatum ↔ frontal circuits</td><td>Action and value learning</td><td>Reward / relic loop</td></tr>
-            <tr><td>Thalamocortical circuits</td><td>Information routing</td><td>Signal routing map</td></tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </section>
 
@@ -410,6 +341,16 @@
     <div class="inner" style="max-width:640px">
       <div class="meta"><span id="sl">Sit</span><span class="val" id="ll">—</span></div>
       <div class="track"><div class="fill l" id="lf"></div></div>
+      <div class="panel choicebox" style="margin-top:8px">
+        <div class="meterrow"><span>Rapport</span><div class="track"><div class="fill s" id="rapport-fill"></div></div><span class="rapport" id="rapport-num">50</span></div>
+        <div class="meterrow"><span>Resistance</span><div class="track"><div class="fill t" id="resist-fill"></div></div><span class="resist" id="resist-num">50</span></div>
+        <div class="meterrow"><span>Insight</span><div class="track"><div class="fill l" id="insight-fill"></div></div><span class="insight" id="insight-num">0</span></div>
+      </div>
+      <div class="session-tools">
+        <button class="mini panel" data-sit-action="ask">Ask</button>
+        <button class="mini panel" data-sit-action="reflect">Reflect</button>
+        <button class="mini panel" data-sit-action="challenge">Challenge</button>
+      </div>
       <div class="incoming" id="in"></div>
       <div class="jack" id="hand"></div>
       <div class="panel log" id="log"></div>
@@ -433,12 +374,19 @@ const ITEMS = {
   iron:  { name:"Iron Nail", glyph:"✚", desc:"Spent Defense. Holds a door that wanted to open.", stat:"DEF RELIC" },
   spark: { name:"Spark Coin", glyph:"⚡", desc:"Spent Action. One decided motion.", stat:"ACT RELIC" },
   veil:  { name:"Veil Thread", glyph:"◈", desc:"Advanced-problem drop. Thin as a lie.", stat:"ADV RELIC" },
-  seed:  { name:"Lore Seed", glyph:"❀", desc:"Biorhythm mapped. A day counted twice.", stat:"BIO RELIC" }
+  seed:  { name:"Lore Seed", glyph:"❀", desc:"Biorhythm mapped. A day counted twice.", stat:"BIO RELIC" },
+  mirror:{ name:"Mirror Shard", glyph:"◇", desc:"Recovered from a memory-room. Holds one reflected contradiction.", stat:"MEMORY RELIC" },
+  thread:{ name:"Red Thread", glyph:"⌁", desc:"A link between two case facts that should not have met.", stat:"CASE RELIC" },
+  sigil: { name:"Circuit Sigil", glyph:"⌘", desc:"Earned by completing a research objective.", stat:"RESEARCH RELIC" },
+  key:   { name:"Archive Key", glyph:"⚿", desc:"Opens sealed case notes and deeper room events.", stat:"ARCHIVE RELIC" }
 };
 
 const RECIPES = [
   { id:"hearth", name:"Hearth Lock", need:["ash","iron","spark"], ok:"System armed. Sit now draws advanced problems.", miss:"Need Ash + Nail + Spark." },
-  { id:"veilgate", name:"Veil Gate", need:["veil","seed"], ok:"Corridor mapped. Trauma bleeds slower.", miss:"Need Veil Thread + Lore Seed." }
+  { id:"veilgate", name:"Veil Gate", need:["veil","seed"], ok:"Corridor mapped. Trauma bleeds slower.", miss:"Need Veil Thread + Lore Seed." },
+  { id:"archive", name:"Archive Lens", need:["mirror","thread"], ok:"Archive Lens forged. Psyche reveals deeper histories.", miss:"Need Mirror Shard + Red Thread." },
+  { id:"echo", name:"Echo Stabilizer", need:["ash","mirror","seed"], ok:"Echo Stabilizer online. Successful reflection restores more stabilizers.", miss:"Need Ash + Mirror + Lore Seed." },
+  { id:"oracle", name:"Oracle Relay", need:["sigil","key","veil"], ok:"Oracle Relay active. Floor discoveries reveal linked Sit clues.", miss:"Need Circuit Sigil + Archive Key + Veil Thread." }
 ];
 
 const TREAT = [
@@ -453,7 +401,15 @@ const TREAT = [
   { id:"defense", role:"defense", name:"Contain",
     text:"Hold intensity. Peel LIVE if ego/anal/defense. Expires into Iron Nail.",
     lore:"A room around the flood. Not a cure — a wall.",
-    match:["ego","anal","defense","superego"], heal:8 }
+    match:["ego","anal","defense","superego"], heal:8 },
+  { id:"reflect", role:"action", name:"Reflect",
+    text:"Unlocked through campaign insight. Best against persona/anima/defense.",
+    lore:"Repeat the shape without claiming to own its meaning.",
+    match:["persona","anima","defense"], heal:11, unlock:"reflect" },
+  { id:"reframe", role:"defense", name:"Reframe",
+    text:"Unlocked through research. Best against superego/shadow.",
+    lore:"Move the frame; keep the evidence.",
+    match:["superego","shadow"], heal:10, unlock:"reframe" }
 ];
 
 const DECK = [
@@ -481,6 +437,45 @@ const Q = [
   { t:"Shadow looks like…", a:[["stillness", "P"],["the room’s mood", "L"],["a cold equation", "S"],["a public score", "R"]] }
 ];
 
+
+const BRAIN_NODES = [
+  {id:"pfc",name:"Prefrontal systems",text:"Game lesson: planning, working with goals, inhibition, and flexible rule use rely on distributed frontal networks."},
+  {id:"hip",name:"Hippocampal systems",text:"Game lesson: forming and retrieving episodic/contextual memories depends on hippocampal interactions with wider cortical networks."},
+  {id:"amg",name:"Amygdala-related systems",text:"Game lesson: salience and threat learning involve amygdala-centered circuits interacting with cortex and body-state systems."},
+  {id:"str",name:"Striatal systems",text:"Game lesson: action selection, reinforcement, habit, and value learning recruit cortico-striatal loops."},
+  {id:"par",name:"Parietal attention",text:"Game lesson: attention and spatial selection emerge from frontoparietal coordination, not a single switch."},
+  {id:"tmp",name:"Temporal systems",text:"Game lesson: semantic, auditory, social, and recognition processes recruit multiple temporal networks."},
+  {id:"occ",name:"Occipital visual systems",text:"Game lesson: visual processing begins in occipital cortex and rapidly interacts with distributed recognition and attention systems."},
+  {id:"cbl",name:"Cerebellar systems",text:"Game lesson: timing, prediction, coordination, and learning involve cerebellar loops beyond simple movement control."}
+];
+
+const RESEARCH = [
+  {id:"reflect",name:"Reflective Interviewing",cost:8,desc:"Unlocks Reflect treatment and improves rapport gains."},
+  {id:"reframe",name:"Cognitive Reframing",cost:12,desc:"Unlocks Reframe treatment and reduces resistance on successful matches."},
+  {id:"fieldnotes",name:"Field Notes",cost:10,desc:"Room searches are more likely to recover case-linked fragments."},
+  {id:"triage",name:"Ward Triage",cost:15,desc:"Passive ward life loss is reduced."},
+  {id:"deepmap",name:"Deep Mapping",cost:18,desc:"Psyche dossiers expose more history and cross-links."}
+];
+
+const ROOM_THEMES = [
+  {id:"memory",label:"MEMORY VAULT",tags:["defense","shadow"],frag:"A sensory fragment returns without a timestamp."},
+  {id:"persona",label:"MASK CHAMBER",tags:["persona","superego"],frag:"A practiced identity answers before the person does."},
+  {id:"threat",label:"ALARM CELL",tags:["shadow","id"],frag:"The room reacts before the story catches up."},
+  {id:"choice",label:"DECISION WELL",tags:["ego","superego"],frag:"Two rules compete for one action."},
+  {id:"attachment",label:"ECHO HALL",tags:["oral","anima"],frag:"A missing voice becomes architecture."}
+];
+
+const CASE_ARCS = {
+ elara:["A metallic scent appears before every omen.","A locked-door memory repeats with no visual detail.","The present becomes easier to tolerate when sensation is named."],
+ kael:["Performance metrics hide a private grief.","An old promise conflicts with the Blade persona.","A room on the Floor contains a tally that was never his."],
+ nyx:["Social harmony is maintained at personal cost.","A private thought is treated as dangerous to the group.","The Frequency persona fractures when silence is allowed."],
+ ion:["Archive gaps cluster around one childhood house.","Repression protects continuity but erases context.","A recovered object links two blank pages."],
+ riven:["Reasoning becomes armor against interpersonal weather.","A contradiction survives every explanation.","The Circuit persona softens when another person's affect is reflected."],
+ mira:["External evaluation is internalized as moral verdict.","The Chapel persona hides anger at being measured.","A recovered scorecard loses authority when its source is named."],
+ jax:["Immediate action outruns prediction.","Omens grow when stillness is forced.","Grounding in present sensory detail reduces narrative escalation."],
+ sable:["Possibility multiplies until one body-memory freezes it.","Displacement hides the original target.","One persistent memory becomes useful when placed in context."]
+};
+
 function roster(){
   return [
     { id:"elara", name:"ELARA VOSS", unit:"07-A3", type:"Ni", persona:"Quiet Oracle", anima:"Judge-coat",
@@ -507,21 +502,42 @@ function roster(){
     { id:"sable", name:"SABLE WREN", unit:"05-N6", type:"Ne", persona:"Fork", anima:"One memory",
       shadow:"Si scar", shadowText:"Will not metaphorize.", freud:{id:50,ego:46,superego:40,stage:"Anal",defense:"Displacement"},
       life:83, colors:["#0e2430","#5ad0c0"] }
-  ].map(p=>Object.assign(p,{sealed:false,archived:false,alert:false}));
+  ].map((p,i)=>Object.assign(p,{
+  sealed:false,archived:false,alert:false,
+  rapport:45+(i%4)*6,
+  resistance:58-(i%3)*5,
+  insight:0,
+  sessions:0,
+  stage:0,
+  discoveries:[],
+  notes:[],
+  arc:CASE_ARCS[p.id]||[],
+  flags:{}
+}));
 }
 
 const S = {
   screen:"boot", P:roster(), sel:null, field:false, advanced:false, hearth:false, veil:false,
   trauma:0, stab:100, incoming:[], tick:null, ward:null, mx:null,
   inv: Array(20).fill(null), pick:-1, qi:0, qs:{P:0,L:0,S:0,R:0}, mapped:false,
-  floor:null, seed:1, at:null
+  floor:null, seed:1, at:null,
+  xp:0, rank:1, insightBank:0, shift:1, roomsSearched:0, casesAdvanced:0,
+  unlocks:{reflect:false,reframe:false,fieldnotes:false,triage:false,deepmap:false},
+  archiveLens:false, echoStabilizer:false, oracleRelay:false
 };
 
 const $ = id => document.getElementById(id);
 function toast(m){ const e=$("toast"); e.textContent=m; e.classList.add("show"); setTimeout(()=>e.classList.remove("show"),1400); }
 function hud(){
   $("tf").style.width=S.trauma+"%"; $("tr").textContent=String(S.trauma).padStart(2,"0")+"%";
-  $("sf").style.width=S.stab+"%"; $("sr").textContent=S.stab+"%";
+  $("sf").style.width=S.stab+"%"; $("sr").textContent=Math.round(S.stab)+"%";
+  const thresholds=[0,40,100,180,280,400];
+  S.rank=Math.min(5,thresholds.filter(x=>S.xp>=x).length);
+  const rankNames=["","Observer","Interviewer","Mapper","Archivist","Warden"];
+  $("rank-name").textContent=`Rank ${["","I","II","III","IV","V"][S.rank]} · ${rankNames[S.rank]}`;
+  $("xp-num").textContent=S.xp+" XP";
+  const lo=thresholds[S.rank-1]||0, hi=thresholds[S.rank]||Math.max(lo+100,S.xp+100);
+  $("xp-fill").style.width=Math.min(100,Math.round((S.xp-lo)/(hi-lo)*100))+"%";
 }
 
 function go(name){
@@ -538,6 +554,32 @@ function go(name){
 }
 
 function liveList(){ return S.P.filter(p=>!p.sealed && !p.archived && p.life>0); }
+
+function gainXP(n,why){
+  S.xp+=n;
+  if(why) toast("+"+n+" XP · "+why);
+  hud();
+}
+function gainInsight(p,n,why){
+  if(p){ p.insight=Math.min(100,p.insight+n); }
+  S.insightBank+=n;
+  if(why) log(`<span class="insight">Insight +${n}</span> · ${why}`);
+  hud();
+}
+function clamp(v,a=0,b=100){ return Math.max(a,Math.min(b,v)); }
+function currentArc(p){
+  if(!p||!p.arc.length) return "No linked case arc.";
+  return p.arc[Math.min(p.stage,p.arc.length-1)];
+}
+function advanceCase(p,why){
+  if(!p) return;
+  const before=p.stage;
+  p.stage=Math.min(p.arc.length-1,p.stage+1);
+  if(p.stage>before){ S.casesAdvanced++; gainXP(12,"case advanced"); }
+  p.notes.unshift((why||"Case advanced")+" · "+currentArc(p));
+  p.notes=p.notes.slice(0,6);
+}
+
 
 function feed(){
   const live=liveList();
@@ -564,7 +606,7 @@ function paintInv(){
     S.pick=+b.dataset.i; paintInv();
     const it=ITEMS[S.inv[S.pick]];
     $("inv-side").innerHTML=it
-      ? `<h3>${it.name}</h3><p>${it.desc}</p><div class="st">${it.stat}</div>`
+      ? `<h3>${it.name}</h3><p>${it.desc}</p><div class="st">${it.stat}</div><div class="st">Campaign relic · may unlock Sanctum recipes</div>`
       : `<h3>Empty</h3><p>Expire a Sit card to fill this square.</p>`;
   });
 }
@@ -572,6 +614,10 @@ function paintInv(){
 function hasAll(keys){ return keys.every(k=>S.inv.includes(k)); }
 
 function paintSanctum(){
+  $("sanctum-status").innerHTML=[
+    ["Hearth",S.hearth],["Veil",S.veil],["Archive Lens",S.archiveLens],
+    ["Echo Stabilizer",S.echoStabilizer],["Oracle Relay",S.oracleRelay]
+  ].map(x=>`<span class="tagx">${x[0]} · ${x[1]?"ON":"OFF"}</span>`).join("");
   $("recipes").innerHTML=RECIPES.map(r=>{
     const ready=hasAll(r.need);
     return `<div class="panel rec ${ready?"on":""}">
@@ -586,6 +632,10 @@ function paintSanctum(){
     r.need.forEach(k=>{ const i=S.inv.indexOf(k); if(i>=0) S.inv[i]=null; });
     if(r.id==="hearth"){ S.hearth=true; S.advanced=true; }
     if(r.id==="veilgate"){ S.veil=true; }
+    if(r.id==="archive"){ S.archiveLens=true; }
+    if(r.id==="echo"){ S.echoStabilizer=true; }
+    if(r.id==="oracle"){ S.oracleRelay=true; }
+    gainXP(10,"sanctum forge");
     toast(r.ok); paintSanctum(); paintWard();
   });
 }
@@ -598,7 +648,61 @@ function paintWard(){
   paintInv();
   $("typelist").innerHTML=JUNG.map(j=>`<div class="panel tp"><b>${j.id}</b> ${j.name}<br><span class="val">${j.shadow}</span></div>`).join("");
   $("alltypes").innerHTML=JUNG.map(j=>`<div class="panel tp"><b>${j.id}</b> ${j.name}</div>`).join("");
-  paintRadar(); paintQuiz();
+  paintRadar(); paintQuiz(); paintCases(); paintResearch(); paintBrainMap();
+}
+
+
+function paintCases(){
+  if(!$("caseboard")) return;
+  $("campaign").innerHTML=`
+    <span class="pip panel">SHIFT <b>${S.shift}</b></span>
+    <span class="pip panel">INSIGHT <b>${S.insightBank}</b></span>
+    <span class="pip panel">ROOMS <b>${S.roomsSearched}</b></span>
+    <span class="pip panel">ARCS <b>${S.casesAdvanced}</b></span>`;
+  $("caseboard").innerHTML=S.P.map(p=>{
+    const prog=p.arc.length?Math.round((p.stage+1)/p.arc.length*100):0;
+    return `<button class="panel casecard" data-case="${p.id}" ${p.sealed?"disabled":""}>
+      <strong>${p.name} · ${p.unit}</strong>
+      <p>${p.sealed?"SEALED":currentArc(p)}</p>
+      <div class="tagrow"><span class="tagx">${p.type}</span><span class="tagx">${p.freud.defense}</span><span class="tagx">Sit ${p.sessions}</span></div>
+      <div class="progressbar"><span style="width:${prog}%"></span></div>
+      <p class="smallcaps" style="margin-top:5px">Rapport ${Math.round(p.rapport)} · Resistance ${Math.round(p.resistance)} · Insight ${Math.round(p.insight)}</p>
+    </button>`;
+  }).join("");
+  $("caseboard").querySelectorAll("[data-case]").forEach(b=>b.onclick=()=>{
+    const p=S.P.find(x=>x.id===b.dataset.case);
+    if(!p||p.sealed)return;
+    S.sel=p; go("dossier");
+  });
+}
+
+function paintResearch(){
+  if(!$("research-tree")) return;
+  $("research-tree").innerHTML=RESEARCH.map(r=>{
+    const on=S.unlocks[r.id], ready=S.insightBank>=r.cost;
+    return `<div class="panel research-card ${on?"":"objective"} ${on?"done":""}">
+      <strong>${r.name}</strong><p>${r.desc}</p>
+      <div class="tagrow"><span class="tagx">Cost ${r.cost} Insight</span><span class="tagx">${on?"UNLOCKED":ready?"READY":"LOCKED"}</span></div>
+      <button class="mini panel" data-res="${r.id}" ${on||!ready?"disabled":""}>${on?"Installed":"Research"}</button>
+    </div>`;
+  }).join("");
+  $("research-tree").querySelectorAll("[data-res]").forEach(b=>b.onclick=()=>{
+    const r=RESEARCH.find(x=>x.id===b.dataset.res);
+    if(!r||S.unlocks[r.id]||S.insightBank<r.cost)return;
+    S.insightBank-=r.cost; S.unlocks[r.id]=true;
+    addItem("sigil"); gainXP(14,"research");
+    paintResearch(); paintCases(); hud();
+  });
+}
+
+function paintBrainMap(){
+  if(!$("brain-map")) return;
+  $("brain-map").innerHTML=BRAIN_NODES.map(n=>`<button class="brain-node" data-brain="${n.id}"><b>${n.name}</b><span>${n.text.split(".")[0]}.</span></button>`).join("");
+  $("brain-map").querySelectorAll("[data-brain]").forEach(b=>b.onclick=()=>{
+    const n=BRAIN_NODES.find(x=>x.id===b.dataset.brain);
+    $("brain-map").querySelectorAll(".brain-node").forEach(x=>x.classList.toggle("on",x===b));
+    $("brain-note").textContent=n.text+" This mapping is educational and network-based, not a diagnosis or scan.";
+  });
 }
 
 function paintRadar(){
@@ -666,18 +770,47 @@ function startMx(c){
 function paintPsyche(){
   if(!S.sel || S.sel.sealed){ if(!feed()) return; }
   const p=S.sel, j=JUNG.find(x=>x.id===p.type);
-  const L={ type:j.name+" · "+p.persona, shadow:p.shadow+" — "+p.shadowText, id:"Id "+p.freud.id, ego:"Ego "+p.freud.ego, anima:p.anima };
+  const L={
+    type:j.name+" · "+p.persona,
+    shadow:p.shadow+" — "+p.shadowText,
+    id:"Id "+p.freud.id+" · drive pressure",
+    ego:"Ego "+p.freud.ego+" · mediation",
+    anima:p.anima,
+    defense:p.freud.defense+" · fictional psychodynamic defense tag",
+    case:currentArc(p)
+  };
+  const notes=p.notes.length?p.notes.map(x=>`<div class="storyline">${x}</div>`).join(""):`<div class="storyline">No clinician notes yet.</div>`;
+  const discoveries=p.discoveries.length?p.discoveries.map(x=>`<div class="archive-item">${x}</div>`).join(""):`<div class="archive-item">No Floor fragments recovered.</div>`;
+  const arcVisible=(S.archiveLens||S.unlocks.deepmap)?p.arc:p.arc.slice(0,Math.min(p.stage+1,1));
   $("psy").innerHTML=`<div class="mxbox"><canvas id="matrix"></canvas>
-    <div class="decrypt"><div class="line">${p.name} ${p.unit}</div><div class="line" id="mxo">_</div>
-    <div class="chips">${Object.keys(L).map(k=>`<button class="chip" data-k="${k}">${k}</button>`).join("")}
-    <button class="chip" id="sit2">Sit</button></div></div></div>`;
+    <div class="decrypt">
+      <div class="line">${p.name} ${p.unit} · ${p.type}</div>
+      <div class="line" id="mxo">Select a lens below.</div>
+      <div class="dossier-grid">
+        <div class="panel psy-panel" style="padding:10px"><h3>Case State</h3>
+          <div class="psy-list">Persona · ${p.persona}<br>Shadow · ${p.shadow}<br>Defense · ${p.freud.defense}<br>Stage tag · ${p.freud.stage}</div>
+          <div class="meterrow"><span>Rapport</span><div class="track"><div class="fill s" style="width:${p.rapport}%"></div></div><span>${Math.round(p.rapport)}</span></div>
+          <div class="meterrow"><span>Resistance</span><div class="track"><div class="fill t" style="width:${p.resistance}%"></div></div><span>${Math.round(p.resistance)}</span></div>
+          <div class="meterrow"><span>Insight</span><div class="track"><div class="fill l" style="width:${p.insight}%"></div></div><span>${Math.round(p.insight)}</span></div>
+        </div>
+        <div class="panel psy-panel" style="padding:10px"><h3>Case Arc</h3>
+          <div class="psy-list">${arcVisible.map((x,i)=>`<div class="storyline"><b>${i<=p.stage?"KNOWN":"LOCKED"}</b> · ${i<=p.stage?x:"████████"}</div>`).join("")}</div>
+        </div>
+        <div class="panel psy-panel" style="padding:10px"><h3>Recovered Fragments</h3><div class="archive-list">${discoveries}</div></div>
+        <div class="panel psy-panel" style="padding:10px"><h3>Clinician Notes</h3><div class="psy-list">${notes}</div></div>
+      </div>
+      <div class="chips">${Object.keys(L).map(k=>`<button class="chip" data-k="${k}">${k}</button>`).join("")}
+      <button class="chip" id="sit2">Sit</button><button class="chip" id="floor2">Floor</button></div>
+    </div></div>`;
   startMx($("matrix"));
   $("psy").querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>$("mxo").textContent=L[b.dataset.k]);
   $("sit2").onclick=()=>go("session");
+  $("floor2").onclick=()=>go("dungeon");
 }
 
 function dealHand(){
-  $("hand").innerHTML=TREAT.map(t=>`<button class="panel card treat ${t.role}" data-id="${t.id}">
+  const hand=TREAT.filter(t=>!t.unlock||S.unlocks[t.unlock]);
+  $("hand").innerHTML=hand.map(t=>`<button class="panel card treat ${t.role}" data-id="${t.id}">
     <div class="k">${t.role}</div><strong>${t.name}</strong>
     <div class="b">${t.text}<br><br>${t.lore}</div></button>`).join("");
   $("hand").querySelectorAll(".treat").forEach(b=>b.onclick=()=>play(b.dataset.id));
@@ -689,9 +822,14 @@ function paintIn(){
 }
 function paintLife(){
   if(!S.sel) return;
-  $("sl").textContent=S.sel.name+(S.advanced?" · ADV":"");
+  $("sl").textContent=S.sel.name+(S.advanced?" · ADV":"")+" · SIT "+S.sel.sessions;
   $("ll").textContent=Math.round(S.sel.life)+"%";
   $("lf").style.width=S.sel.life+"%";
+  if($("rapport-fill")){
+    $("rapport-fill").style.width=S.sel.rapport+"%"; $("rapport-num").textContent=Math.round(S.sel.rapport);
+    $("resist-fill").style.width=S.sel.resistance+"%"; $("resist-num").textContent=Math.round(S.sel.resistance);
+    $("insight-fill").style.width=S.sel.insight+"%"; $("insight-num").textContent=Math.round(S.sel.insight);
+  }
 }
 function log(h){ $("log").innerHTML=`<div>${h}</div>`+$("log").innerHTML; }
 
@@ -717,7 +855,9 @@ function play(id){
   if(t.always){
     p.life=Math.min(100,p.life+t.heal);
     S.trauma=Math.max(0,S.trauma-6);
-    addItem(drop); log(`<span class="good">${t.role}</span> expires · ${ITEMS[drop].name}`);
+    addItem(drop);
+    p.rapport=clamp(p.rapport+2); p.resistance=clamp(p.resistance-1);
+    log(`<span class="good">${t.role}</span> expires · ${ITEMS[drop].name}`);
     hud(); paintLife(); return;
   }
   const hit=live && t.match.some(m=>live.tags.includes(m));
@@ -728,15 +868,59 @@ function play(id){
     p.life=Math.min(100,p.life+t.heal);
     addItem(drop);
     if(S.advanced && Math.random()<.35) addItem("veil");
+    p.rapport=clamp(p.rapport+(t.id==="reflect"?6:3));
+    p.resistance=clamp(p.resistance-(t.id==="reframe"?6:3));
+    gainInsight(p, t.id==="reflect"||t.id==="reframe"?3:2, t.name+" matched live material");
+    gainXP(3,"effective Sit");
     log(`<span class="good">${t.role} ×${amp}</span>`);
   } else {
     S.trauma=Math.min(100,S.trauma+8);
     p.life=Math.max(0,p.life-7);
     addItem(drop);
-    log(`<span class="bad">${t.role} miss</span> · relic still drops`);
+    p.resistance=clamp(p.resistance+5); p.rapport=clamp(p.rapport-3);
+    log(`<span class="bad">${t.role} miss</span> · resistance rises · relic still drops`);
   }
   hud(); paintIn(); paintLife();
   if(p.life<=0) seal(p);
+}
+
+
+function sitAction(kind){
+  const p=S.sel; if(!p||p.sealed)return;
+  const live=S.incoming[0];
+  const tags=live?.tags||[];
+  if(kind==="ask"){
+    const useful=!!live;
+    p.rapport=clamp(p.rapport+(useful?3:1));
+    p.resistance=clamp(p.resistance-(useful?2:0));
+    if(useful) gainInsight(p,1,"question opened context");
+    log(`<span class="good">ASK</span> · context before interpretation`);
+  }
+  if(kind==="reflect"){
+    const useful=tags.some(t=>["persona","anima","shadow","defense","oral"].includes(t));
+    p.rapport=clamp(p.rapport+(useful?7:2));
+    p.resistance=clamp(p.resistance-(useful?4:0));
+    if(useful){
+      gainInsight(p,2,S.echoStabilizer?"reflection + echo stabilizer":"reflection matched");
+      if(S.echoStabilizer) S.stab=clamp(S.stab+6);
+    }
+    log(`<span class="${useful?"good":"bad"}">REFLECT</span> · ${useful?"the material lands":"timing is weak"}`);
+  }
+  if(kind==="challenge"){
+    const useful=tags.some(t=>["ego","superego","defense"].includes(t)) && p.rapport>=55;
+    if(useful){
+      p.resistance=clamp(p.resistance-8); gainInsight(p,3,"challenge tolerated");
+      S.trauma=clamp(S.trauma-5); log(`<span class="good">CHALLENGE</span> · contradiction held`);
+    } else {
+      p.resistance=clamp(p.resistance+9); p.rapport=clamp(p.rapport-5); S.trauma=clamp(S.trauma+5);
+      log(`<span class="bad">CHALLENGE</span> · premature confrontation`);
+    }
+  }
+  if(p.insight>=20 && p.stage<Math.max(0,p.arc.length-1)){
+    p.insight-=12; advanceCase(p,"Sit threshold reached");
+    if(Math.random()<.45) addItem("thread");
+  }
+  hud(); paintLife(); paintCases();
 }
 
 function seal(p){
@@ -751,7 +935,9 @@ function paintSession(){
   if(!S.sel||S.sel.sealed||S.sel.life<=0){ if(!feed()) return; }
   if(S.tick) clearInterval(S.tick);
   S.incoming=[]; $("log").innerHTML="";
+  S.sel.sessions++;
   dealHand(); paintIn(); paintLife();
+  log(`<span class="good">Sit opened</span> · rapport ${Math.round(S.sel.rapport)} · resistance ${Math.round(S.sel.resistance)}`);
   S.tick=setInterval(()=>{
     if(S.screen!=="session"||!S.sel||S.sel.sealed) return;
     S.sel.life=Math.max(0,S.sel.life-(S.veil?0.2:0.4));
@@ -769,7 +955,7 @@ function pulse(){
     S.P.forEach(p=>{
       if(p.archived||p.sealed) return;
       if(S.sel&&S.sel.id===p.id&&S.screen==="session") return;
-      p.life=Math.max(0,p.life-0.2);
+      p.life=Math.max(0,p.life-(S.unlocks.triage?0.08:0.2));
       if(p.life<=0) p.sealed=true;
     });
     hud(); if(S.screen==="ward") paintWard();
@@ -792,7 +978,7 @@ function carveFloor(seed){
       const rh=4+Math.floor(R()*Math.max(1,h-6));
       const rx=x+1+Math.floor(R()*Math.max(1,w-rw-2));
       const ry=y+1+Math.floor(R()*Math.max(1,h-rh-2));
-      rooms.push({x:rx,y:ry,w:rw,h:rh,cx:rx+(rw>>1),cy:ry+(rh>>1),who:null,kind:"cell"});
+      rooms.push({x:rx,y:ry,w:rw,h:rh,cx:rx+(rw>>1),cy:ry+(rh>>1),who:null,kind:"cell",theme:null,searched:false,fragment:null});
       return;
     }
     if(w>=h){
@@ -823,11 +1009,12 @@ function carveFloor(seed){
     const b=rooms[Math.floor(R()*rooms.length)];
     if(a!==b) hall(a,b);
   }
-  rooms[0].kind="foyer"; rooms[0].who=null;
+  rooms[0].kind="foyer"; rooms[0].who=null; rooms[0].theme={id:"foyer",label:"FOYER",tags:[],frag:"The ward map waits."};
   const live=S.P.slice();
   for(let i=1;i<rooms.length;i++){
     rooms[i].who=live[(i-1)%live.length]||null;
     rooms[i].kind=rooms[i].who?"cell":"empty";
+    rooms[i].theme=ROOM_THEMES[(i-1)%ROOM_THEMES.length];
   }
   S.floor={W,H,grid,rooms};
   S.at=rooms[0];
@@ -854,7 +1041,7 @@ function paintDungeon(){
     ctx.strokeRect(rm.x*tw+0.5, rm.y*th+0.5, rm.w*tw-1, rm.h*th-1);
     ctx.fillStyle=dead?"#ff8a96":"#d7e8ff";
     ctx.font=Math.max(7,th*1.1)+"px monospace";
-    const lab=rm.kind==="foyer"?"FOYER":(p?(dead?"X":p.type):"");
+    const lab=rm.kind==="foyer"?"FOYER":(p?(dead?"X":p.type+" "+(rm.searched?"✓":"?")):(rm.searched?"✓":"?"));
     ctx.fillText(lab, rm.x*tw+3, rm.y*th+th*1.6);
   });
   if(S.at){
@@ -868,6 +1055,57 @@ function paintDungeon(){
       ? (p.sealed? p.name+" · SEALED. No return."
         : p.name+" · "+p.unit+" · "+p.type+" · "+p.persona+" · life "+Math.round(p.life)+"%")
       : "Empty cell.";
+  if(S.at && S.at.theme && S.at.kind!=="foyer"){
+    $("dinfo").textContent += " · "+S.at.theme.label+" · "+S.at.theme.frag;
+  }
+  $("room-discovery").innerHTML=S.at?.fragment
+    ? `<b>RECOVERED</b> · ${S.at.fragment}`
+    : S.at?.searched
+      ? `<b>SEARCHED</b> · no further fragment in this room`
+      : `<b>UNSEARCHED</b> · search may reveal a clue, relic, or case link`;
+}
+
+
+function searchRoom(){
+  const rm=S.at;
+  if(!rm||rm.kind==="foyer"){ toast("Nothing to search"); return; }
+  if(rm.searched){ toast("Already searched"); return; }
+  rm.searched=true; S.roomsSearched++;
+  const p=rm.who;
+  let chance=S.unlocks.fieldnotes?.82:.62;
+  const found=Math.random()<chance;
+  if(found){
+    const arc=p?currentArc(p):"an unassigned ward memory";
+    const fragments=[
+      rm.theme.frag,
+      `Case echo · ${arc}`,
+      `Recovered notation · ${rm.theme.label} / ${rm.theme.tags.join("+")}`,
+      `Object trace · ${p?p.persona:"unknown"} crossed this room before the map existed.`
+    ];
+    rm.fragment=fragments[Math.floor(Math.random()*fragments.length)];
+    if(p){
+      p.discoveries.unshift(rm.fragment); p.discoveries=p.discoveries.slice(0,8);
+      p.notes.unshift("Floor fragment · "+rm.fragment); p.notes=p.notes.slice(0,6);
+      p.insight=clamp(p.insight+3);
+      if(p.discoveries.length>=2 && p.stage<Math.max(0,p.arc.length-1)) advanceCase(p,"Floor evidence linked");
+    }
+    const relic=Math.random()<.45?"mirror":Math.random()<.5?"thread":"key";
+    addItem(relic); gainXP(5,"room discovery");
+    if(S.oracleRelay && p) gainInsight(p,2,"Oracle Relay linked Floor clue to Sit");
+  }else{
+    rm.fragment="Nothing stable recovered. The absence is logged.";
+    gainXP(1,"room searched");
+  }
+  paintDungeon(); paintCases();
+}
+
+function goRoomPsyche(){
+  if(S.at?.who&&!S.at.who.sealed){S.sel=S.at.who;go("dossier");}
+  else toast("No active case here");
+}
+function goRoomSit(){
+  if(S.at?.who&&!S.at.who.sealed){S.sel=S.at.who;go("session");}
+  else toast("No active case here");
 }
 
 $("dmap").onclick=e=>{
@@ -888,8 +1126,12 @@ $("dmap").onclick=e=>{
 $("dgen").onclick=()=>{ carveFloor(); paintDungeon(); toast("New floor"); };
 
 hud();
-$("enter").onclick=()=>{ pulse(); feed(); carveFloor(); go("dungeon"); };
-$("nshift").onclick=()=>{ S.P=roster(); S.sel=null; S.trauma=0; S.stab=100; feed(); go("session"); };
+paintBrainMap();
+$("enter").onclick=()=>{ pulse(); feed(); carveFloor(); gainXP(2,"ward entered"); go("dungeon"); };
+$("nshift").onclick=()=>{
+  S.P=roster(); S.sel=null; S.trauma=0; S.stab=100; S.shift++;
+  S.floor=null; feed(); carveFloor(); gainXP(20,"new shift"); go("session");
+};
 $("feed-sit").onclick=()=>{ S.sel=null; if(feed()) go("session"); };
 $("bio-form").onsubmit=e=>{ e.preventDefault(); if($("bdate").value) mapBio($("bdate").value); };
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
@@ -897,206 +1139,17 @@ document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
   document.querySelectorAll(".pane").forEach(x=>x.classList.remove("on"));
   t.classList.add("on"); $("pane-"+t.dataset.pane).classList.add("on");
 });
+
+$("search-room").onclick=searchRoom;
+$("open-psyche").onclick=goRoomPsyche;
+$("begin-sit-room").onclick=goRoomSit;
+document.querySelectorAll("[data-sit-action]").forEach(b=>b.onclick=()=>sitAction(b.dataset.sitAction));
+
 document.querySelectorAll(".dock .slot").forEach(b=>b.onclick=()=>{
   if(b.dataset.go==="session"){ feed(); go("session"); return; }
   if(b.dataset.go==="dossier"){ feed(); go("dossier"); return; }
   go(b.dataset.go);
 });
-
-/* =========================
-   NEURO ATLAS ENGINE
-   ========================= */
-const NEURO = {
-  pfc:{
-    name:"Prefrontal Cortex",
-    role:"Executive-control network hub",
-    fact:"Prefrontal regions contribute to working memory, response inhibition, planning and directing attention. Modern neuroscience treats these functions as network properties rather than a single 'command center'.",
-    confidence:"HIGH-LEVEL EDUCATIONAL SUMMARY",
-    routes:["attention","memory","decision","learning"]
-  },
-  hippocampus:{
-    name:"Hippocampus",
-    role:"Learning, memory and spatial representation",
-    fact:"The hippocampus is strongly associated with learning and memory and participates in spatial representations. Research also shows coordinated activity between hippocampal and prefrontal systems during learning and decision-making.",
-    confidence:"ESTABLISHED SYSTEMS-NEUROSCIENCE TOPIC",
-    routes:["memory","learning","decision"]
-  },
-  amygdala:{
-    name:"Amygdala",
-    role:"Threat learning and affective processing",
-    fact:"Amygdala circuits are involved in threat and fear learning. Their behavior is embedded in larger networks that include cortical and hippocampal systems.",
-    confidence:"ESTABLISHED CIRCUIT-LEVEL TOPIC",
-    routes:["threat","learning","decision"]
-  },
-  thalamus:{
-    name:"Thalamus",
-    role:"Information-routing hub",
-    fact:"The thalamus is classically described as a sensory relay, but NIMH research emphasizes its broader participation in cognition and its interactions with cortical and hippocampal systems.",
-    confidence:"ESTABLISHED, WITH ACTIVE RESEARCH",
-    routes:["attention","learning","decision"]
-  },
-  striatum:{
-    name:"Striatum",
-    role:"Action-selection and value circuitry",
-    fact:"Striatal circuits interact with frontal and limbic systems involved in habits, action selection and value-guided behavior. The game uses this as a metaphor for choosing actions and learning from outcomes.",
-    confidence:"ESTABLISHED CIRCUIT-LEVEL TOPIC",
-    routes:["decision","learning"]
-  },
-  temporal:{
-    name:"Temporal Cortex",
-    role:"Distributed perception and memory-related processing",
-    fact:"Temporal-lobe systems participate in perception, memory and association. Specific functions are distributed across multiple cortical areas rather than belonging to one simple 'memory center'.",
-    confidence:"BROAD EDUCATIONAL SUMMARY",
-    routes:["memory","learning"]
-  },
-  parietal:{
-    name:"Parietal Cortex",
-    role:"Attention and multisensory integration",
-    fact:"Parietal regions are part of distributed attention and sensory-integration networks. The game represents this as the routing layer for selecting what information receives priority.",
-    confidence:"BROAD EDUCATIONAL SUMMARY",
-    routes:["attention","learning"]
-  },
-  occipital:{
-    name:"Occipital Cortex",
-    role:"Visual processing",
-    fact:"Occipital cortex contains major visual-processing areas. In the game, it represents the early visual stream that feeds information into wider perceptual and attentional networks.",
-    confidence:"FOUNDATIONAL NEUROSCIENCE",
-    routes:["attention","learning"]
-  },
-  cerebellum:{
-    name:"Cerebellum",
-    role:"Coordination and prediction-related circuitry",
-    fact:"The cerebellum is essential for movement coordination and also participates in broader circuits with cognitive implications. The game's 'calibration' metaphor treats it as a coordination layer, not a literal cognitive calculator.",
-    confidence:"FOUNDATIONAL + ACTIVE RESEARCH",
-    routes:["learning","attention"]
-  },
-  brainstem:{
-    name:"Brainstem",
-    role:"Core arousal and autonomic infrastructure",
-    fact:"Brainstem systems support vital functions and contain ascending neuromodulatory pathways that influence arousal and cortical state. The game represents this as background system readiness.",
-    confidence:"FOUNDATIONAL NEUROSCIENCE",
-    routes:["attention","threat","learning"]
-  }
-};
-
-const TASKS = {
-  attention:{
-    label:"ATTENTION",
-    route:["Occipital","Parietal / attention","Thalamus","Prefrontal control"],
-    note:"Attention is distributed across interacting networks. A reaction-time game can illustrate allocation and response speed, but cannot isolate one brain region."
-  },
-  memory:{
-    label:"MEMORY",
-    route:["Sensory cortex","Temporal systems","Hippocampus","Prefrontal retrieval"],
-    note:"Encoding and retrieval involve distributed systems. The hippocampus is especially important for many forms of new learning and episodic/spatial memory."
-  },
-  decision:{
-    label:"DECISION",
-    route:["Sensory evidence","Hippocampus","Amygdala / value","Striatum","Prefrontal control"],
-    note:"Decision-making depends on interacting systems for evidence, memory, value, action selection and cognitive control."
-  },
-  threat:{
-    label:"THREAT",
-    route:["Sensory input","Amygdala","Hippocampus","Prefrontal regulation"],
-    note:"Threat processing is not simply an 'amygdala switch'; context, memory, cortical regulation and bodily systems all contribute."
-  },
-  learning:{
-    label:"LEARNING",
-    route:["Attention","Hippocampus","Prefrontal control","Action / feedback"],
-    note:"Learning changes future behavior through interactions among attention, memory, feedback and neural circuits."
-  }
-};
-
-let neuroSelected = null;
-
-function neuroScore(){
-  const base = Math.round(
-    ((S.stab + (100-S.trauma) + (S.mapped?70:0)) / 3)
-  );
-  return Math.max(0,Math.min(100,base));
-}
-
-function paintNeuroScore(){
-  const n=neuroScore();
-  $("neuro-score").textContent=String(n).padStart(2,"0");
-  $("neuro-meter").style.width=n+"%";
-  $("telemetry-score").textContent=S.advanced?"ADVANCED":"GAME STATE";
-}
-
-function selectNeuro(id){
-  const d=NEURO[id]; if(!d) return;
-  neuroSelected=id;
-  document.querySelectorAll(".brain-region").forEach(x=>x.classList.toggle("selected",x.dataset.region===id));
-  $("neuro-name").textContent=d.name;
-  $("neuro-role").textContent=d.role;
-  $("neuro-fact").textContent=d.fact;
-  $("neuro-confidence").textContent=d.confidence;
-  const task=d.routes[0]||"attention";
-  paintNeuroRoute(task);
-}
-
-function paintNeuroRoute(task){
-  const t=TASKS[task]; if(!t) return;
-  $("route-task").textContent=t.label;
-  $("neuro-route").innerHTML=t.route.map((x,i)=>
-    `<span>${x}</span>${i<t.route.length-1?"<i>→</i>":""}`).join("");
-  document.querySelectorAll(".brain-link").forEach(x=>x.classList.remove("hot"));
-  if(task==="memory"){["link-pfc-hip","link-hip-tha"].forEach(id=>$(id)?.classList.add("hot"))}
-  if(task==="decision"){["link-pfc-hip","link-hip-amg","link-tha-str"].forEach(id=>$(id)?.classList.add("hot"))}
-  if(task==="threat"){["link-hip-amg","link-pfc-hip"].forEach(id=>$(id)?.classList.add("hot"))}
-  if(task==="attention"){["link-pfc-tha","link-sens-tha"].forEach(id=>$(id)?.classList.add("hot"))}
-  if(task==="learning"){["link-pfc-hip","link-tha-str"].forEach(id=>$(id)?.classList.add("hot"))}
-  $("neuro-mode").textContent="MODE · "+t.label;
-  $("neuro-fact").textContent=t.note;
-}
-
-function buildNeuroQuiz(){
-  const qs=[
-    {q:"Which system is especially associated with forming many kinds of new memories?",a:["Hippocampus","Brainstem","Occipital cortex"],ok:0},
-    {q:"Which statement is most scientifically cautious?",a:["One region controls one behavior","Cognition emerges from interacting networks","The game can read brain activity"],ok:1},
-    {q:"What is the thalamus often taught as?",a:["A major information relay hub","The only memory center","A personality detector"],ok:0}
-  ];
-  const q=qs[Math.floor((S.qi+S.trauma+S.stab)%qs.length)];
-  $("neuro-question").textContent=q.q;
-  $("neuro-quiz").innerHTML=q.a.map((x,i)=>`<button class="mini panel" data-nq="${i}">${x}</button>`).join("");
-  $("neuro-quiz").querySelectorAll("[data-nq]").forEach(b=>b.onclick=()=>{
-    const good=+b.dataset.nq===q.ok;
-    toast(good?"Neural map correct":"Map mismatch · inspect the dossier");
-    if(good){S.stab=Math.min(100,S.stab+2);paintNeuroScore();hud();}
-  });
-}
-
-function paintNeuro(){
-  paintNeuroScore();
-  buildNeuroQuiz();
-  if(!neuroSelected) selectNeuro("pfc");
-}
-
-document.querySelectorAll(".brain-region").forEach(el=>{
-  el.addEventListener("click",()=>selectNeuro(el.dataset.region));
-});
-document.querySelectorAll("[data-task]").forEach(b=>{
-  b.addEventListener("click",()=>paintNeuroRoute(b.dataset.task));
-});
-$("neuro-reset").onclick=()=>{
-  neuroSelected=null;
-  document.querySelectorAll(".brain-region").forEach(x=>x.classList.remove("selected"));
-  document.querySelectorAll(".brain-link").forEach(x=>x.classList.remove("hot"));
-  $("neuro-name").textContent="Select a brain node";
-  $("neuro-role").textContent="Click a region to open its educational dossier.";
-  $("neuro-fact").textContent="This is a stylized teaching map, not a literal fMRI image. Real cognition depends on distributed circuits rather than one region acting alone.";
-  $("neuro-mode").textContent="MODE · NETWORK";
-  $("route-task").textContent="—";
-  $("neuro-route").innerHTML="<span>SELECT A TASK</span>";
-  paintNeuroScore();
-};
-
-const oldGo = go;
-go = function(name){
-  oldGo(name);
-  if(name==="neuro") paintNeuro();
-};
-
 </script>
 </body>
 </html>
