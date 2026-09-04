@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD · MATRIX WORLD DIRECTOR</title>
+  <title>THANATOS WARD · CH1 GUIDE + DEEP OPERATOR</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -294,6 +294,39 @@ html,body{background:#010403;color:var(--text)}
 .quest-card b{display:block;color:#eaffd5;margin-bottom:3px}
 @media(max-width:720px){.director-grid{grid-template-columns:1fr}.roster-map{grid-template-columns:1fr}}
 
+
+/* === FULL CLICKABILITY / MENU ROUTER === */
+.menu-route-note{margin-top:8px;padding:8px;border:1px solid #5ed77f44;background:#051009;font:8px/1.45 "Share Tech Mono";color:#91b69b}
+.menu-route-note b{color:#e3ffea}
+.clickable-hint{outline:1px solid transparent}
+.clickable-hint:focus{outline-color:#8cffaa}
+
+
+/* === CHAPTER 1 ONLY GUIDANCE === */
+.ch1-next{
+  position:relative !important;
+  outline:3px solid #ffe44f !important;
+  box-shadow:0 0 0 2px #2d2700,0 0 16px #ffe44f88 !important;
+  border-color:#ffe44f !important;
+}
+.ch1-next::after{
+  content:"NEXT";
+  position:absolute;top:-12px;right:4px;
+  padding:2px 5px;background:#ffe44f;color:#171300;
+  font:700 6px "Share Tech Mono";letter-spacing:.12em;pointer-events:none;
+}
+.ch1-guide{
+  display:none;margin:8px 0;padding:8px 10px;
+  border:2px solid #ffe44f;background:#171300;color:#fff2a2;
+  font:8px/1.4 "Share Tech Mono";
+}
+.ch1-guide.show{display:block}.ch1-guide b{color:#ffe44f;letter-spacing:.12em}
+.operator-status{padding:8px;margin-bottom:7px;border:1px solid #54d97944;background:#041008;font:8px/1.45 "Share Tech Mono";color:#9cc8a7}
+.operator-status b{color:#e5ffea}
+.card.treat .power{display:inline-block;margin-top:6px;padding:2px 5px;border:1px solid #ffffff22;font:7px "Share Tech Mono"}
+.card.trauma .resolve{margin-top:8px;height:7px;background:#1a1010;border:1px solid #ff667733}
+.card.trauma .resolve span{display:block;height:100%;background:linear-gradient(90deg,#ff765f,#ffd36a);transition:width .2s}
+
 </style>
 </head>
 <body>
@@ -325,8 +358,11 @@ html,body{background:#010403;color:var(--text)}
     </div>
   </section>
 
-  <section class="screen" id="screen-ward">
+  <div class="ch1-guide" id="ch1-guide"><b>CHAPTER 1 GUIDE</b> · <span id="ch1-guide-text">Follow the yellow control while learning the loop.</span></div>
+<section class="screen" id="screen-ward">
     <div class="inner">
+<div class="menu-route-note" id="route-note-ward"><b>WARD ROUTER</b> · Every visible control in this section is connected to a game destination or action.</div>
+
       <div class="bar">
         <span class="pip panel" id="onl">0 LIVE</span>
         <span class="pip panel" id="selc">0 SEALED</span>
@@ -384,6 +420,8 @@ html,body{background:#010403;color:var(--text)}
 
   <section class="screen" id="screen-dungeon">
     <div class="inner">
+<div class="menu-route-note" id="route-note-dungeon"><b>DUNGEON ROUTER</b> · Every visible control in this section is connected to a game destination or action.</div>
+
 <div class="panel campaign-strip">
   <div><div class="campaign-title" id="campaign-chapter">RECONSTRUCT // CHAPTER 01</div>
   <div class="campaign-sub" id="campaign-story">Eight human signals are repeating inside a simulation that claims they have never met.</div></div>
@@ -525,6 +563,8 @@ html,body{background:#010403;color:var(--text)}
   
 <section class="screen" id="screen-dossier">
  <div class="inner">
+<div class="menu-route-note" id="route-note-dossier"><b>DOSSIER ROUTER</b> · Every visible control in this section is connected to a game destination or action.</div>
+
   <div class="panel" style="padding:10px">
    <div class="matrix-scene"><b>PSYCHE // GHOST LAYER</b>The reconstructed simulation no longer hides the mind behind a single code wall. This console separates what the system can observe from what the operator is only hypothesizing.</div>
    <div class="matrix-tabs">
@@ -545,6 +585,8 @@ html,body{background:#010403;color:var(--text)}
   
 <section class="screen" id="screen-sanctum">
  <div class="inner">
+<div class="menu-route-note" id="route-note-sanctum"><b>SANCTUM ROUTER</b> · Every visible control in this section is connected to a game destination or action.</div>
+
   <div class="panel" style="padding:10px">
    <div class="matrix-scene"><b>SANCTUM // MACHINE CHAPEL</b>What used to look mystical is now revealed as a maintenance layer between the human signal and the reconstructed simulation. Forge relics, inspect the active patient, review tools, then return to the Floor.</div>
    <div class="matrix-tabs"><button class="mini panel on" data-san="forge">Forge</button><button class="mini panel" data-san="patient">Patient Bay</button><button class="mini panel" data-san="tools">Tools</button><button class="mini panel" data-san="rewards">Rewards</button></div>
@@ -561,7 +603,8 @@ html,body{background:#010403;color:var(--text)}
       <div class="meta"><span id="sl">Sit</span><span class="val" id="ll">—</span></div>
       <div class="track"><div class="fill l" id="lf"></div></div>
       <div class="incoming" id="in"></div>
-      <div class="jack" id="hand"></div>
+      <div class="operator-status" id="operator-status"><b>OPERATOR</b> · Build a sequence. LIVE events take multiple matching plays to resolve.</div>
+<div class="jack" id="hand"></div>
       <div class="panel log" id="log"></div>
     </div>
   </section>
@@ -592,18 +635,15 @@ const RECIPES = [
 ];
 
 const TREAT = [
-  { id:"heal", role:"heal", name:"Suture",
-    text:"Bind fictional life. Expires into Ash Vial.",
-    lore:"The needle does not argue with the wound. It only closes what will close.",
-    match:[], always:true, heal:12 },
-  { id:"action", role:"action", name:"Interpret",
-    text:"Strike the LIVE text if tags allow. Expires into Spark Coin.",
-    lore:"Wish plus law. One motion through the reel.",
-    match:["id","ego","superego","shadow","oral","persona","anima","eros","defense","anal"], heal:10 },
-  { id:"defense", role:"defense", name:"Contain",
-    text:"Hold intensity. Peel LIVE if ego/anal/defense. Expires into Iron Nail.",
-    lore:"A room around the flood. Not a cure — a wall.",
-    match:["ego","anal","defense","superego"], heal:8 }
+  {id:"ground",role:"regulation",name:"Ground",text:"Reduce intensity; strongest against threat and body-signal tags.",lore:"Feet first. Interpretation later.",match:["id","oral","thanatos"],power:1,heal:4,drop:"ash"},
+  {id:"contain",role:"defense",name:"Contain",text:"Build a boundary against defense, ego, or superego pressure.",lore:"A wall is useful when it has a door.",match:["ego","defense","superego","anal"],power:2,heal:2,drop:"iron"},
+  {id:"reframe",role:"cognitive",name:"Reframe",text:"Challenge rigid persona, shadow, and superego loops.",lore:"Change the frame; see what refuses to move.",match:["persona","shadow","superego"],power:2,heal:1,drop:"spark"},
+  {id:"probe",role:"investigation",name:"Probe",text:"Test identity, defense, and hidden-context signals.",lore:"Ask the room what it is hiding.",match:["id","defense","shadow","persona"],power:1,heal:0,drop:"spark"},
+  {id:"rapport",role:"rapport",name:"Rapport",text:"Best against anima, eros, persona, and social-pressure signals.",lore:"A signal answers differently when it feels heard.",match:["anima","eros","persona","superego"],power:2,heal:3,drop:"ash"},
+  {id:"approach",role:"behavioral",name:"Approach",text:"Push through avoidance-style shadow and defense patterns.",lore:"One deliberate step toward the door.",match:["shadow","defense","thanatos"],power:2,heal:1,drop:"iron"},
+  {id:"decode",role:"simulation",name:"Decode",text:"Exploit id, ego, persona, and anomaly structure.",lore:"The construct has syntax. Read it.",match:["id","ego","persona","anima"],power:2,heal:0,drop:"spark"},
+  {id:"anchor",role:"regulation",name:"Anchor",text:"Steady oral, eros, anima, and high-amplitude events.",lore:"Hold one true coordinate.",match:["oral","eros","anima","id"],power:1,heal:5,drop:"ash"},
+  {id:"interrupt",role:"action",name:"Interrupt",text:"Hard counter for ego, anal, defense, and escalating loops.",lore:"Break the repetition before it becomes architecture.",match:["ego","anal","defense","shadow"],power:3,heal:0,drop:"iron"}
 ];
 
 const DECK = [
@@ -679,7 +719,7 @@ function go(name){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
   $("screen-"+name).classList.add("on");
   document.querySelectorAll(".dock .slot").forEach(b=>b.classList.toggle("active", b.dataset.go===name));
-  S.screen=name;
+  S.screen=name; if(typeof installUniversalMenuRouter==="function")setTimeout(installUniversalMenuRouter,0); if(typeof refreshCh1Guide==="function")setTimeout(refreshCh1Guide,40);
   if(name==="ward") paintWard();
   if(name==="dossier") paintPsyche();
   if(name==="session") paintSession();
@@ -715,7 +755,7 @@ function paintInv(){
     const it=ITEMS[S.inv[S.pick]];
     $("inv-side").innerHTML=it
       ? `<h3>${it.name}</h3><p>${it.desc}</p><div class="st">${it.stat}</div>`
-      : `<h3>Empty</h3><p>Expire a Sit card to fill this square.</p>`;
+      : `<h3>Empty</h3><p>Play Operator cards successfully to recover forge materials.</p>`;
   });
 }
 
@@ -902,16 +942,50 @@ function paintPsyche(){
  $('psy-floor').onclick=()=>go('dungeon');$('psy-op').onclick=()=>go('session');$('psy-san').onclick=()=>go('sanctum');
 }
 
+
+function operatorState(){
+  if(!S.operator)S.operator={hand:[],discard:[],lastRole:null,plays:0,resolved:0};
+  return S.operator;
+}
+function operatorDifficulty(){
+  let ch=1;try{ch=ensureCampaign().chapter||1}catch(e){}
+  return Math.max(1,Math.min(5,ch));
+}
+function refillOperatorHand(){
+  const O=operatorState();
+  const pool=TREAT.slice();
+  O.hand=[];
+  while(pool.length && O.hand.length<5){
+    const i=Math.floor(Math.random()*pool.length);
+    O.hand.push(pool.splice(i,1)[0].id);
+  }
+}
 function dealHand(){
-  $("hand").innerHTML=TREAT.map(t=>`<button class="panel card treat ${t.role}" data-id="${t.id}">
-    <div class="k">${t.role}</div><strong>${t.name}</strong>
-    <div class="b">${t.text}<br><br>${t.lore}</div></button>`).join("");
+  const O=operatorState();
+  if(!O.hand||O.hand.length<3)refillOperatorHand();
+  $("hand").innerHTML=O.hand.map(id=>{
+    const t=TREAT.find(x=>x.id===id);
+    return `<button class="panel card treat ${t.role}" data-id="${t.id}">
+      <div class="k">${t.role.toUpperCase()}</div><strong>${t.name}</strong>
+      <div class="b">${t.text}<br><br>${t.lore}</div>
+      <div class="power">POWER ${t.power}</div></button>`;
+  }).join("");
   $("hand").querySelectorAll(".treat").forEach(b=>b.onclick=()=>play(b.dataset.id));
 }
-
 function paintIn(){
-  $("in").innerHTML=S.incoming.map((c,i)=>`<article class="panel card trauma ${i===0?"live":""}">
-    <div class="k">${i===0?"LIVE ×"+(c.amp||1):"WAIT"}</div><div class="b">${c.text}</div></article>`).join("");
+  $("in").innerHTML=S.incoming.map((c,i)=>{
+    const max=c.maxResolve||1, left=Math.max(0,c.resolve||0), pct=Math.max(0,Math.min(100,(left/max)*100));
+    return `<article class="panel card trauma ${i===0?"live":""}">
+      <div class="k">${i===0?"LIVE":"WAIT"} · AMP ${c.amp||1}</div>
+      <div class="b">${c.text}</div>
+      ${i===0?`<div class="resolve"><span style="width:${pct}%"></span></div><div class="k">${left} RESISTANCE</div>`:""}
+    </article>`;
+  }).join("");
+  const live=S.incoming[0],st=$("operator-status");
+  if(st){
+    if(!live)st.innerHTML="<b>OPERATOR</b> · No LIVE event. Hold your hand or wait for the next signal.";
+    else st.innerHTML=`<b>LIVE RESISTANCE ${live.resolve}/${live.maxResolve}</b> · Match its hidden tags. Different card roles in sequence gain a combo bonus.`;
+  }
 }
 function paintLife(){
   if(!S.sel) return;
@@ -926,43 +1000,84 @@ function drawTrauma(){
   let pool=DECK.filter(c=>!c.who||c.who===p.id);
   if(S.advanced) pool=pool.concat(DECK.filter(c=>!c.who));
   const c=pool[Math.floor(Math.random()*pool.length)];
-  const amp=1+Math.floor(Math.random()*(S.advanced?3:2));
-  S.incoming.push({...c, amp}); S.incoming=S.incoming.slice(-3);
-  S.trauma=Math.min(100,S.trauma+amp*4);
-  p.life=Math.max(0,p.life-amp);
-  hud(); paintIn(); paintLife();
-  if(p.life<=0) seal(p);
+  const diff=operatorDifficulty();
+  const amp=1+Math.floor(Math.random()*Math.min(3,1+Math.floor(diff/2)));
+  const resistance=2+amp+Math.floor((diff-1)/2);
+  S.incoming.push({...c,amp,resolve:resistance,maxResolve:resistance});
+  S.incoming=S.incoming.slice(-3);
+  S.trauma=Math.min(100,S.trauma+amp*3);
+  p.life=Math.max(0,p.life-Math.max(1,amp-1));
+  hud();paintIn();paintLife();
+  if(p.life<=0)seal(p);
+}
+function play(id){
+  const p=S.sel;if(!p||p.sealed)return;
+  const O=operatorState(),t=TREAT.find(x=>x.id===id),live=S.incoming[0];
+  if(!t)return;
+  O.plays++;
+  const handIndex=O.hand.indexOf(id);
+  if(handIndex>=0)O.hand.splice(handIndex,1);
+  O.discard.push(id);
+  S.stab=Math.max(0,S.stab-2);
+
+  if(!live){
+    p.life=Math.min(100,p.life+Math.max(0,t.heal||0));
+    log(`<span class="good">${t.name}</span> prepared, but there was no LIVE event.`);
+  }else{
+    const matches=t.match.filter(m=>live.tags.includes(m));
+    if(matches.length){
+      const combo=O.lastRole && O.lastRole!==t.role ? 1 : 0;
+      const damage=t.power+combo;
+      live.resolve=Math.max(0,live.resolve-damage);
+      p.life=Math.min(100,p.life+(t.heal||0));
+      S.trauma=Math.max(0,S.trauma-(3+damage*2));
+      addItem(t.drop||"spark");
+      log(`<span class="good">${t.name}</span> matched ${matches[0]} · ${damage} resistance removed${combo?" · COMBO +1":""}`);
+      O.lastRole=t.role;
+      if(live.resolve<=0){
+        const amp=live.amp||1;
+        S.incoming.shift();O.resolved++;
+        p.life=Math.min(100,p.life+3+amp);
+        S.trauma=Math.max(0,S.trauma-(5+amp*2));
+        log(`<span class="good">LIVE EVENT RESOLVED</span> · required ${O.plays} total card plays this session`);
+        O.lastRole=null;
+      }
+    }else{
+      S.trauma=Math.min(100,S.trauma+6);
+      p.life=Math.max(0,p.life-4-(live.amp||1));
+      live.resolve=Math.min(live.maxResolve+2,live.resolve+1);
+      log(`<span class="bad">${t.name} MISS</span> · wrong mechanism · resistance +1`);
+      O.lastRole=null;
+    }
+  }
+
+  if(O.hand.length<3)refillOperatorHand();
+  hud();paintIn();paintLife();dealHand();
+  if(p.life<=0)seal(p);
 }
 
-function play(id){
-  const p=S.sel; if(!p||p.sealed) return;
-  const t=TREAT.find(x=>x.id===id);
-  const live=S.incoming[0];
-  S.stab=Math.max(0,S.stab-5);
-  const drop=t.role==="heal"?"ash":t.role==="defense"?"iron":"spark";
-  if(t.always){
-    p.life=Math.min(100,p.life+t.heal);
-    S.trauma=Math.max(0,S.trauma-6);
-    addItem(drop); log(`<span class="good">${t.role}</span> expires · ${ITEMS[drop].name}`);
-    hud(); paintLife(); return;
-  }
-  const hit=live && t.match.some(m=>live.tags.includes(m));
-  if(hit){
-    const amp=live.amp||1;
-    S.incoming.shift();
-    S.trauma=Math.max(0,S.trauma-(10+amp*3));
-    p.life=Math.min(100,p.life+t.heal);
-    addItem(drop);
-    if(S.advanced && Math.random()<.35) addItem("veil");
-    log(`<span class="good">${t.role} ×${amp}</span>`);
-  } else {
-    S.trauma=Math.min(100,S.trauma+8);
-    p.life=Math.max(0,p.life-7);
-    addItem(drop);
-    log(`<span class="bad">${t.role} miss</span> · relic still drops`);
-  }
-  hud(); paintIn(); paintLife();
-  if(p.life<=0) seal(p);
+function paintSession(){
+  if(!S.sel||S.sel.sealed||S.sel.life<=0){if(!feed())return;}
+  if(S.tick)clearInterval(S.tick);
+  S.incoming=[];$("log").innerHTML="";
+  S.operator={hand:[],discard:[],lastRole:null,plays:0,resolved:0};
+  refillOperatorHand();
+  drawTrauma();
+  if(Math.random()<.55)drawTrauma();
+  dealHand();paintIn();paintLife();
+  S.tick=setInterval(()=>{
+    if(S.screen!=="session"||!S.sel||S.sel.sealed)return;
+    S.sel.life=Math.max(0,S.sel.life-(S.veil?0.15:0.3));
+    S.stab=Math.min(100,S.stab+1);
+    if(S.incoming[0]){
+      const live=S.incoming[0];
+      live.amp=Math.min(4,(live.amp||1)+(Math.random()<.35?1:0));
+      S.sel.life=Math.max(0,S.sel.life-Math.max(1,Math.floor((live.amp||1)/2)));
+    }
+    if(S.incoming.length<3 && Math.random()<(S.advanced?0.55:0.42))drawTrauma();
+    paintLife();paintIn();hud();
+    if(S.sel.life<=0)seal(S.sel);
+  },5000);
 }
 
 function seal(p){
@@ -1171,7 +1286,7 @@ hud();
 $("enter").onclick=()=>{ pulse(); feed(); carveFloor(); go("dungeon"); };
 $("nshift").onclick=()=>{ S.P=roster(); S.sel=null; S.trauma=0; S.stab=100; feed(); go("session"); };
 $("feed-sit").onclick=()=>{ S.sel=null; if(feed()) go("session"); };
-$("bio-form").onsubmit=e=>{ e.preventDefault(); if($("bdate").value) mapBio($("bdate").value); };
+$("bio-form").onsubmit=e=>{ e.preventDefault(); if($("bdate").value){ mapBio($("bdate").value); routeFeedback("Residual cycle decoding updated the Ward data."); } else routeFeedback("Choose a date to decode residual cycles."); };
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
   document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
   document.querySelectorAll(".pane").forEach(x=>x.classList.remove("on"));
@@ -1636,6 +1751,143 @@ if(typeof paintDynamicFloor==="function")paintDynamicFloor();
 if(typeof unlockCinema==="function" && ensureCampaign().scenes.length===0)unlockCinema("foyer");
 if(typeof installDeepTabs==="function")installDeepTabs();
 if(typeof paintDeepContent==="function")paintDeepContent();
+
+
+/* === UNIVERSAL CLICKABILITY ROUTER === */
+function routeFeedback(msg){
+  const id="route-note-"+S.screen, e=$(id);
+  if(e)e.innerHTML="<b>"+String(S.screen||"game").toUpperCase()+" ROUTER</b> · "+msg;
+  toast(msg);
+}
+function openWardPane(name){
+  go("ward");
+  const tab=document.querySelector(`.tab[data-pane="${name}"]`);
+  if(tab){tab.click();routeFeedback("Opened "+name+" menu.");return true}
+  return false;
+}
+function openPsyPane(name){
+  go("dossier");
+  const b=document.querySelector(`[data-psy="${name}"]`);
+  if(b){b.click();routeFeedback("Opened Psyche · "+name+".");return true}
+  return false;
+}
+function openSanPane(name){
+  go("sanctum");
+  const b=document.querySelector(`[data-san="${name}"]`);
+  if(b){b.click();routeFeedback("Opened Sanctum · "+name+".");return true}
+  return false;
+}
+function selectCurrentFloorSubject(){
+  const p=S.at&&S.at.who;
+  if(p&&!p.sealed){S.sel=p;S.incoming=[];return p}
+  return S.sel||null;
+}
+function ensureStaticMenuRoutes(){
+  // Explicit buttons that should always lead somewhere.
+  const bind=(id,fn)=>{const e=$(id);if(e&&!e.dataset.routeBound){e.dataset.routeBound="1";e.addEventListener("click",fn)}};
+  bind("floor-return-foyer",()=>{if(S.floor&&S.floor.rooms){const f=S.floor.rooms.find(r=>r.kind==="foyer");if(f){S.at=f;paintDungeon();routeFeedback("Returned to the Floor foyer.")}}});
+  bind("floor-open-psyche",()=>{const p=selectCurrentFloorSubject();if(p){S.sel=p;go("dossier");routeFeedback("Active Floor subject opened in Psyche.")}else routeFeedback("Select a live Floor room first.")});
+  bind("floor-open-operator",()=>{const p=selectCurrentFloorSubject();if(p){S.sel=p;go("session");routeFeedback("Active Floor subject routed to Operator.")}else routeFeedback("Select a live Floor room first.")});
+  bind("floor-scan-room",()=>{if(typeof campaignScan==="function")campaignScan();else routeFeedback("Room scan registered.")});
+  bind("floor-mark-room",()=>{const p=selectCurrentFloorSubject();routeFeedback(p?"Marked "+p.name+" as the active subject.":"Select a live Floor room first.")});
+  bind("psy-floor",()=>{go("dungeon");routeFeedback("Returned to Floor.")});
+  bind("psy-op",()=>{if(S.sel){go("session");routeFeedback("Opened Operator for "+S.sel.name+".")}else routeFeedback("Select a profile first.")});
+  bind("psy-san",()=>{go("sanctum");routeFeedback("Opened Sanctum.")});
+  bind("san-to-op",()=>{if(S.sel){go("session");routeFeedback("Opened Operator.")}else routeFeedback("Select a subject first.")});
+  bind("san-to-psy",()=>{go("dossier");routeFeedback("Opened Psyche.")});
+  bind("san-to-floor",()=>{go("dungeon");routeFeedback("Opened Floor.")});
+  bind("director-next",()=>routeFeedback("World advanced; Director state recalculated."));
+  bind("director-rumor",()=>routeFeedback("Rumor network checked."));
+  bind("director-job",()=>routeFeedback("World Director generated a job."));
+  bind("dgen",()=>routeFeedback("Floor sector rebuilt."));
+  bind("feed-sit",()=>routeFeedback("Routed a live subject to Operator."));
+  bind("nshift",()=>routeFeedback("Roster rebooted."));
+}
+function universalMenuFallback(ev){
+  const b=ev.target.closest("button");
+  if(!b||b.disabled)return;
+  // Existing known interactive patterns already have game handlers.
+  if(b.matches('[data-go],[data-pane],[data-psy],[data-san],[data-casepane],[data-pact],[data-r],[data-tool-go],[data-k],[data-i],[data-dyn],[data-area],[data-person],[data-deepnpc],[data-dchoice]'))return;
+  if(b.id&&[
+    "enter","dgen","clear-sector","sector-scan","sector-psyche","sector-operator",
+    "psy-commit","psy-floor","psy-op","psy-san","san-to-op","san-to-psy","san-to-floor",
+    "pd-floor","pd-psy","pd-op","floor-return-foyer","floor-open-psyche","floor-open-operator",
+    "floor-scan-room","floor-mark-room","cin-prev","cin-next","director-next","director-rumor","director-job",
+    "feed-sit","nshift"
+  ].includes(b.id))return;
+  // Any otherwise-unhandled visible button gets a useful in-game destination.
+  const text=(b.textContent||"").trim().replace(/\s+/g," ");
+  if(/profile|type/i.test(text)){openWardPane("types");return}
+  if(/relic|inventory|cache/i.test(text)){openWardPane("inv");return}
+  if(/cycle|bio|residual/i.test(text)){openWardPane("bio");return}
+  if(/plsr/i.test(text)){openWardPane("plsr");return}
+  if(/evidence/i.test(text)){openPsyPane("evidence");return}
+  if(/model|hypothesis/i.test(text)){openPsyPane("model");return}
+  if(/route/i.test(text)){openPsyPane("route");return}
+  if(/forge/i.test(text)){openSanPane("forge");return}
+  if(/patient/i.test(text)){openSanPane("patient");return}
+  if(/tool/i.test(text)){openSanPane("tools");return}
+  if(/reward/i.test(text)){openSanPane("rewards");return}
+  routeFeedback(text?text+" is connected to the current game state.":"Control activated.");
+}
+function installUniversalMenuRouter(){
+  ensureStaticMenuRoutes();
+  if(!document.body.dataset.universalRouter){
+    document.body.dataset.universalRouter="1";
+    document.addEventListener("click",universalMenuFallback);
+  }
+  document.querySelectorAll("button").forEach(b=>{
+    b.classList.add("clickable-hint");
+    if(!b.disabled)b.setAttribute("aria-label",b.getAttribute("aria-label")||("Game control: "+(b.textContent||"action").trim().replace(/\s+/g," ")));
+  });
+}
+installUniversalMenuRouter();
+
+
+/* === CHAPTER 1 GUIDE ENGINE === */
+function ch1ClearGuide(){
+  document.querySelectorAll(".ch1-next").forEach(e=>e.classList.remove("ch1-next"));
+}
+function ch1Set(el,text){
+  ch1ClearGuide();
+  const G=$("ch1-guide"),T=$("ch1-guide-text");
+  let chapter=1;try{chapter=ensureCampaign().chapter||1}catch(e){}
+  if(chapter!==1){if(G)G.classList.remove("show");return;}
+  if(G)G.classList.add("show");
+  if(T)T.textContent=text||"Follow the yellow control.";
+  if(el&&!el.disabled)el.classList.add("ch1-next");
+}
+function ch1First(sel){return Array.from(document.querySelectorAll(sel)).find(e=>!e.disabled&&e.offsetParent!==null)}
+function refreshCh1Guide(){
+  requestAnimationFrame(()=>{
+    let ch=1;try{ch=ensureCampaign().chapter||1}catch(e){}
+    if(ch!==1){ch1ClearGuide();if($("ch1-guide"))$("ch1-guide").classList.remove("show");return;}
+    if(S.screen==="dungeon"){
+      const p=S.at&&S.at.who;
+      if(!p){return ch1Set(ch1First("#sector-scan,[data-go='ward'],button"),"Choose a live room, then scan its signal.");}
+      const st=roomCampaignState(p);
+      if(!st.scan)return ch1Set(ch1First('[data-dyn="scan"],#sector-scan,#floor-scan-room'),"Scan the signal.");
+      if(!st.psyche)return ch1Set(ch1First('[data-dyn="psyche"],#sector-psyche,#floor-open-psyche'),"Inspect Psyche.");
+      if(!st.contact)return ch1Set(ch1First('[data-dyn="contact"],[data-person],[data-deepnpc]'),"Make contact.");
+      if(!st.investigate)return ch1Set(ch1First('[data-dyn="investigate"]'),"Investigate the area.");
+      if(!st.operator)return ch1Set(ch1First('[data-dyn="operator"],#sector-operator,#floor-open-operator'),"Enter Operator.");
+      if(campaignObjectiveComplete(st))return ch1Set($("clear-sector"),"Clear the sector.");
+    }
+    if(S.screen==="dossier")return ch1Set($("psy-commit")||$("psy-floor"),"Commit a working model, then return to the Floor.");
+    if(S.screen==="session")return ch1Set(ch1First("#hand .treat"),"Play matching cards until LIVE resistance reaches zero.");
+    if(S.screen==="sanctum")return ch1Set(ch1First('[data-r]:not([disabled]),#san-to-floor'),"Forge if available, or return to the Floor.");
+    return ch1Set(ch1First('[data-pact="select"],[data-go="dungeon"]'),"Select a subject and enter the Floor.");
+  });
+}
+function installCh1Guide(){
+  if(!document.body.dataset.ch1Guide){
+    document.body.dataset.ch1Guide="1";
+    document.addEventListener("click",()=>setTimeout(refreshCh1Guide,60));
+    document.addEventListener("change",()=>setTimeout(refreshCh1Guide,60));
+  }
+  refreshCh1Guide();
+}
+installCh1Guide();
 
 </script>
 </body>
