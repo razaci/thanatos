@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD · MATRIX DEEP CONTENT EDITION</title>
+  <title>THANATOS WARD · MATRIX WORLD DIRECTOR</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -271,6 +271,29 @@ html,body{background:#010403;color:var(--text)}
 .codex-entry b{display:block;color:#dffff0;margin-bottom:3px}
 @media(max-width:700px){.deep-grid{grid-template-columns:1fr}.choice-row,.codex-list{grid-template-columns:1fr}}
 
+
+/* === WORLD DIRECTOR === */
+.director-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:8px;margin-top:8px}
+.director-panel{padding:9px}
+.director-panel h3{font:8px "Share Tech Mono";letter-spacing:.14em;color:#92f4aa;margin-bottom:6px}
+.director-feed{max-height:210px;overflow:auto;display:grid;gap:5px}
+.director-event{padding:7px;border:1px solid #4e725844;background:#041008;font:7px/1.45 "Share Tech Mono";color:#9db4a3}
+.director-event b{color:#e3ffea}
+.director-event.hot{border-color:#ff6b7a55;background:#120609}
+.director-event.good{border-color:#70ff9d55}
+.faction-list{display:grid;gap:5px}
+.faction{padding:7px;border:1px solid #4c715744;background:#051008}
+.faction b{display:flex;justify-content:space-between;font:7px "Share Tech Mono";color:#c8f3d1}
+.faction .meter{height:6px;background:#102115;margin-top:5px}.faction .meter span{display:block;height:100%;background:linear-gradient(90deg,#4b7,#9f9)}
+.world-controls{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.world-btn{padding:8px;border:1px solid #68dd894f;background:#06110a;font:7px "Share Tech Mono";color:#bfe5c8}
+.roster-map{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}
+.roamer{padding:7px;border:1px solid #48695444;background:#051008;font:7px/1.4 "Share Tech Mono";color:#8da995}
+.roamer b{display:block;color:#dfffe7}
+.quest-card{padding:8px;border:1px solid #7ea85f55;background:#0a1106;margin-bottom:5px;font:7px/1.45 "Share Tech Mono";color:#9fb68f}
+.quest-card b{display:block;color:#eaffd5;margin-bottom:3px}
+@media(max-width:720px){.director-grid{grid-template-columns:1fr}.roster-map{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -466,6 +489,34 @@ html,body{background:#010403;color:var(--text)}
         <h3>DISCOVERY ARCHIVE</h3>
         <div class="archive-count" id="archive-count">0 entries recovered</div>
         <div class="codex-list" id="discovery-archive"></div>
+      </div>
+
+
+      <div class="director-grid">
+        <div class="panel director-panel">
+          <h3>WORLD DIRECTOR // LIVE SIMULATION</h3>
+          <div class="director-feed" id="director-feed"></div>
+          <div class="world-controls">
+            <button class="world-btn" id="director-next">ADVANCE WORLD</button>
+            <button class="world-btn" id="director-rumor">CHECK RUMORS</button>
+            <button class="world-btn" id="director-job">GENERATE JOB</button>
+          </div>
+        </div>
+        <div class="panel director-panel">
+          <h3>FACTION SIGNAL</h3>
+          <div class="faction-list" id="faction-list"></div>
+        </div>
+      </div>
+
+      <div class="director-grid">
+        <div class="panel director-panel">
+          <h3>ROAMING PEOPLE</h3>
+          <div class="roster-map" id="roaming-people"></div>
+        </div>
+        <div class="panel director-panel">
+          <h3>ACTIVE JOBS</h3>
+          <div id="generated-jobs"></div>
+        </div>
       </div>
 
     </div>
@@ -1093,6 +1144,10 @@ function paintDungeon(){
   if(typeof paintCampaign==="function")paintCampaign();
   if(typeof paintDynamicFloor==="function")paintDynamicFloor();
   if(typeof paintDeepContent==="function")paintDeepContent();
+if(typeof bindDirector==="function")bindDirector();
+if(typeof paintDirector==="function")paintDirector();
+if(typeof bindDirector==="function")bindDirector();
+if(typeof paintDirector==="function")paintDirector();
 }
 
 $("dmap").onclick=e=>{
@@ -1217,7 +1272,7 @@ function clearCampaignSector(){
  if(C.cleared.length>=4)C.chapter=2;
  if(C.cleared.length>=6)C.chapter=3;
  if(C.cleared.length>=8){C.chapter=4;C.subject09=true;C.clues.push("SYSTEM // SUBJECT 09 = OPERATOR");}
- addItem(Math.random()<.5?"spark":"veil"); C.focus=Math.min(8,(C.focus||0)+3); C.stability=Math.min(100,(C.stability||50)+6); if(typeof unlockCinema==="function")unlockCinema(C.subject09?"subject09":"clear"); if(typeof progressDeepMissions==="function")progressDeepMissions("clear"); if(typeof deepState==="function"){deepState().threat=Math.max(0,deepState().threat-1);advanceDeep(10,0);}
+ addItem(Math.random()<.5?"spark":"veil"); C.focus=Math.min(8,(C.focus||0)+3); C.stability=Math.min(100,(C.stability||50)+6); if(typeof unlockCinema==="function")unlockCinema(C.subject09?"subject09":"clear"); if(typeof progressDeepMissions==="function")progressDeepMissions("clear"); if(typeof progressDirectorJobs==="function")progressDirectorJobs("clear"); if(typeof directorIncident==="function")directorIncident(); if(typeof deepState==="function"){deepState().threat=Math.max(0,deepState().threat-1);advanceDeep(10,0);}
  paintCampaign();paintDungeon();if(typeof paintDynamicFloor==="function")paintDynamicFloor();
 }
 function campaignProfileStage(p){
@@ -1338,8 +1393,8 @@ function runDynamicAction(id){
  const C=floorMech(),st=roomCampaignState(p),area=activeArea();
  if(id==="scan"){if(st.scan){toast("Already scanned");return}if(!spendFocus(1))return;campaignScan();gainFloorStat("intel",2);unlockCinema("scan");advanceDeep(4,0)}
  else if(id==="psyche"){st.psyche=true;paintDynamicFloor();paintCampaign();S.sel=p;go("dossier");return}
- else if(id==="contact"){if(!spendFocus(1))return;st.contact=true;st.trust=(st.trust||0)+4;gainFloorStat("trust",4+(area.bonus==="trust"?2:0));unlockCinema("contact");advanceDeep(5,0);progressDeepMissions("contact");toast("Contact established")}
- else if(id==="investigate"){if(!spendFocus(2))return;st.investigate=true;st.intel=(st.intel||0)+5;gainFloorStat("intel",5+(area.bonus==="intel"?3:0));C.reality=Math.min(100,C.reality+(area.bonus==="risk"?6:2));const clue=`${area.name} // ${p.name.split(" ")[0]} environment trace ${C.intel}`;if(!C.clues.includes(clue))C.clues.push(clue);unlockCinema("investigate");advanceDeep(8,area.bonus==="risk"?1:0);progressDeepMissions("investigate");toast("Area evidence recovered")}
+ else if(id==="contact"){if(!spendFocus(1))return;st.contact=true;st.trust=(st.trust||0)+4;gainFloorStat("trust",4+(area.bonus==="trust"?2:0));unlockCinema("contact");advanceDeep(5,0);progressDeepMissions("contact"); if(typeof progressDirectorJobs==="function")progressDirectorJobs("contact"); if(typeof directorIncident==="function"&&worldRand()<.25)directorIncident(); toast("Contact established")}
+ else if(id==="investigate"){if(!spendFocus(2))return;st.investigate=true;st.intel=(st.intel||0)+5;gainFloorStat("intel",5+(area.bonus==="intel"?3:0));C.reality=Math.min(100,C.reality+(area.bonus==="risk"?6:2));const clue=`${area.name} // ${p.name.split(" ")[0]} environment trace ${C.intel}`;if(!C.clues.includes(clue))C.clues.push(clue);unlockCinema("investigate");advanceDeep(8,area.bonus==="risk"?1:0);progressDeepMissions("investigate"); if(typeof progressDirectorJobs==="function")progressDirectorJobs("investigate"); if(typeof directorIncident==="function"&&worldRand()<.35)directorIncident(); toast("Area evidence recovered")}
  else if(id==="stabilize"){if(!spendFocus(1))return;st.stabilize=true;gainFloorStat("stability",10+(area.bonus==="stability"?6:0));p.life=Math.min(100,p.life+4);S.stab=Math.min(100,S.stab+5);hud();deepState().threat=Math.max(0,deepState().threat-1);advanceDeep(5,0);toast("Link stabilized")}
  else if(id==="operator"){st.operator=true;unlockCinema("operator");advanceDeep(6,deepState().threat>=3?1:0);paintDynamicFloor();paintCampaign();S.sel=p;S.incoming=[];go("session");return}
  paintDynamicFloor();paintCampaign();paintActiveRoom();
@@ -1448,6 +1503,125 @@ function deepChoice(choice){
 }
 function installDeepTabs(){
  document.querySelectorAll("[data-casepane]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-casepane]").forEach(x=>x.classList.remove("on"));document.querySelectorAll(".case-pane").forEach(x=>x.classList.remove("on"));b.classList.add("on");$("casepane-"+b.dataset.casepane).classList.add("on");});
+}
+
+
+/* === WORLD DIRECTOR ENGINE === */
+const DIRECTOR_EXTRA_EVENTS=["An NPC changes districts without using a corridor", "A cleared room reappears one floor below", "Two people claim the same memory", "Sanctum reports a relic that was never forged", "Operator deck gains an unknown card for one turn", "A person recognizes a district they have never visited", "Threat drops to QUIET immediately before an ambush", "A fabricated clue becomes physically real", "The same side mission is offered by two enemies", "A room records the player's previous choice before it happens", "Archive Stack lists a profile under the wrong century", "A dead intercom asks for the active subject by childhood nickname", "Subway Six arrives with no doors", "Mirror Hall shows a person currently in another district", "Machine Cathedral changes one faction's name", "Ghost City renders an NPC as a child", "Hotel 101 lists an impossible checkout date", "Kernel Garden outputs a sentence from the Discovery Archive", "Red Sector labels the player as PROPERTY", "The Custodian denies ever meeting you", "Mara appears in two districts", "Crow-17 speaks using another NPC's trust score", "An Operator action unlocks a door on the Floor", "A Psyche model changes an NPC route", "A confirmed clue is downgraded to corrupted", "A fabricated clue is independently corroborated", "A side mission target becomes the active subject", "An Agent signature appears inside Sanctum", "Subject 09 leaves a mission with no reward", "A mission reward is already in inventory", "An NPC asks why the player keeps repeating the same shift", "The world clock skips nine minutes", "Every profile gains the same timestamp", "The threat meter reads SAFE instead of QUIET", "A deleted NPC sends a message", "One district becomes temporarily inaccessible", "A new maintenance room appears", "A known NPC refuses their own name", "A person remembers being an Operator", "Two factions both claim to have built the Ward", "An emergency exit leads to Psyche", "The archive names the simulation after the current subject", "A cinematic scene changes after being viewed", "The Floor map briefly shows an external street", "A sealed profile moves locations", "A relic description contains coordinates", "A district bonus inverts for one event", "The active subject gains trust with an unseen NPC", "A mission completes before being accepted", "The next event is logged twice with different outcomes"];
+const DIRECTOR_FACTIONS=[{"id": "operators", "name": "OPERATORS", "desc": "Human-aligned intervention network"}, {"id": "machines", "name": "MACHINES", "desc": "Maintenance intelligence and system continuity"}, {"id": "runners", "name": "RUNNERS", "desc": "Couriers, smugglers, and route keepers"}, {"id": "rogues", "name": "ROGUE PROGRAMS", "desc": "Independent constructs resisting classification"}, {"id": "ward", "name": "WARD ADMINISTRATION", "desc": "Unknown authority maintaining case structure"}, {"id": "nine", "name": "SUBJECT 09", "desc": "A faction that may only be one person\u2014or the player"}];
+const JOB_VERBS=["Recover", "Trace", "Escort", "Decode", "Verify", "Hide", "Reroute", "Interview", "Protect", "Expose", "Map", "Stabilize"];
+const JOB_TARGETS=["a missing profile", "a corrupted archive", "a rogue program", "a witness", "an impossible room", "a machine signal", "a memory fragment", "a relic", "a pursuit route", "a false emergency", "a ninth-door trace", "an identity record"];
+const JOB_TWISTS=["before threat reaches HUNTED", "without entering Operator", "while keeping Trust above 20", "before the world advances twice", "using one confirmed clue", "without visiting Red Sector", "while a faction opposes you", "before the active subject loses stability"];
+function directorState(){
+ const C=floorMech(),D=deepState();
+ if(!C.director)C.director={
+  tick:0,feed:[],factions:{operators:50,machines:50,runners:50,rogues:50,ward:50,nine:0},
+  locations:{},jobs:[],rumors:[],worldSeed:17
+ };
+ const W=C.director;
+ DEEP_NPCS.forEach((n,i)=>{if(!W.locations[n.id])W.locations[n.id]=FLOOR_AREAS[i%FLOOR_AREAS.length].id;});
+ return W;
+}
+function worldRand(){
+ const W=directorState();W.worldSeed=(W.worldSeed*1664525+1013904223)>>>0;return W.worldSeed/4294967296;
+}
+function worldLog(text,type=""){
+ const W=directorState(),D=deepState();
+ const stamp=String(Math.floor(D.minutes/60)).padStart(2,"0")+":"+String(D.minutes%60).padStart(2,"0");
+ W.feed.push({stamp,text,type});
+ if(W.feed.length>80)W.feed.shift();
+}
+function moveRoamers(){
+ const W=directorState();
+ DEEP_NPCS.forEach((n,i)=>{
+  if(worldRand()<0.34){
+   const open=FLOOR_AREAS.filter(a=>ensureCampaign().cleared.length>=a.need);
+   const old=W.locations[n.id],next=open[Math.floor(worldRand()*open.length)]||FLOOR_AREAS[0];
+   W.locations[n.id]=next.id;
+   if(old!==next.id&&worldRand()<0.45)worldLog(`${n.name} moved to ${next.name}.`,"");
+  }
+ });
+}
+function mutateEvidence(){
+ const p=S.P[Math.floor(worldRand()*S.P.length)];if(!p)return;
+ const sd=subjectDeep(p);if(!sd.evidence.length)return;
+ const e=sd.evidence[Math.floor(worldRand()*sd.evidence.length)];
+ const old=e.state;e.state=EVIDENCE_STATES[Math.floor(worldRand()*EVIDENCE_STATES.length)];
+ if(old!==e.state)worldLog(`${p.name} evidence changed: ${old.toUpperCase()} → ${e.state.toUpperCase()}.`,"hot");
+}
+function shiftFaction(id,delta){
+ const W=directorState();W.factions[id]=Math.max(0,Math.min(100,(W.factions[id]||50)+delta));
+}
+function generateDirectorJob(){
+ const W=directorState();
+ const id="job-"+Date.now()+"-"+Math.floor(worldRand()*9999);
+ const verb=JOB_VERBS[Math.floor(worldRand()*JOB_VERBS.length)];
+ const target=JOB_TARGETS[Math.floor(worldRand()*JOB_TARGETS.length)];
+ const area=FLOOR_AREAS[Math.floor(worldRand()*FLOOR_AREAS.length)];
+ const twist=JOB_TWISTS[Math.floor(worldRand()*JOB_TWISTS.length)];
+ const faction=DIRECTOR_FACTIONS[Math.floor(worldRand()*DIRECTOR_FACTIONS.length)];
+ const j={id,name:`${verb.toUpperCase()} // ${target.toUpperCase()}`,desc:`${verb} ${target} in ${area.name}, ${twist}.`,faction:faction.id,progress:0,done:false,reward:2+Math.floor(worldRand()*4)};
+ W.jobs.push(j);worldLog(`New job from ${faction.name}: ${j.name}.`,"good");paintDirector();return j;
+}
+function progressDirectorJobs(kind){
+ const W=directorState();
+ W.jobs.forEach(j=>{if(j.done)return;
+  if((kind==="investigate"&&/Recover|Trace|Decode|Verify|Map|Expose/.test(j.name))||
+     (kind==="contact"&&/Escort|Interview|Protect|Hide/.test(j.name))||
+     (kind==="clear"&&/Stabilize|Reroute/.test(j.name))){
+    j.progress++;if(j.progress>=3){
+      j.done=true;floorMech().focus=Math.min(10,floorMech().focus+j.reward);
+      shiftFaction(j.faction,6);worldLog(`Job complete: ${j.name}. Faction standing increased.`,"good");
+    }
+  }
+ });
+ paintDirector();
+}
+function directorIncident(){
+ const W=directorState(),D=deepState(),C=ensureCampaign();
+ W.tick++;
+ moveRoamers();
+ const pool=DEEP_EVENTS.concat(DIRECTOR_EXTRA_EVENTS);
+ const text=pool[Math.floor(worldRand()*pool.length)];
+ worldLog(text,(text.includes("Agent")||text.includes("threat")||text.includes("Red"))?"hot":"");
+ if(/Agent|ambush|Threat|HUNTED|Red Sector/i.test(text))D.threat=Math.min(4,D.threat+1);
+ if(/archive|clue|profile|memory|evidence/i.test(text))gainFloorStat("intel",1);
+ if(/trust|recognizes|remembers|witness/i.test(text))gainFloorStat("trust",1);
+ if(worldRand()<0.22)mutateEvidence();
+ if(worldRand()<0.18)generateDirectorJob();
+ if(worldRand()<0.12){shiftFaction("ward",-3);shiftFaction("rogues",3);}
+ if(worldRand()<0.10&&C.subject09)shiftFaction("nine",5);
+ advanceDeep(4+Math.floor(worldRand()*7),0);
+ paintDirector();
+}
+function checkRumor(){
+ const W=directorState();
+ const np=DEEP_NPCS[Math.floor(worldRand()*DEEP_NPCS.length)];
+ const area=FLOOR_AREAS.find(a=>a.id===W.locations[np.id])||FLOOR_AREAS[0];
+ const rumors=[
+  `${np.name} was seen in ${area.name} carrying a record marked SUBJECT 09.`,
+  `${area.name} is expected to change its room layout on the next world tick.`,
+  `A confirmed clue in ${S.P[Math.floor(worldRand()*S.P.length)].name}'s file may be fabricated.`,
+  `${np.name} says the Ward Administration is hiding a second Floor.`,
+  `Someone in ${area.name} remembers an Operator card that is not in the deck.`
+ ];
+ const r=rumors[Math.floor(worldRand()*rumors.length)];
+ W.rumors.push(r);worldLog("RUMOR // "+r,"");paintDirector();
+}
+function factionEffectText(v){
+ if(v>=75)return"ALLY";if(v>=60)return"FAVORABLE";if(v>=40)return"NEUTRAL";if(v>=25)return"UNEASY";return"HOSTILE";
+}
+function paintDirector(){
+ const W=directorState();
+ if($("director-feed"))$("director-feed").innerHTML=W.feed.length?W.feed.slice(-24).reverse().map(e=>`<div class="director-event ${e.type}"><b>${e.stamp}</b> · ${e.text}</div>`).join(""):'<div class="director-event">The World Director is listening for your first action.</div>';
+ if($("faction-list"))$("faction-list").innerHTML=DIRECTOR_FACTIONS.map(f=>{const v=W.factions[f.id]||0;return `<div class="faction"><b><span>${f.name}</span><span>${factionEffectText(v)} ${v}</span></b><div class="meter"><span style="width:${v}%"></span></div></div>`}).join("");
+ if($("roaming-people"))$("roaming-people").innerHTML=DEEP_NPCS.slice(0,12).map(n=>{const a=FLOOR_AREAS.find(x=>x.id===W.locations[n.id]);return `<div class="roamer"><b>${n.name}</b>${n.role}<br>${a?a.name:"UNKNOWN"}</div>`}).join("");
+ if($("generated-jobs"))$("generated-jobs").innerHTML=W.jobs.length?W.jobs.slice(-8).reverse().map(j=>`<div class="quest-card"><b>${j.done?"✓ ":""}${j.name}</b>${j.desc}<br>Progress ${Math.min(3,j.progress)}/3 · Reward ${j.reward} Focus</div>`).join(""):'<div class="quest-card"><b>NO ACTIVE JOBS</b>Generate one or wait for the world to create one.</div>';
+}
+function bindDirector(){
+ if($("director-next"))$("director-next").onclick=directorIncident;
+ if($("director-rumor"))$("director-rumor").onclick=checkRumor;
+ if($("director-job"))$("director-job").onclick=generateDirectorJob;
 }
 
 function bindCampaign(){
