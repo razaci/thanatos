@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD · MATRIX LIVING FLOOR</title>
+  <title>THANATOS WARD · MATRIX DEEP CONTENT EDITION</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -246,6 +246,31 @@ html,body{background:#010403;color:var(--text)}
 @keyframes scenePulse{0%{filter:brightness(1)}40%{filter:brightness(1.6)}100%{filter:brightness(1)}}
 @media(max-width:680px){.floor-mech-hud{grid-template-columns:repeat(2,1fr)}.dynamic-deck,.floor-world-grid{grid-template-columns:1fr}}
 
+
+/* === DEEP CONTENT EXPANSION === */
+.deep-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:8px;margin-top:8px}
+.deep-panel{padding:9px}
+.deep-panel h3{font:8px "Share Tech Mono";letter-spacing:.13em;color:#8df6aa;margin-bottom:6px}
+.case-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
+.case-tab{padding:6px 8px;border:1px solid #4b755944;font:7px "Share Tech Mono";color:#8bad95}
+.case-tab.on{border-color:#7fff9c;color:#e2ffe9}
+.case-pane{display:none}.case-pane.on{display:block}
+.ev-row,.mission-row,.rel-row,.timeline-row{padding:7px 0;border-bottom:1px solid #50ff8a18;font:8px/1.45 "Share Tech Mono";color:#88a994}
+.ev-state{display:inline-block;min-width:72px;font-size:7px;letter-spacing:.08em}
+.state-confirmed{color:#8affaa}.state-suspected{color:#ffe080}.state-contradictory{color:#ff9e8a}.state-corrupted{color:#d38aff}.state-fabricated{color:#ff6b86}
+.threat-strip{display:grid;grid-template-columns:auto 1fr auto;gap:7px;align-items:center;padding:7px;margin-top:7px;border:1px solid #ff5f7040;background:#120508}
+.threat-bar{height:7px;background:#21070b}.threat-fill{height:100%;background:linear-gradient(90deg,#487c58,#ff5b67);transition:width .3s}
+.npc-dialogue{padding:8px;border-left:2px solid #68e987;background:#061109;margin-top:6px}
+.dialogue-speaker{font:7px "Share Tech Mono";letter-spacing:.14em;color:#82e89f}
+.dialogue-line{font:9px/1.55 "Share Tech Mono";color:#d6ffe1;margin-top:4px}
+.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:7px}
+.choice-btn{padding:8px;text-align:left;border:1px solid #4d805e55;background:#06110a;font:7px/1.4 "Share Tech Mono";color:#b4d8bc}
+.archive-count{font:7px "Share Tech Mono";color:#73917b;margin-bottom:5px}
+.codex-list{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}
+.codex-entry{padding:7px;border:1px solid #49705744;background:#051008;font:7px/1.4 "Share Tech Mono";color:#8fa99a}
+.codex-entry b{display:block;color:#dffff0;margin-bottom:3px}
+@media(max-width:700px){.deep-grid{grid-template-columns:1fr}.choice-row,.codex-list{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -405,6 +430,42 @@ html,body{background:#010403;color:var(--text)}
           <div class="cinema-title">No scene loaded.</div>
           <div class="cinema-copy">Room actions, evidence, and cleared sectors unlock short story scenes here.</div>
         </div>
+      </div>
+
+
+      <div class="deep-grid">
+        <div class="panel deep-panel">
+          <h3>CASE DEPTH // ACTIVE SUBJECT</h3>
+          <div class="case-tabs">
+            <button class="case-tab on" data-casepane="evidence">Evidence</button>
+            <button class="case-tab" data-casepane="timeline">Timeline</button>
+            <button class="case-tab" data-casepane="relations">Relationships</button>
+            <button class="case-tab" data-casepane="missions">Side Missions</button>
+          </div>
+          <div class="case-pane on" id="casepane-evidence"></div>
+          <div class="case-pane" id="casepane-timeline"></div>
+          <div class="case-pane" id="casepane-relations"></div>
+          <div class="case-pane" id="casepane-missions"></div>
+        </div>
+        <div class="panel deep-panel">
+          <h3>SIMULATION PRESSURE</h3>
+          <div class="threat-strip">
+            <span id="threat-name">QUIET</span>
+            <div class="threat-bar"><div class="threat-fill" id="threat-fill"></div></div>
+            <span id="shift-clock">00:00</span>
+          </div>
+          <div class="npc-dialogue" id="npc-dialogue">
+            <div class="dialogue-speaker">NO CONTACT</div>
+            <div class="dialogue-line">Talk to someone on the Floor to open dynamic dialogue.</div>
+          </div>
+          <div class="choice-row" id="dialogue-choices"></div>
+        </div>
+      </div>
+
+      <div class="panel deep-panel" style="margin-top:8px">
+        <h3>DISCOVERY ARCHIVE</h3>
+        <div class="archive-count" id="archive-count">0 entries recovered</div>
+        <div class="codex-list" id="discovery-archive"></div>
       </div>
 
     </div>
@@ -1031,6 +1092,7 @@ function paintDungeon(){
   paintActiveRoom();
   if(typeof paintCampaign==="function")paintCampaign();
   if(typeof paintDynamicFloor==="function")paintDynamicFloor();
+  if(typeof paintDeepContent==="function")paintDeepContent();
 }
 
 $("dmap").onclick=e=>{
@@ -1155,7 +1217,7 @@ function clearCampaignSector(){
  if(C.cleared.length>=4)C.chapter=2;
  if(C.cleared.length>=6)C.chapter=3;
  if(C.cleared.length>=8){C.chapter=4;C.subject09=true;C.clues.push("SYSTEM // SUBJECT 09 = OPERATOR");}
- addItem(Math.random()<.5?"spark":"veil"); C.focus=Math.min(8,(C.focus||0)+3); C.stability=Math.min(100,(C.stability||50)+6); if(typeof unlockCinema==="function")unlockCinema(C.subject09?"subject09":"clear");
+ addItem(Math.random()<.5?"spark":"veil"); C.focus=Math.min(8,(C.focus||0)+3); C.stability=Math.min(100,(C.stability||50)+6); if(typeof unlockCinema==="function")unlockCinema(C.subject09?"subject09":"clear"); if(typeof progressDeepMissions==="function")progressDeepMissions("clear"); if(typeof deepState==="function"){deepState().threat=Math.max(0,deepState().threat-1);advanceDeep(10,0);}
  paintCampaign();paintDungeon();if(typeof paintDynamicFloor==="function")paintDynamicFloor();
 }
 function campaignProfileStage(p){
@@ -1172,8 +1234,19 @@ const FLOOR_AREAS=[
  {id:"foyer",name:"FOYER NODE",need:0,desc:"Neutral access layer. Actions are reliable.",bonus:"balanced"},
  {id:"mirror",name:"MIRROR HALL",need:1,desc:"Social echoes sharpen contact and trust.",bonus:"trust"},
  {id:"archive",name:"ARCHIVE STACK",need:2,desc:"Corrupted records improve investigation and intel.",bonus:"intel"},
+ {id:"memory",name:"MEMORY ARCHIVE",need:2,desc:"Stored autobiographical fragments can contradict live testimony.",bonus:"intel"},
+ {id:"apartment",name:"EMPTY APARTMENT",need:3,desc:"Domestic construct. Hidden relational traces are common.",bonus:"trust"},
+ {id:"hospital",name:"HOSPITAL CONSTRUCT",need:3,desc:"Clinical simulation with duplicated records and sealed rooms.",bonus:"stability"},
+ {id:"training",name:"TRAINING CONSTRUCT",need:4,desc:"Synthetic challenges strengthen Operator outcomes.",bonus:"balanced"},
  {id:"chapel",name:"MACHINE CHAPEL",need:4,desc:"Maintenance architecture improves stabilization.",bonus:"stability"},
- {id:"transit",name:"BLACK TRANSIT",need:6,desc:"High-risk route. More reality drift, stronger rewards.",bonus:"risk"}
+ {id:"deadcode",name:"DEAD CODE DISTRICT",need:5,desc:"Broken objects and abandoned programs create unstable evidence.",bonus:"risk"},
+ {id:"cathedral",name:"MACHINE CATHEDRAL",need:5,desc:"Machine theology and old control logic distort reality drift.",bonus:"stability"},
+ {id:"transit",name:"BLACK TRANSIT",need:6,desc:"High-risk route. More reality drift, stronger rewards.",bonus:"risk"},
+ {id:"subway",name:"SUBWAY SIX",need:6,desc:"Transit loops connect impossible locations and recurring NPCs.",bonus:"risk"},
+ {id:"hotel",name:"HOTEL 101",need:6,desc:"A luxury construct where rooms remember previous occupants.",bonus:"trust"},
+ {id:"red",name:"RED SECTOR",need:7,desc:"Hostile detection layer. Better rewards, greater threat.",bonus:"risk"},
+ {id:"ghost",name:"GHOST CITY",need:7,desc:"Unrendered streets contain profiles deleted from the ward.",bonus:"intel"},
+ {id:"kernel",name:"KERNEL GARDEN",need:8,desc:"Root-level simulation rules can be read here as living symbols.",bonus:"balanced"}
 ];
 const FLOOR_PEOPLE=[
  {id:"mara",name:"MARA VALE",role:"Signal Runner",line:"I move between rooms before the hallways finish rendering."},
@@ -1236,6 +1309,19 @@ function paintFloorPeople(){
   unlockCinema("contact");paintDynamicFloor();paintCampaign();
  });
 }
+
+const _paintFloorPeopleDeep=paintFloorPeople;
+paintFloorPeople=function(){
+ _paintFloorPeopleDeep();
+ const box=$("floor-people");if(!box)return;
+ const unlocked=DEEP_NPCS.filter((n,i)=>i<4+Math.min(8,ensureCampaign().cleared.length));
+ unlocked.slice(0,6).forEach(n=>{
+  const b=document.createElement("button");b.className="person-btn";b.dataset.deepnpc=n.id;
+  b.innerHTML=`<b>${n.name} · ${n.role}</b><span>${n.bio}</span>`;
+  b.onclick=()=>{if(!spendFocus(1))return;deepTalk(n.id);paintDynamicFloor();paintCampaign();};box.appendChild(b);
+ });
+};
+
 function dynamicActionDefs(p,st){
  const area=activeArea();if(!p)return[];
  return [
@@ -1250,12 +1336,12 @@ function dynamicActionDefs(p,st){
 function runDynamicAction(id){
  const p=S.at&&S.at.who;if(!p||p.sealed)return;
  const C=floorMech(),st=roomCampaignState(p),area=activeArea();
- if(id==="scan"){if(st.scan){toast("Already scanned");return}if(!spendFocus(1))return;campaignScan();gainFloorStat("intel",2);unlockCinema("scan")}
+ if(id==="scan"){if(st.scan){toast("Already scanned");return}if(!spendFocus(1))return;campaignScan();gainFloorStat("intel",2);unlockCinema("scan");advanceDeep(4,0)}
  else if(id==="psyche"){st.psyche=true;paintDynamicFloor();paintCampaign();S.sel=p;go("dossier");return}
- else if(id==="contact"){if(!spendFocus(1))return;st.contact=true;st.trust=(st.trust||0)+4;gainFloorStat("trust",4+(area.bonus==="trust"?2:0));unlockCinema("contact");toast("Contact established")}
- else if(id==="investigate"){if(!spendFocus(2))return;st.investigate=true;st.intel=(st.intel||0)+5;gainFloorStat("intel",5+(area.bonus==="intel"?3:0));C.reality=Math.min(100,C.reality+(area.bonus==="risk"?6:2));const clue=`${area.name} // ${p.name.split(" ")[0]} environment trace ${C.intel}`;if(!C.clues.includes(clue))C.clues.push(clue);unlockCinema("investigate");toast("Area evidence recovered")}
- else if(id==="stabilize"){if(!spendFocus(1))return;st.stabilize=true;gainFloorStat("stability",10+(area.bonus==="stability"?6:0));p.life=Math.min(100,p.life+4);S.stab=Math.min(100,S.stab+5);hud();toast("Link stabilized")}
- else if(id==="operator"){st.operator=true;unlockCinema("operator");paintDynamicFloor();paintCampaign();S.sel=p;S.incoming=[];go("session");return}
+ else if(id==="contact"){if(!spendFocus(1))return;st.contact=true;st.trust=(st.trust||0)+4;gainFloorStat("trust",4+(area.bonus==="trust"?2:0));unlockCinema("contact");advanceDeep(5,0);progressDeepMissions("contact");toast("Contact established")}
+ else if(id==="investigate"){if(!spendFocus(2))return;st.investigate=true;st.intel=(st.intel||0)+5;gainFloorStat("intel",5+(area.bonus==="intel"?3:0));C.reality=Math.min(100,C.reality+(area.bonus==="risk"?6:2));const clue=`${area.name} // ${p.name.split(" ")[0]} environment trace ${C.intel}`;if(!C.clues.includes(clue))C.clues.push(clue);unlockCinema("investigate");advanceDeep(8,area.bonus==="risk"?1:0);progressDeepMissions("investigate");toast("Area evidence recovered")}
+ else if(id==="stabilize"){if(!spendFocus(1))return;st.stabilize=true;gainFloorStat("stability",10+(area.bonus==="stability"?6:0));p.life=Math.min(100,p.life+4);S.stab=Math.min(100,S.stab+5);hud();deepState().threat=Math.max(0,deepState().threat-1);advanceDeep(5,0);toast("Link stabilized")}
+ else if(id==="operator"){st.operator=true;unlockCinema("operator");advanceDeep(6,deepState().threat>=3?1:0);paintDynamicFloor();paintCampaign();S.sel=p;S.incoming=[];go("session");return}
  paintDynamicFloor();paintCampaign();paintActiveRoom();
 }
 function paintDynamicFloor(){
@@ -1273,6 +1359,97 @@ function paintDynamicFloor(){
  if($("dynamic-floor-status"))$("dynamic-floor-status").textContent=campaignObjectiveComplete(st)?`READY TO CLEAR // ${p.name} · all core mechanics complete.`:`ACTIVE // ${p.name} · ${activeArea().name} · choose the next highlighted action.`;
 }
 
+
+/* === DEEP CONTENT ENGINE === */
+const DEEP_EVENTS=["Duplicate Door", "Impossible Timestamp", "Memory Spill", "Agent Reflection", "False Patient Alert", "Power Drop", "Looped Conversation", "Missing Profile", "Ghost Footsteps", "Archive Rewrite", "Static Choir", "Room Number Drift", "Identity Echo", "Blackout Frame", "Wrong Sunrise", "Machine Whisper", "Dead Phone Rings", "Portrait Changes", "Corridor Extends", "Mirror Delays", "Subject Swap", "Elevator Opens Sideways", "Unborn Memory", "Red Signal Sweep", "Someone Knocks", "Operator Card Bleeds", "System Clock Reverses", "Map Loses a Room", "Familiar Stranger", "False Emergency", "Shared Childhood Object", "Threat Ping", "Corrupted Birthdate", "Second Shadow", "Empty Chair Occupied", "Evidence Self-Deletes", "Voice From Vent", "Agent Name Collision", "Profile Claims You", "Old Ward Overlay", "Life Meter Lies", "Sanctum Relic Hums", "Camera Looks Away", "Patient Predicts Button", "Hallway Repeats", "Unknown Nurse", "Machine Prayer", "Emergency Exit Vanishes", "Static Writes a Name", "Subject 09 Trace"];
+const DEEP_MISSIONS=[{"name": "Find the Missing Runner", "desc": "Track a runner who vanished between two adjacent sectors."}, {"name": "Recover the Black Ledger", "desc": "Locate an archive that lists every reconstructed subject."}, {"name": "Silence the False Alarm", "desc": "Identify which emergency signal is deliberately attracting attention."}, {"name": "Escort a Memory Diver", "desc": "Protect an NPC while three memory fragments are verified."}, {"name": "Find the Ninth Door", "desc": "Collect three architectural inconsistencies pointing to Subject 09."}, {"name": "Decode the Machine Prayer", "desc": "Gather corrupted phrases from Machine Chapel and Cathedral."}, {"name": "Stabilize the Ghost Patient", "desc": "Treat a profile that appears in no roster."}, {"name": "Trade With Orin", "desc": "Bring two confirmed clues to the Archive Broker."}, {"name": "Follow the Subway Loop", "desc": "Map three impossible station transitions."}, {"name": "Break the Mirror Recurrence", "desc": "Contact the same person through three different identities."}, {"name": "Recover Operator Deck Fragment", "desc": "Find a lost card pattern in Training Construct."}, {"name": "Identify the Rogue Program", "desc": "Use dialogue contradictions to expose a nonhuman Floor contact."}];
+const DEEP_NPCS=[{"id": "mara", "name": "MARA VALE", "role": "Signal Runner", "bio": "Smuggles unstable memories between sectors."}, {"id": "kade", "name": "KADE ZERO", "role": "Deck Operator", "bio": "Knows why Operator cards alter architecture."}, {"id": "custodian", "name": "THE CUSTODIAN", "role": "System Maintenance", "bio": "Claims the ward predates the current simulation."}, {"id": "nine", "name": "RUNNER NINE", "role": "Unknown", "bio": "Appears only after the conspiracy thread bends back on itself."}, {"id": "orin", "name": "ORIN GLASS", "role": "Archive Broker", "bio": "Trades confirmed evidence for dangerous shortcuts."}, {"id": "ves", "name": "VES TANNER", "role": "Construct Medic", "bio": "Repairs signal links but distrusts Psyche models."}, {"id": "luma", "name": "LUMA REI", "role": "Memory Diver", "bio": "Can identify fabricated autobiographical fragments."}, {"id": "crow", "name": "CROW-17", "role": "Rogue Program", "bio": "Pretends to be human whenever threat exceeds WATCHED."}, {"id": "ash", "name": "ASH MORROW", "role": "Courier", "bio": "Carries side missions between districts."}, {"id": "selene", "name": "SELENE WARD", "role": "Machine Linguist", "bio": "Can read corrupted diagnostic syntax."}, {"id": "ivo", "name": "IVO QUELL", "role": "Ex-Agent", "bio": "Understands pursuit logic and escape windows."}, {"id": "miko", "name": "MIKO THREAD", "role": "Street Oracle", "bio": "Predicts rooms before they unlock."}];
+const EVIDENCE_STATES=["confirmed","suspected","contradictory","corrupted","fabricated"];
+const THREAT_LEVELS=["QUIET","WATCHED","TRACED","HUNTED","BREACH"];
+function deepState(){
+ const C=floorMech();
+ if(!C.deep)C.deep={minutes:0,threat:0,archive:[],events:[],missions:[],relations:{},subject:{},lastNPC:null};
+ return C.deep;
+}
+function subjectDeep(p){
+ const D=deepState();
+ if(!D.subject[p.id]){
+  const seed=p.id.split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+  const mk=(i)=>DEEP_EVENTS[(seed+i*7)%DEEP_EVENTS.length];
+  D.subject[p.id]={evidence:[
+   {text:mk(1)+" linked to "+p.unit,state:"suspected"},
+   {text:p.persona+" pattern repeats during "+mk(2).toLowerCase(),state:"confirmed"},
+   {text:p.shadow+" contradicts archive fragment "+(seed%9+1),state:"contradictory"}
+  ],timeline:["00:00 // intake signal registered","00:07 // first room render","00:13 // "+mk(3),"00:21 // profile checksum changed"],eventsSeen:0};
+ }
+ return D.subject[p.id];
+}
+function advanceDeep(minutes,threatDelta=0){
+ const D=deepState();D.minutes+=minutes;D.threat=Math.max(0,Math.min(4,D.threat+threatDelta));
+ if(D.minutes%20<minutes)triggerDeepEvent();
+ paintDeepContent();
+}
+function triggerDeepEvent(){
+ const D=deepState(),p=S.at&&S.at.who;
+ const idx=(D.minutes+D.events.length*11+(p?p.id.length:0))%DEEP_EVENTS.length;
+ const title=DEEP_EVENTS[idx],area=activeArea().name;
+ const ev=`${String(Math.floor(D.minutes/60)).padStart(2,"0")}:${String(D.minutes%60).padStart(2,"0")} // ${title} @ ${area}`;
+ D.events.push(ev); if(!D.archive.includes(title))D.archive.push(title);
+ if(p){const sd=subjectDeep(p);sd.eventsSeen++;sd.timeline.push(ev);if(sd.eventsSeen%2===0)sd.evidence.push({text:title+" produced a "+area+" trace",state:EVIDENCE_STATES[(sd.eventsSeen+D.threat)%EVIDENCE_STATES.length]});}
+ if(title.includes("Agent")||title.includes("Threat")||title.includes("Red"))D.threat=Math.min(4,D.threat+1);
+ if(title.includes("Memory")||title.includes("Archive"))gainFloorStat("intel",1);
+ toast(title);
+}
+function addDeepMission(){
+ const D=deepState(),next=DEEP_MISSIONS.find(m=>!D.missions.some(x=>x.name===m.name));if(!next)return;
+ D.missions.push({...next,done:false,progress:0});toast("Side mission · "+next.name);paintDeepContent();
+}
+function progressDeepMissions(kind){
+ const D=deepState();
+ D.missions.forEach(m=>{if(m.done)return;
+  if((kind==="investigate"&&/Find|Recover|Decode|Identify|Map|Follow/i.test(m.name))||(kind==="contact"&&/Escort|Trade|Mirror|Rogue/i.test(m.name))||(kind==="clear"&&/Stabilize|Silence|Break/i.test(m.name))){
+   m.progress++;if(m.progress>=3){m.done=true;floorMech().focus=Math.min(8,floorMech().focus+2);gainFloorStat("intel",3);D.archive.push("MISSION COMPLETE // "+m.name);toast("Mission complete · "+m.name);}
+  }
+ });
+}
+function evidenceClass(st){return "state-"+st}
+function paintDeepContent(){
+ const D=deepState(),p=S.at&&S.at.who;
+ if($("shift-clock"))$("shift-clock").textContent=String(Math.floor(D.minutes/60)).padStart(2,"0")+":"+String(D.minutes%60).padStart(2,"0");
+ if($("threat-name"))$("threat-name").textContent=THREAT_LEVELS[D.threat];
+ if($("threat-fill"))$("threat-fill").style.width=(D.threat/4*100)+"%";
+ if(p){const sd=subjectDeep(p);
+  if($("casepane-evidence"))$("casepane-evidence").innerHTML=sd.evidence.map(e=>`<div class="ev-row"><span class="ev-state ${evidenceClass(e.state)}">${e.state.toUpperCase()}</span>${e.text}</div>`).join("");
+  if($("casepane-timeline"))$("casepane-timeline").innerHTML=sd.timeline.slice(-12).map(x=>`<div class="timeline-row">${x}</div>`).join("");
+  const rels=Object.entries(D.relations).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if($("casepane-relations"))$("casepane-relations").innerHTML=rels.length?rels.map(([id,v])=>{const n=DEEP_NPCS.find(x=>x.id===id);return `<div class="rel-row">${n?n.name:id} · TRUST ${v}</div>`}).join(""):'<div class="rel-row">No recurring contacts established.</div>';
+  if($("casepane-missions"))$("casepane-missions").innerHTML=D.missions.length?D.missions.map(m=>`<div class="mission-row">${m.done?"✓":"○"} <b>${m.name}</b><br>${m.desc} · ${Math.min(3,m.progress)}/3</div>`).join(""):'<div class="mission-row">No side missions. Investigate or contact recurring NPCs.</div>';
+ } else {
+  ["casepane-evidence","casepane-timeline","casepane-relations","casepane-missions"].forEach(id=>{if($(id))$(id).innerHTML='<div class="ev-row">Select a populated room.</div>'});
+ }
+ if($("archive-count"))$("archive-count").textContent=D.archive.length+" entries recovered";
+ if($("discovery-archive"))$("discovery-archive").innerHTML=D.archive.slice(-20).reverse().map((x,i)=>`<div class="codex-entry"><b>ENTRY ${String(D.archive.length-i).padStart(3,"0")}</b>${x}</div>`).join("")||'<div class="codex-entry"><b>EMPTY</b>No discoveries recovered.</div>';
+}
+function deepTalk(npcId){
+ const D=deepState(),npc=DEEP_NPCS.find(x=>x.id===npcId)||DEEP_NPCS[0],p=S.at&&S.at.who;
+ D.lastNPC=npc.id;D.relations[npc.id]=(D.relations[npc.id]||0)+1;if(p)roomCampaignState(p).contact=true;
+ const trust=D.relations[npc.id];
+ if($("npc-dialogue"))$("npc-dialogue").innerHTML=`<div class="dialogue-speaker">${npc.name} // ${npc.role}</div><div class="dialogue-line">${npc.bio} ${trust>2?"You've proven you come back for answers. I can tell you more.":"I don't know yet if the ward sent you or if you found it."}</div>`;
+ if($("dialogue-choices"))$("dialogue-choices").innerHTML=`<button class="choice-btn" data-dchoice="ask">ASK ABOUT THE WARD<br><small>+Intel</small></button><button class="choice-btn" data-dchoice="trust">SHARE A CLUE<br><small>+Trust</small></button><button class="choice-btn" data-dchoice="mission">ASK FOR WORK<br><small>Side mission</small></button><button class="choice-btn" data-dchoice="leave">END CONTACT<br><small>Advance clock</small></button>`;
+ $("dialogue-choices").querySelectorAll("[data-dchoice]").forEach(b=>b.onclick=()=>deepChoice(b.dataset.dchoice));advanceDeep(3,0);progressDeepMissions("contact");
+}
+function deepChoice(choice){
+ const D=deepState(),npc=DEEP_NPCS.find(x=>x.id===D.lastNPC),p=S.at&&S.at.who;if(!npc)return;
+ if(choice==="ask"){gainFloorStat("intel",2);if(D.threat>=2)D.threat=Math.min(4,D.threat+1);if(p)subjectDeep(p).evidence.push({text:npc.name+" described "+DEEP_EVENTS[(D.minutes+5)%DEEP_EVENTS.length],state:"suspected"});advanceDeep(4,0);}
+ if(choice==="trust"){D.relations[npc.id]=(D.relations[npc.id]||0)+2;gainFloorStat("trust",2);if(p)subjectDeep(p).evidence.push({text:"Shared clue acknowledged by "+npc.name,state:"confirmed"});advanceDeep(2,0);}
+ if(choice==="mission"){addDeepMission();advanceDeep(2,0);}
+ if(choice==="leave")advanceDeep(5,0);
+ paintDeepContent();
+}
+function installDeepTabs(){
+ document.querySelectorAll("[data-casepane]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-casepane]").forEach(x=>x.classList.remove("on"));document.querySelectorAll(".case-pane").forEach(x=>x.classList.remove("on"));b.classList.add("on");$("casepane-"+b.dataset.casepane).classList.add("on");});
+}
+
 function bindCampaign(){
  if($("sector-scan"))$("sector-scan").onclick=campaignScan;
  if($("sector-psyche"))$("sector-psyche").onclick=campaignPsyche;
@@ -1283,6 +1460,8 @@ bindCampaign();
 paintCampaign();
 if(typeof paintDynamicFloor==="function")paintDynamicFloor();
 if(typeof unlockCinema==="function" && ensureCampaign().scenes.length===0)unlockCinema("foyer");
+if(typeof installDeepTabs==="function")installDeepTabs();
+if(typeof paintDeepContent==="function")paintDeepContent();
 
 </script>
 </body>
