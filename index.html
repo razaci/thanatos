@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD · MATRIX CAMPAIGN</title>
+  <title>THANATOS WARD · MATRIX LIVING FLOOR</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -217,6 +217,35 @@ html,body{background:#010403;color:var(--text)}
 .boss-box b{color:#ffe69a}
 @media(max-width:600px){.campaign-strip{grid-template-columns:1fr}.reality-meter{min-width:0}}
 
+
+/* === LIVING FLOOR / DYNAMIC MISSION DECK === */
+.floor-mech-hud{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.floor-mech-stat{padding:7px;border:1px solid #56c97a33;background:#041008}
+.floor-mech-stat b{display:block;font:7px "Share Tech Mono",monospace;color:#6fcf8d;letter-spacing:.12em}
+.floor-mech-stat span{display:block;font:13px "Share Tech Mono",monospace;color:#e4ffea;margin-top:3px}
+.dynamic-deck{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:8px}
+.dynamic-action{min-height:58px;padding:8px;text-align:left;border:1px solid #4cd47755;background:linear-gradient(180deg,#07150c,#020704)}
+.dynamic-action strong{display:block;font:8px "Share Tech Mono",monospace;color:#d9ffe4;letter-spacing:.08em}
+.dynamic-action small{display:block;font:7px/1.35 "Share Tech Mono",monospace;color:#7da88a;margin-top:4px}
+.dynamic-action.ready{border-color:#79ff9d99}.dynamic-action.done{opacity:.55;border-color:#4b765d44}
+.dynamic-action:disabled{opacity:.3}
+.floor-world-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.world-panel{padding:9px}.world-panel h3{font:8px "Share Tech Mono";letter-spacing:.13em;color:#8df6aa;margin-bottom:6px}
+.area-list,.people-list{display:grid;gap:5px}
+.area-btn,.person-btn{padding:7px;text-align:left;border:1px solid #4c785d44;background:#061109}
+.area-btn.on{border-color:#8affab;color:#dffff0}.area-btn.locked{opacity:.3}
+.area-btn b,.person-btn b{display:block;font:8px "Share Tech Mono";color:#dffff0}
+.area-btn span,.person-btn span{display:block;font:7px/1.35 "Share Tech Mono";color:#769682;margin-top:3px}
+.cinema-panel{margin-top:8px;padding:0;overflow:hidden;border:1px solid #62e58b55;background:#020604;position:relative}
+.cinema-screen{min-height:150px;padding:18px;background:radial-gradient(circle at 80% 20%,rgba(55,255,118,.10),transparent 28%),linear-gradient(180deg,rgba(0,18,7,.88),rgba(0,4,2,.98))}
+.cinema-kicker{font:7px "Share Tech Mono";letter-spacing:.16em;color:#66d889}
+.cinema-title{font:14px "Share Tech Mono";color:#eaffef;margin:8px 0}
+.cinema-copy{font:9px/1.6 "Share Tech Mono";color:#9bc7a7;max-width:720px}
+.cinema-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.scene-flash{animation:scenePulse .7s ease}
+@keyframes scenePulse{0%{filter:brightness(1)}40%{filter:brightness(1.6)}100%{filter:brightness(1)}}
+@media(max-width:680px){.floor-mech-hud{grid-template-columns:repeat(2,1fr)}.dynamic-deck,.floor-world-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -346,6 +375,38 @@ html,body{background:#010403;color:var(--text)}
           <div id="floor-room-actions"><div class="floor-lock">No room selected yet.</div></div>
         </div>
       </div>
+
+      <div class="panel floor-card" style="margin-top:8px">
+        <h3>DYNAMIC MISSION DECK</h3>
+        <div class="floor-mech-hud">
+          <div class="floor-mech-stat"><b>FOCUS</b><span id="floor-focus">6</span></div>
+          <div class="floor-mech-stat"><b>INTEL</b><span id="floor-intel">0</span></div>
+          <div class="floor-mech-stat"><b>TRUST</b><span id="floor-trust">0</span></div>
+          <div class="floor-mech-stat"><b>STABILITY</b><span id="floor-stability">50</span></div>
+        </div>
+        <div class="dynamic-deck" id="dynamic-floor-actions"></div>
+        <div class="floor-lock" id="dynamic-floor-status" style="margin-top:7px">Select a live room. The mission deck will build itself from that person and area.</div>
+      </div>
+
+      <div class="floor-world-grid">
+        <div class="panel world-panel">
+          <h3>AREA NETWORK</h3>
+          <div class="area-list" id="floor-areas"></div>
+        </div>
+        <div class="panel world-panel">
+          <h3>PEOPLE IN THE SIGNAL</h3>
+          <div class="people-list" id="floor-people"></div>
+        </div>
+      </div>
+
+      <div class="panel cinema-panel">
+        <div class="cinema-screen" id="cinema-screen">
+          <div class="cinema-kicker">CINEMA // BUFFER EMPTY</div>
+          <div class="cinema-title">No scene loaded.</div>
+          <div class="cinema-copy">Room actions, evidence, and cleared sectors unlock short story scenes here.</div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -968,6 +1029,8 @@ function paintDungeon(){
         : p.name+" · "+p.unit+" · "+p.type+" · "+p.persona+" · life "+Math.round(p.life)+"%")
       : "Empty cell.";
   paintActiveRoom();
+  if(typeof paintCampaign==="function")paintCampaign();
+  if(typeof paintDynamicFloor==="function")paintDynamicFloor();
 }
 
 $("dmap").onclick=e=>{
@@ -1015,7 +1078,7 @@ const CAMPAIGN_LORE={
  sable:{anomaly:"One childhood room exists in the memory records of four different subjects.",clue:"SABLE // shared childhood room",boss:"THE ONE MEMORY"}
 };
 function ensureCampaign(){
- if(!S.campaign)S.campaign={chapter:1,reality:0,cleared:[],clues:[],rooms:{},bosses:0,subject09:false};
+ if(!S.campaign)S.campaign={chapter:1,reality:0,cleared:[],clues:[],rooms:{},bosses:0,subject09:false,focus:6,intel:0,trust:0,stability:50,area:"foyer",scenes:[],sceneIndex:0};
  return S.campaign;
 }
 function campaignRoomKey(){
@@ -1023,10 +1086,10 @@ function campaignRoomKey(){
 }
 function roomCampaignState(p){
  const C=ensureCampaign();
- if(!C.rooms[p.id])C.rooms[p.id]={scan:false,psyche:false,operator:false,cleared:false};
+ if(!C.rooms[p.id])C.rooms[p.id]={scan:false,psyche:false,operator:false,investigate:false,contact:false,stabilize:false,cleared:false,trust:0,intel:0};
  return C.rooms[p.id];
 }
-function campaignObjectiveComplete(st){return !!(st.scan&&st.psyche&&st.operator)}
+function campaignObjectiveComplete(st){return !!(st.scan&&st.psyche&&st.contact&&st.investigate&&st.operator)}
 function paintCampaign(){
  const C=ensureCampaign();
  if($("campaign-chapter"))$("campaign-chapter").textContent="RECONSTRUCT // CHAPTER "+String(C.chapter).padStart(2,"0");
@@ -1046,7 +1109,11 @@ function paintCampaign(){
   const st=roomCampaignState(p), lore=CAMPAIGN_LORE[p.id]||{};
   $("sector-title").textContent=(st.cleared?"CLEARED // ":"ACTIVE // ")+p.name+" · "+p.unit;
   $("sector-objectives").innerHTML=[
-   ["Scan the signal",st.scan],["Open Psyche and inspect the pattern",st.psyche],["Enter Operator and make contact",st.operator]
+   ["Scan the signal",st.scan],
+   ["Inspect Psyche",st.psyche],
+   ["Contact the person",st.contact],
+   ["Investigate the area",st.investigate],
+   ["Enter Operator",st.operator]
   ].map(x=>`<div class="objective-row ${x[1]?"done":""}">${x[1]?"✓":"○"} ${x[0]}</div>`).join("");
   $("sector-anomaly").textContent=st.scan?(lore.anomaly||"Signal irregularity confirmed."):"Anomaly masked. Scan the signal.";
   $("clear-sector").disabled=st.cleared||!campaignObjectiveComplete(st);
@@ -1070,11 +1137,11 @@ function campaignScan(){
 }
 function campaignPsyche(){
  const p=S.at&&S.at.who;if(!p||p.sealed)return;
- roomCampaignState(p).psyche=true;S.sel=p;paintCampaign();go("dossier");
+ roomCampaignState(p).psyche=true;S.sel=p;paintCampaign();if(typeof paintDynamicFloor==="function")paintDynamicFloor();go("dossier");
 }
 function campaignOperator(){
  const p=S.at&&S.at.who;if(!p||p.sealed)return;
- roomCampaignState(p).operator=true;S.sel=p;S.incoming=[];paintCampaign();go("session");
+ roomCampaignState(p).operator=true;S.sel=p;S.incoming=[];if(typeof unlockCinema==="function")unlockCinema("operator");paintCampaign();if(typeof paintDynamicFloor==="function")paintDynamicFloor();go("session");
 }
 function clearCampaignSector(){
  const p=S.at&&S.at.who;if(!p)return;
@@ -1088,8 +1155,8 @@ function clearCampaignSector(){
  if(C.cleared.length>=4)C.chapter=2;
  if(C.cleared.length>=6)C.chapter=3;
  if(C.cleared.length>=8){C.chapter=4;C.subject09=true;C.clues.push("SYSTEM // SUBJECT 09 = OPERATOR");}
- addItem(Math.random()<.5?"spark":"veil");
- paintCampaign();paintDungeon();
+ addItem(Math.random()<.5?"spark":"veil"); C.focus=Math.min(8,(C.focus||0)+3); C.stability=Math.min(100,(C.stability||50)+6); if(typeof unlockCinema==="function")unlockCinema(C.subject09?"subject09":"clear");
+ paintCampaign();paintDungeon();if(typeof paintDynamicFloor==="function")paintDynamicFloor();
 }
 function campaignProfileStage(p){
  const C=ensureCampaign(),st=C.rooms[p.id]||{};
@@ -1099,6 +1166,113 @@ function campaignProfileStage(p){
  if(st.scan)return"INVESTIGATED";
  return"UNKNOWN";
 }
+
+/* === LIVING FLOOR MECHANICS === */
+const FLOOR_AREAS=[
+ {id:"foyer",name:"FOYER NODE",need:0,desc:"Neutral access layer. Actions are reliable.",bonus:"balanced"},
+ {id:"mirror",name:"MIRROR HALL",need:1,desc:"Social echoes sharpen contact and trust.",bonus:"trust"},
+ {id:"archive",name:"ARCHIVE STACK",need:2,desc:"Corrupted records improve investigation and intel.",bonus:"intel"},
+ {id:"chapel",name:"MACHINE CHAPEL",need:4,desc:"Maintenance architecture improves stabilization.",bonus:"stability"},
+ {id:"transit",name:"BLACK TRANSIT",need:6,desc:"High-risk route. More reality drift, stronger rewards.",bonus:"risk"}
+];
+const FLOOR_PEOPLE=[
+ {id:"mara",name:"MARA VALE",role:"Signal Runner",line:"I move between rooms before the hallways finish rendering."},
+ {id:"kade",name:"KADE ZERO",role:"Deck Operator",line:"Every person leaves a pattern. Every pattern leaves a door."},
+ {id:"custodian",name:"THE CUSTODIAN",role:"System Maintenance",line:"The clinic was not built to cure anyone. It was built to classify escape."},
+ {id:"nine",name:"RUNNER NINE",role:"Unknown",line:"If you can read this, the ninth room already exists."}
+];
+const CINEMA_SCENES={
+ foyer:{title:"THE HALLWAY BREATHES",text:"The access corridor rebuilds itself one tile at a time. Behind the green rain, eight room-signatures flicker. One of them briefly reads OPERATOR before correcting itself."},
+ scan:{title:"A MEMORY WITH TWO TIMESTAMPS",text:"The scanner freezes on a frame that should not exist. The subject is standing in the room twice: once now, and once several seconds before the room was generated."},
+ contact:{title:"THE PERSON LOOKS BACK",text:"For the first time, the subject stops behaving like a diagnostic record. Their eyes track the camera position. They ask: 'Are you in here too?'"},
+ investigate:{title:"BEHIND THE WALL",text:"A maintenance seam opens in the simulated wall. Behind it is no machinery—only rows of patient names, each connected to the same blank ninth file."},
+ operator:{title:"THE LOOP ANSWERS",text:"The Operator deck connects. The card symbols do not merely affect the subject; the room architecture responds, as though treatment choices are also commands to the simulation."},
+ clear:{title:"SECTOR COLLAPSE",text:"The room does not disappear when cleared. It becomes transparent. Through it, another version of the ward is visible underneath, older and darker, with nine occupied rooms."},
+ subject09:{title:"SUBJECT 09",text:"The conspiracy thread completes a circuit. The ninth profile opens without being selected. Name: OPERATOR. Location: OUTSIDE OBSERVATION LAYER. Status: AWAKE?"}
+};
+function floorMech(){
+ const C=ensureCampaign();
+ if(typeof C.focus!=="number")C.focus=6;
+ if(typeof C.intel!=="number")C.intel=0;
+ if(typeof C.trust!=="number")C.trust=0;
+ if(typeof C.stability!=="number")C.stability=50;
+ if(!C.area)C.area="foyer";
+ if(!Array.isArray(C.scenes))C.scenes=[];
+ return C;
+}
+function activeArea(){const C=floorMech();return FLOOR_AREAS.find(a=>a.id===C.area)||FLOOR_AREAS[0]}
+function spendFocus(n){const C=floorMech();if(C.focus<n){toast("Focus depleted · stabilize or clear a sector");return false}C.focus-=n;return true}
+function gainFloorStat(kind,n){const C=floorMech();if(kind==="intel")C.intel=Math.min(99,C.intel+n);if(kind==="trust")C.trust=Math.min(99,C.trust+n);if(kind==="stability")C.stability=Math.max(0,Math.min(100,C.stability+n))}
+function unlockCinema(key){const C=floorMech();if(!C.scenes.includes(key))C.scenes.push(key);C.sceneIndex=Math.max(0,C.scenes.indexOf(key));paintCinema(key)}
+function paintCinema(forceKey){
+ const C=floorMech(),box=$("cinema-screen");if(!box)return;
+ const key=forceKey||C.scenes[C.sceneIndex]||null;
+ if(!key||!CINEMA_SCENES[key]){box.innerHTML='<div class="cinema-kicker">CINEMA // BUFFER EMPTY</div><div class="cinema-title">No scene loaded.</div><div class="cinema-copy">Complete room mechanics to unlock story scenes.</div>';return}
+ const sc=CINEMA_SCENES[key],idx=C.scenes.indexOf(key);
+ box.classList.remove("scene-flash");void box.offsetWidth;box.classList.add("scene-flash");
+ box.innerHTML=`<div class="cinema-kicker">CINEMA // SCENE ${String(idx+1).padStart(2,"0")}</div><div class="cinema-title">${sc.title}</div><div class="cinema-copy">${sc.text}</div><div class="cinema-actions"><button class="mini panel" id="cin-prev" ${idx<=0?"disabled":""}>Previous</button><button class="mini panel" id="cin-next" ${idx>=C.scenes.length-1?"disabled":""}>Next</button></div>`;
+ if($("cin-prev"))$("cin-prev").onclick=()=>{C.sceneIndex=Math.max(0,idx-1);paintCinema()};
+ if($("cin-next"))$("cin-next").onclick=()=>{C.sceneIndex=Math.min(C.scenes.length-1,idx+1);paintCinema()};
+}
+function paintFloorAreas(){
+ const C=floorMech(),box=$("floor-areas");if(!box)return;
+ box.innerHTML=FLOOR_AREAS.map(a=>{const open=C.cleared.length>=a.need;return `<button class="area-btn ${C.area===a.id?"on":""} ${open?"":"locked"}" data-area="${a.id}" ${open?"":"disabled"}><b>${a.name}${C.area===a.id?" · ACTIVE":""}</b><span>${open?a.desc:`LOCKED · clear ${a.need} sectors`}</span></button>`}).join("");
+ box.querySelectorAll("[data-area]").forEach(b=>b.onclick=()=>{C.area=b.dataset.area;toast("Area route · "+activeArea().name);paintFloorAreas();paintDynamicFloor()});
+}
+function nearbyPeople(p){
+ const C=floorMech(),list=[...FLOOR_PEOPLE];
+ if(p){list.unshift(...S.P.filter(x=>x.id!==p.id&&!x.sealed).slice(0,2).map(x=>({id:"subject-"+x.id,name:x.name,role:"Nearby Subject",line:`${x.persona} signal overlaps this room.`})))}
+ return (C.subject09?list:list.filter(x=>x.id!=="nine")).slice(0,5);
+}
+function paintFloorPeople(){
+ const p=S.at&&S.at.who,box=$("floor-people");if(!box)return;
+ const people=nearbyPeople(p);
+ box.innerHTML=people.map(x=>`<button class="person-btn" data-person="${x.id}"><b>${x.name} · ${x.role}</b><span>${x.line}</span></button>`).join("");
+ box.querySelectorAll("[data-person]").forEach(b=>b.onclick=()=>{
+  const x=people.find(q=>q.id===b.dataset.person);if(!x||!spendFocus(1))return;
+  gainFloorStat("trust",2+(activeArea().bonus==="trust"?2:0));
+  if(p){const st=roomCampaignState(p);st.contact=true;st.trust=(st.trust||0)+3}
+  if($("dynamic-floor-status"))$("dynamic-floor-status").textContent=`CONTACT // ${x.name}: ${x.line}`;
+  unlockCinema("contact");paintDynamicFloor();paintCampaign();
+ });
+}
+function dynamicActionDefs(p,st){
+ const area=activeArea();if(!p)return[];
+ return [
+  {id:"scan",label:"SCAN SIGNAL",desc:"Reveal the room anomaly and add it to the conspiracy thread.",cost:1,done:st.scan,ready:true},
+  {id:"psyche",label:"INSPECT PSYCHE",desc:"Open the Ghost Layer using this person as the active case.",cost:0,done:st.psyche,ready:st.scan},
+  {id:"contact",label:"TALK / CONTACT",desc:"Make human contact. Builds Trust and changes later actions.",cost:1,done:st.contact,ready:st.scan},
+  {id:"investigate",label:"INVESTIGATE AREA",desc:`Search ${area.name}. Builds Intel and may reveal a cinematic clue.`,cost:2,done:st.investigate,ready:st.scan},
+  {id:"stabilize",label:"STABILIZE LINK",desc:"Recover signal stability and protect the active subject.",cost:1,done:st.stabilize,ready:st.contact},
+  {id:"operator",label:"ENTER OPERATOR",desc:"Use the existing card mechanics with this same active subject.",cost:0,done:st.operator,ready:st.psyche&&st.contact}
+ ];
+}
+function runDynamicAction(id){
+ const p=S.at&&S.at.who;if(!p||p.sealed)return;
+ const C=floorMech(),st=roomCampaignState(p),area=activeArea();
+ if(id==="scan"){if(st.scan){toast("Already scanned");return}if(!spendFocus(1))return;campaignScan();gainFloorStat("intel",2);unlockCinema("scan")}
+ else if(id==="psyche"){st.psyche=true;paintDynamicFloor();paintCampaign();S.sel=p;go("dossier");return}
+ else if(id==="contact"){if(!spendFocus(1))return;st.contact=true;st.trust=(st.trust||0)+4;gainFloorStat("trust",4+(area.bonus==="trust"?2:0));unlockCinema("contact");toast("Contact established")}
+ else if(id==="investigate"){if(!spendFocus(2))return;st.investigate=true;st.intel=(st.intel||0)+5;gainFloorStat("intel",5+(area.bonus==="intel"?3:0));C.reality=Math.min(100,C.reality+(area.bonus==="risk"?6:2));const clue=`${area.name} // ${p.name.split(" ")[0]} environment trace ${C.intel}`;if(!C.clues.includes(clue))C.clues.push(clue);unlockCinema("investigate");toast("Area evidence recovered")}
+ else if(id==="stabilize"){if(!spendFocus(1))return;st.stabilize=true;gainFloorStat("stability",10+(area.bonus==="stability"?6:0));p.life=Math.min(100,p.life+4);S.stab=Math.min(100,S.stab+5);hud();toast("Link stabilized")}
+ else if(id==="operator"){st.operator=true;unlockCinema("operator");paintDynamicFloor();paintCampaign();S.sel=p;S.incoming=[];go("session");return}
+ paintDynamicFloor();paintCampaign();paintActiveRoom();
+}
+function paintDynamicFloor(){
+ const C=floorMech(),p=S.at&&S.at.who,deck=$("dynamic-floor-actions");
+ if($("floor-focus"))$("floor-focus").textContent=C.focus;
+ if($("floor-intel"))$("floor-intel").textContent=C.intel;
+ if($("floor-trust"))$("floor-trust").textContent=C.trust;
+ if($("floor-stability"))$("floor-stability").textContent=C.stability;
+ paintFloorAreas();paintFloorPeople();paintCinema();
+ if(!deck)return;
+ if(!p||p.sealed){deck.innerHTML='<div class="floor-lock">Select a live subject room to generate mission actions.</div>';if($("dynamic-floor-status"))$("dynamic-floor-status").textContent="The Floor deck is waiting for a live room.";return}
+ const st=roomCampaignState(p);
+ deck.innerHTML=dynamicActionDefs(p,st).map(a=>`<button class="dynamic-action ${a.done?"done":a.ready?"ready":""}" data-dyn="${a.id}" ${(!a.ready||a.done)?"disabled":""}><strong>${a.done?"✓ ":""}${a.label} ${a.cost?`· ${a.cost} FOCUS`:""}</strong><small>${a.done?"Completed for this room.":a.ready?a.desc:"LOCKED · complete the action above it first."}</small></button>`).join("");
+ deck.querySelectorAll("[data-dyn]").forEach(b=>b.onclick=()=>runDynamicAction(b.dataset.dyn));
+ if($("dynamic-floor-status"))$("dynamic-floor-status").textContent=campaignObjectiveComplete(st)?`READY TO CLEAR // ${p.name} · all core mechanics complete.`:`ACTIVE // ${p.name} · ${activeArea().name} · choose the next highlighted action.`;
+}
+
 function bindCampaign(){
  if($("sector-scan"))$("sector-scan").onclick=campaignScan;
  if($("sector-psyche"))$("sector-psyche").onclick=campaignPsyche;
@@ -1107,6 +1281,8 @@ function bindCampaign(){
 }
 bindCampaign();
 paintCampaign();
+if(typeof paintDynamicFloor==="function")paintDynamicFloor();
+if(typeof unlockCinema==="function" && ensureCampaign().scenes.length===0)unlockCinema("foyer");
 
 </script>
 </body>
