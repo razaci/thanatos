@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD · CH1 GUIDE + DEEP OPERATOR</title>
+  <title>THANATOS REBORN · ARCADE OVERHAUL</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -159,7 +159,7 @@ html,body{background:#010403;color:var(--text)}
 @media(max-width:650px){.matrix-tabs{grid-template-columns:repeat(2,1fr)}.mx-grid{grid-template-columns:1fr}.mx-actions{grid-template-columns:1fr}}
 
 
-/* ACTIVE FLOOR CONSOLE */
+/* ACTIVE CASE */
 .floor-console{display:grid;grid-template-columns:1.2fr .8fr;gap:8px;margin-top:8px}
 .floor-card{padding:10px}
 .floor-card h3{margin:0 0 6px;font:9px "Share Tech Mono";letter-spacing:.14em;color:#9fffc8}
@@ -327,6 +327,71 @@ html,body{background:#010403;color:var(--text)}
 .card.trauma .resolve{margin-top:8px;height:7px;background:#1a1010;border:1px solid #ff667733}
 .card.trauma .resolve span{display:block;height:100%;background:linear-gradient(90deg,#ff765f,#ffd36a);transition:width .2s}
 
+
+/* === THANATOS REBORN / ARCADE OVERHAUL === */
+:root{
+  --arcade:#53f5d2;--arcade2:#ff5de4;--gold:#ffd75a;--ink:#030609;
+}
+body{background:#020508}
+.logo em{color:var(--arcade2)}
+.dock{grid-template-columns:repeat(6,1fr)!important}
+.dock .slot{min-width:0}
+.reborn-hero{
+  display:grid;grid-template-columns:1.25fr .75fr;gap:10px;margin-bottom:10px;
+  border:1px solid #53f5d255;background:
+  radial-gradient(circle at 15% 20%,#53f5d217,transparent 35%),
+  radial-gradient(circle at 90% 10%,#ff5de415,transparent 35%),#05090c;
+  padding:14px;
+}
+.reborn-hero h2{font:700 19px Orbitron;margin:0 0 6px;color:#eafffb}
+.reborn-hero p{font:9px/1.55 "Share Tech Mono";color:#91afa9;margin:0}
+.reborn-loop{display:grid;gap:5px}
+.reborn-step{padding:7px 9px;border-left:3px solid #53f5d2;background:#07110f;font:8px "Share Tech Mono";color:#b9e8dd}
+.arcade-launch{
+  min-height:52px;border:2px solid #53f5d2;background:#061512;color:#dffff8;
+  font:700 10px Orbitron;letter-spacing:.12em;padding:10px;
+}
+.arcade-launch:hover{border-color:#fff;color:#fff}
+.run-shell{display:grid;grid-template-columns:1fr .36fr;gap:10px}
+.run-main,.run-side{padding:11px}
+.run-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+.run-tab{padding:10px 6px;border:1px solid #4f7b7655;background:#07100f;color:#91bdb5;font:8px "Share Tech Mono"}
+.run-tab.on{border-color:#53f5d2;color:#dffff8;background:#0a201b}
+.run-game{display:none}.run-game.on{display:block}
+.run-card{padding:12px;border:1px solid #4b696655;background:#050a0b}
+.run-card h2{font:700 15px Orbitron;color:#eafffb;margin:0 0 5px}
+.run-card p{font:8px/1.5 "Share Tech Mono";color:#88aaa4}
+.run-hud{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:8px 0}
+.run-stat{padding:7px;border:1px solid #4e777255;background:#06100f;text-align:center}
+.run-stat b{display:block;font:6px "Share Tech Mono";color:#6e9d95}.run-stat span{font:700 12px Orbitron;color:#eafffb}
+.signal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;max-width:460px;margin:10px auto}
+.signal-cell{aspect-ratio:1;border:1px solid #34534e;background:#07100f;color:#4d7b72;font:700 20px Orbitron}
+.signal-cell.live{background:#123c33;border-color:#53f5d2;color:#eafffb;box-shadow:0 0 18px #53f5d244}
+.signal-cell.decoy{border-color:#ff5de455;color:#ff9fee}
+.memory-pads{display:grid;grid-template-columns:repeat(2,120px);justify-content:center;gap:10px;margin:14px auto}
+.memory-pad{height:92px;border:2px solid #3b5552;background:#07100f;font:700 14px Orbitron;color:#71918c}
+.memory-pad.flash{background:#17362f;border-color:#fff;color:#fff;box-shadow:0 0 22px #53f5d277}
+.memory-pad.bad{background:#32101d;border-color:#ff5d8d}
+.trace-stage{height:260px;position:relative;overflow:hidden;border:1px solid #4f6e6955;background:
+ linear-gradient(90deg,transparent 32.7%,#ffffff0d 33%,transparent 33.3%,transparent 66%,#ffffff0d 66.3%,transparent 66.6%),
+ linear-gradient(#06100f,#020607)}
+.trace-player,.trace-agent{position:absolute;width:26%;left:4%;height:28px;display:flex;align-items:center;justify-content:center;font:700 8px Orbitron;transition:left .12s,top .2s}
+.trace-player{bottom:12px;background:#123b32;border:1px solid #53f5d2;color:#cffff4}
+.trace-agent{top:0;background:#2b0c18;border:1px solid #ff5d8d;color:#ffc4d5}
+.lane-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}
+.run-action{padding:10px;border:1px solid #53f5d288;background:#071714;color:#d8fff6;font:8px Orbitron}
+.run-action.hot{border-color:#ff5de477;color:#ffd3f7}
+.reward-feed{display:grid;gap:5px;max-height:240px;overflow:auto}
+.reward-line{padding:7px;border-left:2px solid #53f5d2;background:#06100f;font:7px/1.45 "Share Tech Mono";color:#9dc2bb}
+.run-meter{height:8px;background:#101615;border:1px solid #36514d;margin:4px 0 8px}.run-meter span{display:block;height:100%;background:linear-gradient(90deg,#53f5d2,#ff5de4)}
+.back-case{width:100%;margin-top:7px}
+@media(max-width:760px){
+ .dock{grid-template-columns:repeat(3,1fr)!important}
+ .reborn-hero,.run-shell{grid-template-columns:1fr}
+ .run-tabs{grid-template-columns:1fr}
+ .memory-pads{grid-template-columns:repeat(2,minmax(90px,1fr))}
+}
+
 </style>
 </head>
 <body>
@@ -343,17 +408,18 @@ html,body{background:#010403;color:var(--text)}
   <section class="panel radar"><div class="disk" id="disk"><div class="sweep"></div><span class="blip you"></span></div></section>
 
   <nav class="dock">
-    <button class="slot" data-go="ward"><span class="g">▣</span>Construct</button>
-    <button class="slot" data-go="dungeon"><span class="g">▤</span>Floor</button>
-    <button class="slot" data-go="dossier"><span class="g">◎</span>Psyche</button>
-    <button class="slot" data-go="sanctum"><span class="g">✦</span>Sanctum</button>
-    <button class="slot" data-go="session"><span class="g">⌬</span>Operator</button>
+    <button class="slot" data-go="ward"><span class="g">⌂</span>HQ</button>
+    <button class="slot" data-go="arcade"><span class="g">▶</span>RUN</button>
+    <button class="slot" data-go="dungeon"><span class="g">▤</span>CASES</button>
+    <button class="slot" data-go="dossier"><span class="g">◎</span>MIND</button>
+    <button class="slot" data-go="sanctum"><span class="g">✦</span>FORGE</button>
+    <button class="slot" data-go="session"><span class="g">⌬</span>CARDS</button>
   </nav>
   <div class="toast panel" id="toast"></div>
 
   <section class="screen on" id="screen-boot">
     <div class="inner">
-      <div class="logo">THANATOS <em>WARD</em><small style="display:block;font-size:9px;letter-spacing:.28em;color:#66ff9a;margin-top:10px">MATRIX RECONSTRUCTED // AFTER THE RESET</small></div>
+      <div class="logo">THANATOS <em>REBORN</em><small style="display:block;font-size:9px;letter-spacing:.28em;color:#66ff9a;margin-top:10px">BREAKOUT PROTOCOL // PLAY THE SYSTEM</small></div>
       <button class="cta panel" id="enter">Enter</button>
     </div>
   </section>
@@ -361,7 +427,22 @@ html,body{background:#010403;color:var(--text)}
   <div class="ch1-guide" id="ch1-guide"><b>CHAPTER 1 GUIDE</b> · <span id="ch1-guide-text">Follow the yellow control while learning the loop.</span></div>
 <section class="screen" id="screen-ward">
     <div class="inner">
-<div class="menu-route-note" id="route-note-ward"><b>WARD ROUTER</b> · Every visible control in this section is connected to a game destination or action.</div>
+<div class="reborn-hero panel">
+  <div>
+    <h2>THE WARD IS NOW A BASE — NOT THE GAME.</h2>
+    <p>Pick a case, go on a RUN, earn signal fragments and advantages, then come back to break harder sectors. Your casework tells you what to chase. RUN is where you actually play.</p>
+    <button class="arcade-launch" id="hq-run">▶ GO PLAY A RUN</button>
+  </div>
+  <div class="reborn-loop">
+    <div class="reborn-step">1 · PICK A CASE</div>
+    <div class="reborn-step">2 · PLAY A RUN</div>
+    <div class="reborn-step">3 · BRING BACK REWARDS</div>
+    <div class="reborn-step">4 · USE CARDS / MIND / FORGE</div>
+    <div class="reborn-step">5 · CLEAR THE SECTOR</div>
+  </div>
+</div>
+
+<div class="menu-route-note" id="route-note-ward"><b>HQ STATUS</b> · Every visible control in this section is connected to a game destination or action.</div>
 
       <div class="bar">
         <span class="pip panel" id="onl">0 LIVE</span>
@@ -418,9 +499,103 @@ html,body{background:#010403;color:var(--text)}
     </div>
   </section>
 
-  <section class="screen" id="screen-dungeon">
+  
+<section class="screen" id="screen-arcade">
+  <div class="inner">
+    <div class="reborn-hero panel">
+      <div>
+        <h2>RUN // BREAKOUT ARCADE</h2>
+        <p>These are real play sessions. Win them, take the rewards back into Cases, Mind, Forge, and Cards. Runs get stronger as campaign chapters rise.</p>
+      </div>
+      <div class="reborn-loop">
+        <div class="reborn-step" id="run-rank">RUN RANK 01</div>
+        <div class="reborn-step" id="run-frags">0 SIGNAL FRAGMENTS</div>
+        <div class="reborn-step" id="run-streak">0 WIN STREAK</div>
+      </div>
+    </div>
+    <div class="run-shell">
+      <div class="panel run-main">
+        <div class="run-tabs">
+          <button class="run-tab on" data-run="signal">SIGNAL SWARM</button>
+          <button class="run-tab" data-run="memory">MEMORY BREACH</button>
+          <button class="run-tab" data-run="trace">TRACE ESCAPE</button>
+        </div>
+
+        <div class="run-game on" id="run-signal">
+          <div class="run-card">
+            <h2>SIGNAL SWARM</h2>
+            <p>Fast reaction game. Hit the live signal before it jumps. Decoys steal combo. Finish 15 hits to cash out.</p>
+            <div class="run-hud">
+              <div class="run-stat"><b>HITS</b><span id="sig-hits">0</span></div>
+              <div class="run-stat"><b>COMBO</b><span id="sig-combo">0</span></div>
+              <div class="run-stat"><b>SCORE</b><span id="sig-score">0</span></div>
+              <div class="run-stat"><b>TIME</b><span id="sig-time">20</span></div>
+            </div>
+            <button class="run-action" id="sig-start">START SIGNAL SWARM</button>
+            <div class="signal-grid" id="signal-grid"></div>
+          </div>
+        </div>
+
+        <div class="run-game" id="run-memory">
+          <div class="run-card">
+            <h2>MEMORY BREACH</h2>
+            <p>Watch the pulse sequence, then repeat it. Each round adds another node. Clear five rounds to extract a memory fragment.</p>
+            <div class="run-hud">
+              <div class="run-stat"><b>ROUND</b><span id="mem-round">0</span></div>
+              <div class="run-stat"><b>CHAIN</b><span id="mem-chain">0</span></div>
+              <div class="run-stat"><b>STRIKES</b><span id="mem-strikes">0</span></div>
+              <div class="run-stat"><b>STATE</b><span id="mem-state">READY</span></div>
+            </div>
+            <button class="run-action" id="mem-start">START MEMORY BREACH</button>
+            <div class="memory-pads" id="memory-pads">
+              <button class="memory-pad" data-pad="0">I</button>
+              <button class="memory-pad" data-pad="1">II</button>
+              <button class="memory-pad" data-pad="2">III</button>
+              <button class="memory-pad" data-pad="3">IV</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="run-game" id="run-trace">
+          <div class="run-card">
+            <h2>TRACE ESCAPE</h2>
+            <p>Dodge pursuit through three lanes. Survive 24 drops. Every six drops increases speed. Getting hit costs integrity.</p>
+            <div class="run-hud">
+              <div class="run-stat"><b>INTEGRITY</b><span id="trace-life">3</span></div>
+              <div class="run-stat"><b>DROPS</b><span id="trace-drops">0</span></div>
+              <div class="run-stat"><b>LANE</b><span id="trace-lane">2</span></div>
+              <div class="run-stat"><b>STATE</b><span id="trace-state">READY</span></div>
+            </div>
+            <button class="run-action hot" id="trace-start">START TRACE ESCAPE</button>
+            <div class="trace-stage" id="trace-stage">
+              <div class="trace-player" id="trace-player">YOU</div>
+            </div>
+            <div class="lane-controls">
+              <button class="run-action" data-lane="0">LEFT</button>
+              <button class="run-action" data-lane="1">CENTER</button>
+              <button class="run-action" data-lane="2">RIGHT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="panel run-side">
+        <div class="run-card">
+          <h2>TAKE IT BACK</h2>
+          <p>RUN rewards are not decorative. They feed the campaign systems you already have.</p>
+          <div class="run-meter"><span id="run-meter-fill" style="width:0%"></span></div>
+          <div class="reward-feed" id="run-reward-feed"></div>
+          <button class="run-action back-case" id="run-back-cases">RETURN TO CASES</button>
+          <button class="run-action back-case" id="run-back-hq">RETURN TO HQ</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="screen-dungeon">
     <div class="inner">
-<div class="menu-route-note" id="route-note-dungeon"><b>DUNGEON ROUTER</b> · Every visible control in this section is connected to a game destination or action.</div>
+<div class="menu-route-note" id="route-note-dungeon"><b>CASE NETWORK</b> · Every visible control in this section is connected to a game destination or action.</div>
 
 <div class="panel campaign-strip">
   <div><div class="campaign-title" id="campaign-chapter">RECONSTRUCT // CHAPTER 01</div>
@@ -444,6 +619,7 @@ html,body{background:#010403;color:var(--text)}
     <button class="mini panel" id="sector-scan">SCAN SIGNAL</button>
     <button class="mini panel" id="sector-psyche">OPEN PSYCHE</button>
     <button class="mini panel" id="sector-operator">ENTER OPERATOR</button>
+<button class="mini panel" id="sector-run">GO PLAY A RUN</button>
   </div>
 </div>
 <div class="panel objective-card">
@@ -496,7 +672,7 @@ html,body{background:#010403;color:var(--text)}
 
       <div class="deep-grid">
         <div class="panel deep-panel">
-          <h3>CASE DEPTH // ACTIVE SUBJECT</h3>
+          <h3>CASE THREAD</h3>
           <div class="case-tabs">
             <button class="case-tab on" data-casepane="evidence">Evidence</button>
             <button class="case-tab" data-casepane="timeline">Timeline</button>
@@ -532,7 +708,7 @@ html,body{background:#010403;color:var(--text)}
 
       <div class="director-grid">
         <div class="panel director-panel">
-          <h3>WORLD DIRECTOR // LIVE SIMULATION</h3>
+          <h3>WORLD PULSE</h3>
           <div class="director-feed" id="director-feed"></div>
           <div class="world-controls">
             <button class="world-btn" id="director-next">ADVANCE WORLD</button>
@@ -588,10 +764,10 @@ html,body{background:#010403;color:var(--text)}
 <div class="menu-route-note" id="route-note-sanctum"><b>SANCTUM ROUTER</b> · Every visible control in this section is connected to a game destination or action.</div>
 
   <div class="panel" style="padding:10px">
-   <div class="matrix-scene"><b>SANCTUM // MACHINE CHAPEL</b>What used to look mystical is now revealed as a maintenance layer between the human signal and the reconstructed simulation. Forge relics, inspect the active patient, review tools, then return to the Floor.</div>
+   <div class="matrix-scene"><b>SANCTUM // FORGE ROOM</b>What used to look mystical is now revealed as a maintenance layer between the human signal and the reconstructed simulation. Forge relics, inspect the active patient, review tools, then return to the Floor.</div>
    <div class="matrix-tabs"><button class="mini panel on" data-san="forge">Forge</button><button class="mini panel" data-san="patient">Patient Bay</button><button class="mini panel" data-san="tools">Tools</button><button class="mini panel" data-san="rewards">Rewards</button></div>
    <div class="mx-page on" id="san-forge"><div id="recipes"></div></div>
-   <div class="mx-page" id="san-patient"><div class="mx-grid" id="san-patient-stats"></div><div class="matrix-scene" id="san-patient-note" style="margin-top:7px"></div><div class="mx-actions"><button class="mini panel" id="san-to-op">Operator</button><button class="mini panel" id="san-to-psy">Psyche</button><button class="mini panel" id="san-to-floor">Floor</button></div></div>
+   <div class="mx-page" id="san-patient"><div class="mx-grid" id="san-patient-stats"></div><div class="matrix-scene" id="san-patient-note" style="margin-top:7px"></div><div class="mx-actions"><button class="mini panel" id="san-to-op">CARDS</button><button class="mini panel" id="san-to-psy">MIND</button><button class="mini panel" id="san-to-floor">CASES</button></div></div>
    <div class="mx-page" id="san-tools"><div id="san-tools-list"></div></div>
    <div class="mx-page" id="san-rewards"><div id="san-rewards-list"></div></div>
   </div>
@@ -720,7 +896,8 @@ function go(name){
   $("screen-"+name).classList.add("on");
   document.querySelectorAll(".dock .slot").forEach(b=>b.classList.toggle("active", b.dataset.go===name));
   S.screen=name; if(typeof installUniversalMenuRouter==="function")setTimeout(installUniversalMenuRouter,0); if(typeof refreshCh1Guide==="function")setTimeout(refreshCh1Guide,40);
-  if(name==="ward") paintWard();
+  if(name==="ward"){ paintWard(); setTimeout(bindArcade,0); }
+  if(name==="arcade"){ bindArcade(); paintArcadeMeta(); }
   if(name==="dossier") paintPsyche();
   if(name==="session") paintSession();
   if(name==="sanctum") paintSanctum();
@@ -835,7 +1012,7 @@ function paintProfiles(){
       <div class="pc-role">${p.role||"SUBJECT"}<br>${p.bio||"Recovered subject record."}</div>
       <div class="pc-tags"><span class="pc-tag">${p.type}</span><span class="pc-tag">${j?.name||p.type}</span><span class="pc-tag">${p.persona}</span><span class="pc-tag">${p.freud.defense}</span></div>
       <div class="pc-life"><div class="track"><div class="fill s" style="width:${Math.max(0,Math.min(100,p.life))}%"></div></div></div>
-      <div class="pc-actions"><button class="mini" data-pact="select" data-id="${p.id}" ${p.sealed?"disabled":""}>Select</button><button class="mini" data-pact="psy" data-id="${p.id}" ${p.sealed?"disabled":""}>Psyche</button><button class="mini" data-pact="floor" data-id="${p.id}" ${p.sealed?"disabled":""}>Floor</button></div>
+      <div class="pc-actions"><button class="mini" data-pact="select" data-id="${p.id}" ${p.sealed?"disabled":""}>Select</button><button class="mini" data-pact="psy" data-id="${p.id}" ${p.sealed?"disabled":""}>MIND</button><button class="mini" data-pact="floor" data-id="${p.id}" ${p.sealed?"disabled":""}>CASES</button></div>
     </article>`;
   }).join("");
   box.querySelectorAll("[data-profile-card]").forEach(c=>c.onclick=e=>{if(e.target.closest("button"))return;const p=S.P.find(x=>x.id===c.dataset.profileCard);if(p)paintProfileDetail(p);});
@@ -1408,7 +1585,7 @@ const FLOOR_AREAS=[
  {id:"apartment",name:"EMPTY APARTMENT",need:3,desc:"Domestic construct. Hidden relational traces are common.",bonus:"trust"},
  {id:"hospital",name:"HOSPITAL CONSTRUCT",need:3,desc:"Clinical simulation with duplicated records and sealed rooms.",bonus:"stability"},
  {id:"training",name:"TRAINING CONSTRUCT",need:4,desc:"Synthetic challenges strengthen Operator outcomes.",bonus:"balanced"},
- {id:"chapel",name:"MACHINE CHAPEL",need:4,desc:"Maintenance architecture improves stabilization.",bonus:"stability"},
+ {id:"chapel",name:"FORGE ROOM",need:4,desc:"Maintenance architecture improves stabilization.",bonus:"stability"},
  {id:"deadcode",name:"DEAD CODE DISTRICT",need:5,desc:"Broken objects and abandoned programs create unstable evidence.",bonus:"risk"},
  {id:"cathedral",name:"MACHINE CATHEDRAL",need:5,desc:"Machine theology and old control logic distort reality drift.",bonus:"stability"},
  {id:"transit",name:"BLACK TRANSIT",need:6,desc:"High-risk route. More reality drift, stronger rewards.",bonus:"risk"},
@@ -1889,6 +2066,211 @@ function installCh1Guide(){
 }
 installCh1Guide();
 
+
+/* === REBORN ARCADE ENGINE === */
+function arcadeState(){
+  if(!S.arcade)S.arcade={
+    fragments:0,streak:0,wins:0,losses:0,rewards:[],
+    signal:{active:false,hits:0,combo:0,score:0,time:20,live:-1,timer:null},
+    memory:{active:false,round:0,seq:[],input:0,strikes:0,showing:false},
+    trace:{active:false,lane:1,life:3,drops:0,timer:null,agent:null}
+  };
+  return S.arcade;
+}
+function campaignChapterSafe(){try{return ensureCampaign().chapter||1}catch(e){return 1}}
+function addRunReward(text){
+  const A=arcadeState();A.rewards.unshift(text);A.rewards=A.rewards.slice(0,16);
+  paintArcadeMeta();
+}
+function applyRunWin(kind,score){
+  const A=arcadeState(),C=ensureCampaign(),F=floorMech();
+  A.wins++;A.streak++;const gain=1+Math.floor(score/700);A.fragments+=gain;
+  F.focus=Math.min(10,(F.focus||6)+2);
+  F.intel=(F.intel||0)+2;
+  F.trust=(F.trust||0)+1;
+  F.stability=Math.min(100,(F.stability||50)+4);
+  C.reality=Math.min(100,(C.reality||0)+1);
+  addRunReward(`${kind} WIN · +${gain} fragments · +2 Focus · +2 Intel · +1 Trust`);
+  toast("RUN WON · rewards banked");
+  if(typeof hud==="function")hud();
+}
+function applyRunLoss(kind){
+  const A=arcadeState();A.losses++;A.streak=0;
+  addRunReward(`${kind} FAILED · no penalty · try another run`);
+  toast("Run ended");
+}
+function paintArcadeMeta(){
+  const A=arcadeState(),ch=campaignChapterSafe();
+  if($("run-rank"))$("run-rank").textContent="RUN RANK "+String(ch).padStart(2,"0");
+  if($("run-frags"))$("run-frags").textContent=A.fragments+" SIGNAL FRAGMENTS";
+  if($("run-streak"))$("run-streak").textContent=A.streak+" WIN STREAK";
+  if($("run-meter-fill"))$("run-meter-fill").style.width=Math.min(100,A.fragments*8)+"%";
+  if($("run-reward-feed"))$("run-reward-feed").innerHTML=A.rewards.length
+    ?A.rewards.map(x=>`<div class="reward-line">${x}</div>`).join("")
+    :'<div class="reward-line">Win a RUN and the rewards will appear here.</div>';
+}
+function setRunTab(id){
+  document.querySelectorAll(".run-tab").forEach(b=>b.classList.toggle("on",b.dataset.run===id));
+  document.querySelectorAll(".run-game").forEach(x=>x.classList.toggle("on",x.id==="run-"+id));
+}
+function bindArcade(){
+  document.querySelectorAll(".run-tab").forEach(b=>b.onclick=()=>setRunTab(b.dataset.run));
+  if($("hq-run"))$("hq-run").onclick=()=>go("arcade");
+  if($("sector-run"))$("sector-run").onclick=()=>go("arcade");
+  if($("run-back-cases"))$("run-back-cases").onclick=()=>go("dungeon");
+  if($("run-back-hq"))$("run-back-hq").onclick=()=>go("ward");
+  if($("sig-start"))$("sig-start").onclick=startSignalRun;
+  if($("mem-start"))$("mem-start").onclick=startMemoryRun;
+  if($("trace-start"))$("trace-start").onclick=startTraceRun;
+  document.querySelectorAll("[data-lane]").forEach(b=>b.onclick=()=>moveTrace(+b.dataset.lane));
+  document.querySelectorAll("[data-pad]").forEach(b=>b.onclick=()=>memoryInput(+b.dataset.pad));
+  paintArcadeMeta();buildSignalGrid();paintSignal();paintMemory();paintTrace();
+}
+
+/* SIGNAL SWARM */
+function buildSignalGrid(){
+  if(!$("signal-grid"))return;
+  $("signal-grid").innerHTML=Array.from({length:16},(_,i)=>`<button class="signal-cell" data-sig="${i}">·</button>`).join("");
+  $("signal-grid").querySelectorAll("[data-sig]").forEach(b=>b.onclick=()=>hitSignal(+b.dataset.sig));
+}
+function paintSignal(){
+  const G=arcadeState().signal;
+  if($("sig-hits"))$("sig-hits").textContent=G.hits;
+  if($("sig-combo"))$("sig-combo").textContent=G.combo;
+  if($("sig-score"))$("sig-score").textContent=G.score;
+  if($("sig-time"))$("sig-time").textContent=G.time;
+  document.querySelectorAll("[data-sig]").forEach((b,i)=>{
+    b.classList.toggle("live",G.active&&i===G.live);
+    b.classList.toggle("decoy",G.active&&i!==G.live&&((i+G.hits)%7===0));
+    b.textContent=G.active&&i===G.live?"●":"·";
+  });
+}
+function nextSignal(){
+  const G=arcadeState().signal;let n;
+  do{n=Math.floor(Math.random()*16)}while(n===G.live);
+  G.live=n;paintSignal();
+}
+function startSignalRun(){
+  const A=arcadeState(),G=A.signal;
+  if(G.timer)clearInterval(G.timer);
+  Object.assign(G,{active:true,hits:0,combo:0,score:0,time:20,live:-1});
+  nextSignal();
+  G.timer=setInterval(()=>{
+    G.time--;paintSignal();
+    if(G.time<=0)endSignalRun();
+  },1000);
+}
+function hitSignal(i){
+  const G=arcadeState().signal;if(!G.active)return;
+  if(i===G.live){
+    G.hits++;G.combo++;G.score+=100+(G.combo*15);
+    if(G.hits>=15){endSignalRun(true);return}
+    nextSignal();
+  }else{
+    G.combo=0;G.score=Math.max(0,G.score-45);paintSignal();
+  }
+}
+function endSignalRun(forceWin){
+  const G=arcadeState().signal;if(!G.active)return;
+  G.active=false;if(G.timer)clearInterval(G.timer);G.timer=null;paintSignal();
+  if(forceWin||G.hits>=15)applyRunWin("SIGNAL SWARM",G.score);else applyRunLoss("SIGNAL SWARM");
+}
+
+/* MEMORY BREACH */
+function paintMemory(){
+  const M=arcadeState().memory;
+  if($("mem-round"))$("mem-round").textContent=M.round;
+  if($("mem-chain"))$("mem-chain").textContent=M.seq.length;
+  if($("mem-strikes"))$("mem-strikes").textContent=M.strikes;
+  if($("mem-state"))$("mem-state").textContent=M.showing?"WATCH":M.active?"REPEAT":"READY";
+}
+function flashPad(i,on,bad=false){
+  const b=document.querySelector(`[data-pad="${i}"]`);if(!b)return;
+  b.classList.toggle("flash",!!on);b.classList.toggle("bad",!!bad);
+}
+function showMemorySequence(){
+  const M=arcadeState().memory;M.showing=true;M.input=0;paintMemory();
+  document.querySelectorAll("[data-pad]").forEach(b=>{b.disabled=true;b.classList.remove("flash","bad")});
+  let idx=0;
+  const step=()=>{
+    if(idx>=M.seq.length){
+      M.showing=false;document.querySelectorAll("[data-pad]").forEach(b=>b.disabled=false);paintMemory();return;
+    }
+    const p=M.seq[idx++];
+    flashPad(p,true);
+    setTimeout(()=>{flashPad(p,false);setTimeout(step,120)},380);
+  };
+  setTimeout(step,250);
+}
+function startMemoryRun(){
+  const M=arcadeState().memory;Object.assign(M,{active:true,round:1,seq:[Math.floor(Math.random()*4)],input:0,strikes:0,showing:false});
+  showMemorySequence();paintMemory();
+}
+function memoryInput(i){
+  const M=arcadeState().memory;if(!M.active||M.showing)return;
+  if(i===M.seq[M.input]){
+    flashPad(i,true);setTimeout(()=>flashPad(i,false),130);M.input++;
+    if(M.input>=M.seq.length){
+      if(M.round>=5){
+        M.active=false;paintMemory();applyRunWin("MEMORY BREACH",900+M.round*150);return;
+      }
+      M.round++;M.seq.push(Math.floor(Math.random()*4));setTimeout(showMemorySequence,500);
+    }
+  }else{
+    M.strikes++;flashPad(i,false,true);setTimeout(()=>flashPad(i,false,false),220);M.input=0;
+    if(M.strikes>=3){M.active=false;paintMemory();applyRunLoss("MEMORY BREACH");return}
+    setTimeout(showMemorySequence,450);
+  }
+  paintMemory();
+}
+
+/* TRACE ESCAPE */
+function laneLeft(lane){return [4,37,70][lane]+"%"}
+function paintTrace(){
+  const T=arcadeState().trace;
+  if($("trace-life"))$("trace-life").textContent=T.life;
+  if($("trace-drops"))$("trace-drops").textContent=T.drops;
+  if($("trace-lane"))$("trace-lane").textContent=T.lane+1;
+  if($("trace-state"))$("trace-state").textContent=T.active?"RUN":"READY";
+  if($("trace-player"))$("trace-player").style.left=laneLeft(T.lane);
+}
+function moveTrace(lane){
+  const T=arcadeState().trace;if(!T.active)return;T.lane=Math.max(0,Math.min(2,lane));paintTrace();
+}
+function clearTraceAgent(){
+  const T=arcadeState().trace;if(T.agent&&T.agent.remove)T.agent.remove();T.agent=null;
+}
+function traceDrop(){
+  const T=arcadeState().trace;if(!T.active)return;
+  clearTraceAgent();
+  const lane=Math.floor(Math.random()*3),a=document.createElement("div");
+  a.className="trace-agent";a.textContent="TRACE";a.style.left=laneLeft(lane);a.style.top="0px";
+  $("trace-stage").appendChild(a);T.agent=a;
+  let y=0;
+  const fall=setInterval(()=>{
+    if(!T.active){clearInterval(fall);if(a.remove)a.remove();return}
+    y+=18+Math.floor(T.drops/6)*4;a.style.top=y+"px";
+    if(y>=210){
+      clearInterval(fall);
+      if(lane===T.lane){T.life--;a.textContent="HIT";a.style.borderColor="#fff";toast("TRACE HIT");}
+      T.drops++;if(a.remove)a.remove();T.agent=null;paintTrace();
+      if(T.life<=0){endTraceRun(false);return}
+      if(T.drops>=24){endTraceRun(true);return}
+      setTimeout(traceDrop,Math.max(120,430-T.drops*10));
+    }
+  },45);
+}
+function startTraceRun(){
+  const T=arcadeState().trace;if(T.timer)clearInterval(T.timer);clearTraceAgent();
+  Object.assign(T,{active:true,lane:1,life:3,drops:0,timer:null,agent:null});paintTrace();setTimeout(traceDrop,300);
+}
+function endTraceRun(win){
+  const T=arcadeState().trace;if(!T.active)return;T.active=false;clearTraceAgent();paintTrace();
+  if(win)applyRunWin("TRACE ESCAPE",1200+T.life*250);else applyRunLoss("TRACE ESCAPE");
+}
+
+
+setTimeout(()=>{try{bindArcade()}catch(e){}},0);
 </script>
 </body>
 </html>
