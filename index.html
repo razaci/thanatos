@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THANATOS WARD // MATRIX RECONSTRUCTED</title>
+  <title>THANATOS WARD · MATRIX CAMPAIGN</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
   <style>
@@ -174,6 +174,49 @@ html,body{background:#010403;color:var(--text)}
 .floor-empty{color:#7c9688;font:8px/1.5 "Share Tech Mono"}
 @media(max-width:700px){.floor-console{grid-template-columns:1fr}.floor-actions{grid-template-columns:1fr}}
 
+
+/* === WORKING SUBJECT PROFILES === */
+.profile-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(240px,.8fr);gap:8px}
+.profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.profile-card{padding:9px;text-align:left;min-height:150px;border:1px solid #4f826655;background:linear-gradient(180deg,rgba(8,24,15,.96),rgba(2,8,5,.96));position:relative;overflow:hidden}
+.profile-card.active{border-color:#87ffb0;box-shadow:inset 0 0 0 1px #87ffb033,0 0 18px #3cff7830}
+.profile-card .pc-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.profile-card .pc-name{font:10px "Share Tech Mono",monospace;color:#dfffea;letter-spacing:.08em}
+.profile-card .pc-unit{font:7px "Share Tech Mono",monospace;color:#65d98a}
+.profile-card .pc-role{font:7px/1.4 "Share Tech Mono",monospace;color:#91ae9a;margin-top:5px}
+.profile-card .pc-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.profile-card .pc-tag{padding:3px 5px;border:1px solid #4b765d55;font:6px "Share Tech Mono",monospace;color:#9bd4ad;background:#06120b}
+.profile-card .pc-life{margin-top:8px}
+.profile-card .pc-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:8px}
+.profile-card .pc-actions button{min-height:34px;padding:5px;font-size:7px}
+.profile-detail{padding:10px;position:sticky;top:0;align-self:start}
+.profile-detail h3{font:12px "Share Tech Mono",monospace;color:#e8fff0;margin-bottom:4px}
+.profile-detail .pd-sub{font:7px "Share Tech Mono",monospace;color:#65d98a;margin-bottom:9px}
+.pd-section{margin-top:8px;padding-top:7px;border-top:1px solid #446b5455}
+.pd-section b{display:block;font:7px "Share Tech Mono",monospace;color:#71d492;margin-bottom:3px}
+.pd-section span,.pd-section p{font:8px/1.45 "Share Tech Mono",monospace;color:#b7cbbd;margin:0}
+.pd-actions{display:grid;grid-template-columns:1fr;gap:5px;margin-top:10px}
+@media(max-width:760px){.profile-layout{grid-template-columns:1fr}.profile-detail{position:static}.profile-grid{grid-template-columns:1fr}}
+
+
+/* === MATRIX CAMPAIGN LAYER === */
+.campaign-strip{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:9px;margin-bottom:8px}
+.campaign-title{font:9px "Share Tech Mono",monospace;letter-spacing:.16em;color:#a8ffc4}
+.campaign-sub{font:8px/1.45 "Share Tech Mono",monospace;color:#789c86;margin-top:3px}
+.reality-meter{min-width:150px}
+.reality-meter .track{height:7px}.reality-fill{height:100%;background:linear-gradient(90deg,#3b8,#9f8);transition:width .3s}
+.objective-card{padding:9px;margin-top:8px;border:1px solid #50ff8a44;background:#020905}
+.objective-card h3{font:9px "Share Tech Mono";letter-spacing:.12em;color:#b7ffca;margin-bottom:5px}
+.objective-row{display:flex;gap:7px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #50ff8a18;font:8px/1.4 "Share Tech Mono";color:#86a993}
+.objective-row.done{color:#91e8ac}.objective-row:last-child{border-bottom:0}
+.clear-sector{width:100%;padding:12px;margin-top:8px;border:1px solid #8cffaa77;background:#06150b;color:#baffca;font:10px "Share Tech Mono";letter-spacing:.15em}
+.clear-sector:disabled{opacity:.3}
+.anomaly-box{padding:8px;margin-top:7px;border:1px dashed #8cffaa55;font:8px/1.5 "Share Tech Mono";color:#9ad8aa;background:#020704}
+.campaign-log{max-height:130px;overflow:auto;font:8px/1.45 "Share Tech Mono";color:#789c86}
+.boss-box{padding:9px;border:1px solid #ffdd7755;background:#100d03;margin-top:8px}
+.boss-box b{color:#ffe69a}
+@media(max-width:600px){.campaign-strip{grid-template-columns:1fr}.reality-meter{min-width:0}}
+
 </style>
 </head>
 <body>
@@ -249,7 +292,13 @@ html,body{background:#010403;color:var(--text)}
             <div class="typebox" id="alltypes"></div>
           </div>
           <div class="pane" id="pane-types">
-            <div class="typebox" id="typelist"></div>
+            <div class="profile-layout">
+              <div class="profile-grid" id="typelist"></div>
+              <aside class="panel profile-detail" id="profile-detail">
+                <h3>SUBJECT PROFILE</h3>
+                <div class="pd-sub">Select a profile card.</div>
+              </aside>
+            </div>
           </div>
         </div>
       </div>
@@ -258,12 +307,35 @@ html,body{background:#010403;color:var(--text)}
 
   <section class="screen" id="screen-dungeon">
     <div class="inner">
+<div class="panel campaign-strip">
+  <div><div class="campaign-title" id="campaign-chapter">RECONSTRUCT // CHAPTER 01</div>
+  <div class="campaign-sub" id="campaign-story">Eight human signals are repeating inside a simulation that claims they have never met.</div></div>
+  <div class="reality-meter"><div class="meta"><span>Reality Drift</span><span id="reality-val">0%</span></div><div class="track"><div class="reality-fill" id="reality-fill"></div></div></div>
+</div>
+
       <div class="bar">
         <span class="pip panel" id="dseed">SEED —</span>
         <button class="mini panel" id="dgen">Rebuild sector</button>
       </div>
       <div class="panel dungeon"><canvas id="dmap" width="480" height="320"></canvas></div>
       <div class="panel dinfo" id="dinfo">Simulation sector ready. Select a room signal. Foyer is the access node; sealed signals remain dark.</div>
+<div class="objective-card" id="sector-console">
+  <h3 id="sector-title">SECTOR OBJECTIVES</h3>
+  <div id="sector-objectives"></div>
+  <div class="anomaly-box" id="sector-anomaly">Select a populated room to initialize its objectives.</div>
+  <div id="sector-boss"></div>
+  <button class="clear-sector" id="clear-sector" disabled>CLEAR SECTOR</button>
+  <div class="easy-actions" style="margin-top:7px">
+    <button class="mini panel" id="sector-scan">SCAN SIGNAL</button>
+    <button class="mini panel" id="sector-psyche">OPEN PSYCHE</button>
+    <button class="mini panel" id="sector-operator">ENTER OPERATOR</button>
+  </div>
+</div>
+<div class="panel objective-card">
+  <h3>CONSPIRACY THREAD</h3>
+  <div class="campaign-log" id="campaign-log"></div>
+</div>
+
       <div class="floor-console">
         <div class="panel floor-card">
           <h3>ACTIVE ROOM</h3>
@@ -390,28 +462,28 @@ function roster(){
   return [
     { id:"elara", name:"ELARA VOSS", unit:"07-A3", type:"Ni", persona:"Quiet Oracle", anima:"Judge-coat",
       shadow:"Se now", shadowText:"Present as rumor.", freud:{id:22,ego:48,superego:86,stage:"Oral",defense:"Intellectualization"},
-      life:88, colors:["#1a2a44","#6aa0c8"] },
+      life:88, colors:["#1a2a44","#6aa0c8"], role:"Pattern Seer", bio:"A former simulation cartographer who notices repeating structures before anyone else. She distrusts sensory certainty because the reconstructed world keeps changing beneath her.", pattern:"Prediction lock, present-moment doubt, rigid meaning-making", goal:"Find evidence that distinguishes a real pattern from a projected one." },
     { id:"kael", name:"KAEL RADEK", unit:"11-F2", type:"Te", persona:"Blade", anima:"Drowned singer",
       shadow:"Fi grief", shadowText:"Unratified value.", freud:{id:40,ego:62,superego:55,stage:"Anal",defense:"Isolation"},
-      life:84, colors:["#2a1a14","#c88a4a"] },
+      life:84, colors:["#2a1a14","#c88a4a"], role:"Systems Auditor", bio:"A discipline-first operative built around rules, metrics, and containment. His strongest blind spot is private grief that refuses to become a measurable variable.", pattern:"Over-control, emotional isolation, performance pressure", goal:"Create a route where value can matter without becoming a failure state." },
     { id:"nyx", name:"NYX SOLANO", unit:"03-K9", type:"Fe", persona:"Frequency", anima:"Glass thinker",
       shadow:"Ti equation", shadowText:"Thought that empties the room.", freud:{id:58,ego:40,superego:70,stage:"Oedipal",defense:"Reaction"},
-      life:82, colors:["#2a1430","#d080b0"] },
+      life:82, colors:["#2a1430","#d080b0"], role:"Signal Mediator", bio:"Tracks the emotional weather of groups and reads rooms faster than data. Under pressure, she fears that private thought will rupture social coherence.", pattern:"Social prediction, approval pressure, reaction formation", goal:"Test whether disagreement actually destroys connection." },
     { id:"ion", name:"ION MARROW", unit:"19-Θ1", type:"Si", persona:"Archivist", anima:"Mutating file",
       shadow:"Ne futures", shadowText:"Possibility as stain.", freud:{id:35,ego:55,superego:50,stage:"Latency",defense:"Repression"},
-      life:90, colors:["#102018","#6cb890"] },
+      life:90, colors:["#102018","#6cb890"], role:"Archive Custodian", bio:"Remembers details with unnerving precision and treats old contexts as if they are still active. New possibilities can feel like corruption of the archive.", pattern:"Context binding, memory rigidity, repression", goal:"Separate old-context signals from present conditions." },
     { id:"riven", name:"RIVEN QUILL", unit:"22-C4", type:"Ti", persona:"Circuit", anima:"Next-room laugh",
       shadow:"Fe weather", shadowText:"Mood that will not parse.", freud:{id:30,ego:70,superego:48,stage:"Latency",defense:"Rationalization"},
-      life:86, colors:["#121826","#7aa0d0"] },
+      life:86, colors:["#121826","#7aa0d0"], role:"Logic Architect", bio:"Builds private explanatory systems and trusts internal coherence over group consensus. Emotional ambiguity registers as noise in the circuit.", pattern:"Cognitive control, rationalization, affect uncertainty", goal:"Hold an emotional signal without forcing it into an immediate equation." },
     { id:"mira", name:"MIRA KEST", unit:"08-L7", type:"Fi", persona:"Chapel", anima:"Public clerk",
       shadow:"Te tally", shadowText:"Measured, not hurt.", freud:{id:44,ego:42,superego:72,stage:"Genital",defense:"Against self"},
-      life:80, colors:["#1c1428","#c9a0e0"] },
+      life:80, colors:["#1c1428","#c9a0e0"], role:"Value Keeper", bio:"Organizes identity around inward values and resists being reduced to public scores. External measurement easily feels like erasure.", pattern:"Self-evaluation, external metrics, self-directed conflict", goal:"Use evidence without turning the person into the score." },
     { id:"jax", name:"JAX ORRIN", unit:"14-S0", type:"Se", persona:"Live Wire", anima:"Loud prophet",
       shadow:"Ni omen", shadowText:"Meaning without fists.", freud:{id:68,ego:38,superego:28,stage:"Oral",defense:"Acting out"},
-      life:79, colors:["#2a220c","#e0b050"] },
+      life:79, colors:["#2a220c","#e0b050"], role:"Live-Wire Scout", bio:"Acts on immediate data and hates abstraction that cannot survive contact with reality. Ominous meaning can trigger impulsive challenge behavior.", pattern:"Impulsivity, threat salience, acting out", goal:"Slow the action loop long enough to test the omen against evidence." },
     { id:"sable", name:"SABLE WREN", unit:"05-N6", type:"Ne", persona:"Fork", anima:"One memory",
       shadow:"Si scar", shadowText:"Will not metaphorize.", freud:{id:50,ego:46,superego:40,stage:"Anal",defense:"Displacement"},
-      life:83, colors:["#0e2430","#5ad0c0"] }
+      life:83, colors:["#0e2430","#5ad0c0"], role:"Possibility Diver", bio:"Generates alternatives endlessly but can become trapped by one concrete memory that will not loosen. Novelty and fixation compete constantly.", pattern:"Interference, displacement, memory fixation", goal:"Build multiple interpretations while preserving one verified anchor." }
   ].map(p=>Object.assign(p,{sealed:false,archived:false,alert:false}));
 }
 
@@ -439,7 +511,7 @@ function go(name){
   if(name==="dossier") paintPsyche();
   if(name==="session") paintSession();
   if(name==="sanctum") paintSanctum();
-  if(name==="dungeon"){ if(!S.floor) carveFloor(); paintDungeon(); }
+  if(name==="dungeon"){ if(!S.floor) carveFloor(); paintDungeon(); setTimeout(()=>{bindCampaign();paintCampaign();},0); }
 }
 
 function liveList(){ return S.P.filter(p=>!p.sealed && !p.archived && p.life>0); }
@@ -497,13 +569,76 @@ function paintSanctum(){
  $('san-to-op').onclick=()=>go('session');$('san-to-psy').onclick=()=>go('dossier');$('san-to-floor').onclick=()=>go('dungeon');
 }
 
+
+function profileStatus(p){
+  if(p.archived)return "ARCHIVED";
+  if(p.sealed||p.life<=0)return "SEALED";
+  if(S.sel&&S.sel.id===p.id)return "ACTIVE";
+  return "LIVE";
+}
+function profileEvidence(p){
+  const lines=[];
+  if(p.shadowText)lines.push(p.shadowText);
+  lines.push("Defense signature: "+p.freud.defense+".");
+  lines.push("Primary profile type: "+p.type+" · "+(JUNG.find(j=>j.id===p.type)?.name||p.type)+".");
+  return lines;
+}
+function selectProfile(id,route){
+  const p=S.P.find(x=>x.id===id); if(!p)return;
+  if(p.sealed||p.life<=0){toast("Profile sealed");paintProfileDetail(p);return;}
+  S.sel=p;S.incoming=[];toast("Active profile · "+p.name.split(" ")[0]);
+  paintWard();
+  if(route)go(route);
+}
+function paintProfileDetail(p){
+  const box=$("profile-detail");if(!box||!p)return;
+  const j=JUNG.find(x=>x.id===p.type);
+  const ev=profileEvidence(p);
+  box.innerHTML=`
+    <h3>${p.name}</h3>
+    <div class="pd-sub">${p.unit} · ${profileStatus(p)} · ${p.role||"SUBJECT"}</div>
+    <div class="track"><div class="fill s" style="width:${Math.max(0,Math.min(100,p.life))}%"></div></div>
+    <div class="pd-section"><b>IDENTITY LAYER</b><p>${p.bio||"No recovered biography."}</p></div>
+    <div class="pd-section"><b>PSYCHE PROFILE</b><p>${p.type} ${j?.name||""} · Persona: ${p.persona} · Shadow: ${p.shadow}</p></div>
+    <div class="pd-section"><b>ACTIVE PATTERN</b><p>${p.pattern||p.shadowText}</p></div>
+    <div class="pd-section"><b>CASE OBJECTIVE</b><p>${p.goal||"Gather evidence and stabilize the active pattern."}</p></div>
+    <div class="pd-section"><b>DEPTH READOUT</b><p>Id ${p.freud.id} · Ego ${p.freud.ego} · Superego ${p.freud.superego}<br>${p.freud.stage} · ${p.freud.defense}<br>Anima/inner figure: ${p.anima}</p></div>
+    <div class="pd-section"><b>RECOVERED EVIDENCE</b><p>${ev.join("<br>")}</p></div>
+    <div class="pd-actions">
+      <button class="mini panel" id="pd-floor" ${p.sealed?"disabled":""}>Activate on Floor</button>
+      <button class="mini panel" id="pd-psy" ${p.sealed?"disabled":""}>Open Psyche</button>
+      <button class="mini panel" id="pd-op" ${p.sealed?"disabled":""}>Enter Operator</button>
+    </div>`;
+  if($("pd-floor"))$("pd-floor").onclick=()=>selectProfile(p.id,"dungeon");
+  if($("pd-psy"))$("pd-psy").onclick=()=>selectProfile(p.id,"dossier");
+  if($("pd-op"))$("pd-op").onclick=()=>selectProfile(p.id,"session");
+}
+function paintProfiles(){
+  const box=$("typelist");if(!box)return;
+  box.innerHTML=S.P.map(p=>{
+    const j=JUNG.find(x=>x.id===p.type),active=S.sel&&S.sel.id===p.id;
+    return `<article class="panel profile-card ${active?"active":""}" data-profile-card="${p.id}">
+      <div class="pc-top"><div><div class="pc-name">${p.name}</div><div class="pc-unit">${p.unit} · ${profileStatus(p)}</div></div><div class="pc-unit">${Math.round(p.life)}%</div></div>
+      <div class="pc-role">${p.role||"SUBJECT"}<br>${p.bio||"Recovered subject record."}</div>
+      <div class="pc-tags"><span class="pc-tag">${p.type}</span><span class="pc-tag">${j?.name||p.type}</span><span class="pc-tag">${p.persona}</span><span class="pc-tag">${p.freud.defense}</span></div>
+      <div class="pc-life"><div class="track"><div class="fill s" style="width:${Math.max(0,Math.min(100,p.life))}%"></div></div></div>
+      <div class="pc-actions"><button class="mini" data-pact="select" data-id="${p.id}" ${p.sealed?"disabled":""}>Select</button><button class="mini" data-pact="psy" data-id="${p.id}" ${p.sealed?"disabled":""}>Psyche</button><button class="mini" data-pact="floor" data-id="${p.id}" ${p.sealed?"disabled":""}>Floor</button></div>
+    </article>`;
+  }).join("");
+  box.querySelectorAll("[data-profile-card]").forEach(c=>c.onclick=e=>{if(e.target.closest("button"))return;const p=S.P.find(x=>x.id===c.dataset.profileCard);if(p)paintProfileDetail(p);});
+  box.querySelectorAll("[data-pact='select']").forEach(b=>b.onclick=()=>{selectProfile(b.dataset.id);paintProfileDetail(S.sel)});
+  box.querySelectorAll("[data-pact='psy']").forEach(b=>b.onclick=()=>selectProfile(b.dataset.id,"dossier"));
+  box.querySelectorAll("[data-pact='floor']").forEach(b=>b.onclick=()=>selectProfile(b.dataset.id,"dungeon"));
+  paintProfileDetail(S.sel||S.P[0]);
+}
+
 function paintWard(){
   $("onl").textContent=liveList().length+" LIVE";
   $("selc").textContent=S.P.filter(p=>p.sealed&&!p.archived).length+" SEALED";
   $("setup").textContent=S.hearth?"SYSTEM ON":"SYSTEM OFF";
   $("nshift").style.display=liveList().length? "none":"inline-block";
   paintInv();
-  $("typelist").innerHTML=JUNG.map(j=>`<div class="panel tp"><b>${j.id}</b> ${j.name}<br><span class="val">${j.shadow}</span></div>`).join("");
+  paintProfiles();
   $("alltypes").innerHTML=JUNG.map(j=>`<div class="panel tp"><b>${j.id}</b> ${j.name}</div>`).join("");
   paintRadar(); paintQuiz();
 }
@@ -860,13 +995,119 @@ $("bio-form").onsubmit=e=>{ e.preventDefault(); if($("bdate").value) mapBio($("b
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
   document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
   document.querySelectorAll(".pane").forEach(x=>x.classList.remove("on"));
-  t.classList.add("on"); $("pane-"+t.dataset.pane).classList.add("on");
+  t.classList.add("on"); $("pane-"+t.dataset.pane).classList.add("on"); if(t.dataset.pane==="types")paintProfiles();
 });
 document.querySelectorAll(".dock .slot").forEach(b=>b.onclick=()=>{
   if(b.dataset.go==="session"){ feed(); go("session"); return; }
   if(b.dataset.go==="dossier"){ feed(); go("dossier"); return; }
   go(b.dataset.go);
 });
+
+/* === MATRIX CAMPAIGN SYSTEM === */
+const CAMPAIGN_LORE={
+ elara:{anomaly:"She remembers a sunrise that the simulation clock says never occurred.",clue:"ELARA // impossible sunrise timestamp",boss:"THE FALSE MORNING"},
+ kael:{anomaly:"His personnel metric contains a ninth subject field with no name.",clue:"KAEL // SUBJECT 09 field",boss:"THE TALLY"},
+ nyx:{anomaly:"A social memory repeats with different faces but identical dialogue.",clue:"NYX // dialogue recurrence",boss:"THE CHORUS"},
+ ion:{anomaly:"An archive page references this room three days before it was generated.",clue:"ION // pre-generated archive page",boss:"THE ARCHIVIST"},
+ riven:{anomaly:"A diagnostic equation predicts the next button the operator presses.",clue:"RIVEN // predictive interface equation",boss:"THE CIRCUIT"},
+ mira:{anomaly:"Her evaluation score changes whenever another subject is stabilized.",clue:"MIRA // linked evaluation score",boss:"THE SCORE"},
+ jax:{anomaly:"He can hear the code-rain before the visual layer renders.",clue:"JAX // pre-render signal",boss:"THE OMEN"},
+ sable:{anomaly:"One childhood room exists in the memory records of four different subjects.",clue:"SABLE // shared childhood room",boss:"THE ONE MEMORY"}
+};
+function ensureCampaign(){
+ if(!S.campaign)S.campaign={chapter:1,reality:0,cleared:[],clues:[],rooms:{},bosses:0,subject09:false};
+ return S.campaign;
+}
+function campaignRoomKey(){
+ const p=S.at&&S.at.who;return p?p.id:null;
+}
+function roomCampaignState(p){
+ const C=ensureCampaign();
+ if(!C.rooms[p.id])C.rooms[p.id]={scan:false,psyche:false,operator:false,cleared:false};
+ return C.rooms[p.id];
+}
+function campaignObjectiveComplete(st){return !!(st.scan&&st.psyche&&st.operator)}
+function paintCampaign(){
+ const C=ensureCampaign();
+ if($("campaign-chapter"))$("campaign-chapter").textContent="RECONSTRUCT // CHAPTER "+String(C.chapter).padStart(2,"0");
+ if($("campaign-story"))$("campaign-story").textContent=C.subject09
+  ?"The clinic has identified a ninth signal. Its diagnostic identifier points outward: OPERATOR."
+  :"Eight human signals are repeating inside a simulation that claims they have never met.";
+ if($("reality-val"))$("reality-val").textContent=Math.round(C.reality)+"%";
+ if($("reality-fill"))$("reality-fill").style.width=Math.min(100,C.reality)+"%";
+ const p=S.at&&S.at.who;
+ if(!$("sector-objectives"))return;
+ if(!p){
+  $("sector-title").textContent="SECTOR OBJECTIVES";
+  $("sector-objectives").innerHTML='<div class="objective-row">Enter a populated room.</div>';
+  $("sector-anomaly").textContent="The foyer is stable. For now.";
+  $("clear-sector").disabled=true;
+ }else{
+  const st=roomCampaignState(p), lore=CAMPAIGN_LORE[p.id]||{};
+  $("sector-title").textContent=(st.cleared?"CLEARED // ":"ACTIVE // ")+p.name+" · "+p.unit;
+  $("sector-objectives").innerHTML=[
+   ["Scan the signal",st.scan],["Open Psyche and inspect the pattern",st.psyche],["Enter Operator and make contact",st.operator]
+  ].map(x=>`<div class="objective-row ${x[1]?"done":""}">${x[1]?"✓":"○"} ${x[0]}</div>`).join("");
+  $("sector-anomaly").textContent=st.scan?(lore.anomaly||"Signal irregularity confirmed."):"Anomaly masked. Scan the signal.";
+  $("clear-sector").disabled=st.cleared||!campaignObjectiveComplete(st);
+  $("clear-sector").textContent=st.cleared?"SECTOR CLEARED":"CLEAR SECTOR";
+  $("sector-boss").innerHTML=(C.cleared.length>0&&C.cleared.length%3===0&&!st.cleared)
+    ?`<div class="boss-box"><b>ANOMALY BOSS // ${lore.boss||"THE LOOP"}</b><br>Complete all three objectives to collapse this construct.</div>`:"";
+ }
+ if($("campaign-log"))$("campaign-log").innerHTML=C.clues.length
+   ?C.clues.slice().reverse().map((x,i)=>`<div>› ${x}</div>`).join("")
+   :"<div>› No cross-subject evidence linked yet.</div>";
+}
+function campaignScan(){
+ const p=S.at&&S.at.who;if(!p||p.sealed){toast("No live signal");return}
+ const C=ensureCampaign(),st=roomCampaignState(p),l=CAMPAIGN_LORE[p.id];
+ if(!st.scan){
+  st.scan=true;C.reality=Math.min(100,C.reality+4);
+  if(l&&!C.clues.includes(l.clue))C.clues.push(l.clue);
+  toast("Anomaly decoded");
+ } else toast("Signal already scanned");
+ paintCampaign();
+}
+function campaignPsyche(){
+ const p=S.at&&S.at.who;if(!p||p.sealed)return;
+ roomCampaignState(p).psyche=true;S.sel=p;paintCampaign();go("dossier");
+}
+function campaignOperator(){
+ const p=S.at&&S.at.who;if(!p||p.sealed)return;
+ roomCampaignState(p).operator=true;S.sel=p;S.incoming=[];paintCampaign();go("session");
+}
+function clearCampaignSector(){
+ const p=S.at&&S.at.who;if(!p)return;
+ const C=ensureCampaign(),st=roomCampaignState(p);
+ if(!campaignObjectiveComplete(st)||st.cleared)return;
+ st.cleared=true;
+ if(!C.cleared.includes(p.id))C.cleared.push(p.id);
+ C.reality=Math.min(100,C.reality+7);
+ if(C.cleared.length%3===0){C.bosses++;C.reality=Math.min(100,C.reality+5);toast("ANOMALY BOSS COLLAPSED");}
+ else toast("SECTOR CLEARED");
+ if(C.cleared.length>=4)C.chapter=2;
+ if(C.cleared.length>=6)C.chapter=3;
+ if(C.cleared.length>=8){C.chapter=4;C.subject09=true;C.clues.push("SYSTEM // SUBJECT 09 = OPERATOR");}
+ addItem(Math.random()<.5?"spark":"veil");
+ paintCampaign();paintDungeon();
+}
+function campaignProfileStage(p){
+ const C=ensureCampaign(),st=C.rooms[p.id]||{};
+ if(st.cleared)return C.subject09?"AWAKENED":"STABILIZED";
+ if(st.operator)return"CONTACTED";
+ if(st.psyche)return"MODELED";
+ if(st.scan)return"INVESTIGATED";
+ return"UNKNOWN";
+}
+function bindCampaign(){
+ if($("sector-scan"))$("sector-scan").onclick=campaignScan;
+ if($("sector-psyche"))$("sector-psyche").onclick=campaignPsyche;
+ if($("sector-operator"))$("sector-operator").onclick=campaignOperator;
+ if($("clear-sector"))$("clear-sector").onclick=clearCampaignSector;
+}
+bindCampaign();
+paintCampaign();
+
 </script>
 </body>
 </html>
